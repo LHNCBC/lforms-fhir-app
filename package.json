@@ -18,9 +18,7 @@
     "postinstall": "bower install",
     "update-deps": "npm update",
     "postupdate-deps": "bower update",
-    "prestart": "npm ci",
     "start": "http-server -a localhost -p 8000 -c-1 ./app",
-    "preupdate-webdriver": "npm ci",
     "update-webdriver": "webdriver-manager update",
     "preprotractor": "npm run update-webdriver",
     "protractor": "protractor e2e-tests/protractor.conf.js"

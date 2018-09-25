@@ -15,7 +15,7 @@ us manage and test the application.
 We have preconfigured `npm` to automatically run `bower` so we can simply do:
 
 ```
-npm install
+npm ci
 ```
 
 Behind the scenes this will also call `bower install`. After that, you should find out that you have
