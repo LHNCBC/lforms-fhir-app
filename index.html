@@ -13,13 +13,13 @@
   <meta name="viewport" content="width=device-width">
   <!-- build:css(client) app/vendor.css -->
   <!-- bower:css -->
-  <link rel='stylesheet' href='bower_components/jquery-ui/themes/redmond/jquery-ui.min.css' />
-  <link rel='stylesheet' href='bower_components/autocomplete-lhc/source/auto_completion.css' />
-  <link rel='stylesheet' href='bower_components/lforms/app/styles/lforms.css' />
-  <link rel='stylesheet' href='bower_components/lforms/app/styles/themes.css' />
-  <link rel='stylesheet' href='bower_components/angular-material/angular-material.css' />
+  <link rel='stylesheet' href='lforms-fhir-app/bower_components/jquery-ui/themes/redmond/jquery-ui.min.css' />
+  <link rel='stylesheet' href='lforms-fhir-app/bower_components/autocomplete-lhc/source/auto_completion.css' />
+  <link rel='stylesheet' href='lforms-fhir-app/bower_components/lforms/app/styles/lforms.css' />
+  <link rel='stylesheet' href='lforms-fhir-app/bower_components/lforms/app/styles/themes.css' />
+  <link rel='stylesheet' href='lforms-fhir-app/bower_components/angular-material/angular-material.css' />
   <!-- endbower -->
-  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+  <link rel="stylesheet" href="lforms-fhir-app/bower_components/bootstrap/dist/css/bootstrap.css" />
   <!-- endbuild -->
   <!-- build:css({.tmp,client}) app/app.css -->
   <!-- injector:css -->
@@ -48,77 +48,77 @@
 <script src="https://rawgithub.com/smart-on-fhir/client-js/master/dist/fhir-client.js"></script>
 
 <!--[if lt IE 9]>
-<script src="bower_components/es5-shim/es5-shim.js"></script>
-<script src="bower_components/json3/lib/json3.min.js"></script>
+<script src="lforms-fhir-app/bower_components/es5-shim/es5-shim.js"></script>
+<script src="lforms-fhir-app/bower_components/json3/lib/json3.min.js"></script>
 <![endif]-->
 <!-- build:js({client,node_modules}) app/vendor.js -->
 <!-- bower:js -->
-<script src="bower_components/jquery/dist/jquery.js"></script>
-<script src="bower_components/jquery-ui/ui/core.js"></script>
-<script src="bower_components/jquery-ui/ui/widget.js"></script>
-<script src="bower_components/jquery-ui/ui/button.js"></script>
-<script src="bower_components/jquery-ui/ui/dialog.js"></script>
-<script src="bower_components/jquery-ui/ui/datepicker.js"></script>
-<script src="bower_components/angular/angular.js"></script>
-<script src="bower_components/angular-cookies/angular-cookies.js"></script>
-<script src="bower_components/angular-resource/angular-resource.js"></script>
-<script src="bower_components/angular-route/angular-route.js"></script>
-<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-<script src="bower_components/angular-strap/dist/angular-strap.js"></script>
-<script src="bower_components/angular-strap/dist/angular-strap.tpl.js"></script>
-<script src="bower_components/angular-touch/angular-touch.js"></script>
-<script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-<script src="bower_components/angular-ui-utils/ui-utils.js"></script>
-<script src="bower_components/angular-animate/angular-animate.js"></script>
-<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-<script src="bower_components/autocomplete-lhc/source/polyfill.js"></script>
-<script src="bower_components/autocomplete-lhc/source/prototype_api.js"></script>
-<script src="bower_components/autocomplete-lhc/source/effects.js"></script>
-<script src="bower_components/autocomplete-lhc/source/effectScroll.js"></script>
-<script src="bower_components/autocomplete-lhc/source/event.simulate.js"></script>
-<script src="bower_components/autocomplete-lhc/source/observable.js"></script>
-<script src="bower_components/autocomplete-lhc/source/screenReaderLog.js"></script>
-<script src="bower_components/autocomplete-lhc/source/recordDataRequester.js"></script>
-<script src="bower_components/autocomplete-lhc/source/fieldAlarms.js"></script>
-<script src="bower_components/autocomplete-lhc/soundmanager/bonk.js"></script>
-<script src="bower_components/autocomplete-lhc/source/dialog.js"></script>
-<script src="bower_components/autocomplete-lhc/source/autoCompBase.js"></script>
-<script src="bower_components/autocomplete-lhc/source/suggestionDialog.js"></script>
-<script src="bower_components/autocomplete-lhc/source/autoCompPrefetch.js"></script>
-<script src="bower_components/autocomplete-lhc/source/autoCompSearch.js"></script>
-<script src="bower_components/autocomplete-lhc/source/autoCompEvents.js"></script>
-<script src="bower_components/autocomplete-lhc/source/autocomplete-lhc.js"></script>
-<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-<script src="bower_components/ngSmoothScroll/lib/angular-smooth-scroll.js"></script>
-<script src="bower_components/element-resize-detector/dist/element-resize-detector.js"></script>
-<script src="bower_components/lforms/app/lforms.js"></script>
-<script src="bower_components/lforms/app/scripts/lforms-constants.js"></script>
-<script src="bower_components/lforms/app/scripts/lforms-config.js"></script>
-<script src="bower_components/lforms/app/scripts/lforms-controllers.js"></script>
-<script src="bower_components/lforms/app/scripts/lforms-directives.js"></script>
-<script src="bower_components/lforms/app/scripts/bootstrap-decorators.js"></script>
-<script src="bower_components/lforms/app/scripts/lib/date.js"></script>
-<script src="bower_components/lforms/app/scripts/lib/js-class.js"></script>
-<script src="bower_components/lforms/app/scripts/lib/cross_browser.js"></script>
-<script src="bower_components/lforms/app/scripts/lib/lforms-util.js"></script>
-<script src="bower_components/lforms/app/scripts/lib/polyfill.js"></script>
-<script src="bower_components/lforms/app/scripts/lib/lforms-hl7.js"></script>
-<script src="bower_components/lforms/app/scripts/lib/lforms-fhir-diagnostic-report.js"></script>
-<script src="bower_components/lforms/app/scripts/lib/lforms-fhir-sdc.js"></script>
-<script src="bower_components/lforms/app/scripts/lib/lforms-fhir-sdc-converter.js"></script>
-<script src="bower_components/lforms/app/scripts/lib/lforms-validate.js"></script>
-<script src="bower_components/lforms/app/scripts/lib/lforms-data.js"></script>
-<script src="bower_components/lforms/app/lforms.tpl.js"></script>
-<script src="bower_components/json3/lib/json3.js"></script>
-<script src="bower_components/angular-aria/angular-aria.js"></script>
-<script src="bower_components/angular-messages/angular-messages.js"></script>
-<script src="bower_components/angular-material/angular-material.js"></script>
-<script src="bower_components/angular-file-upload/dist/angular-file-upload.min.js"></script>
+<script src="lforms-fhir-app/bower_components/jquery/dist/jquery.js"></script>
+<script src="lforms-fhir-app/bower_components/jquery-ui/ui/core.js"></script>
+<script src="lforms-fhir-app/bower_components/jquery-ui/ui/widget.js"></script>
+<script src="lforms-fhir-app/bower_components/jquery-ui/ui/button.js"></script>
+<script src="lforms-fhir-app/bower_components/jquery-ui/ui/dialog.js"></script>
+<script src="lforms-fhir-app/bower_components/jquery-ui/ui/datepicker.js"></script>
+<script src="lforms-fhir-app/bower_components/angular/angular.js"></script>
+<script src="lforms-fhir-app/bower_components/angular-cookies/angular-cookies.js"></script>
+<script src="lforms-fhir-app/bower_components/angular-resource/angular-resource.js"></script>
+<script src="lforms-fhir-app/bower_components/angular-route/angular-route.js"></script>
+<script src="lforms-fhir-app/bower_components/angular-sanitize/angular-sanitize.js"></script>
+<script src="lforms-fhir-app/bower_components/angular-strap/dist/angular-strap.js"></script>
+<script src="lforms-fhir-app/bower_components/angular-strap/dist/angular-strap.tpl.js"></script>
+<script src="lforms-fhir-app/bower_components/angular-touch/angular-touch.js"></script>
+<script src="lforms-fhir-app/bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+<script src="lforms-fhir-app/bower_components/angular-ui-utils/ui-utils.js"></script>
+<script src="lforms-fhir-app/bower_components/angular-animate/angular-animate.js"></script>
+<script src="lforms-fhir-app/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="lforms-fhir-app/bower_components/autocomplete-lhc/source/polyfill.js"></script>
+<script src="lforms-fhir-app/bower_components/autocomplete-lhc/source/prototype_api.js"></script>
+<script src="lforms-fhir-app/bower_components/autocomplete-lhc/source/effects.js"></script>
+<script src="lforms-fhir-app/bower_components/autocomplete-lhc/source/effectScroll.js"></script>
+<script src="lforms-fhir-app/bower_components/autocomplete-lhc/source/event.simulate.js"></script>
+<script src="lforms-fhir-app/bower_components/autocomplete-lhc/source/observable.js"></script>
+<script src="lforms-fhir-app/bower_components/autocomplete-lhc/source/screenReaderLog.js"></script>
+<script src="lforms-fhir-app/bower_components/autocomplete-lhc/source/recordDataRequester.js"></script>
+<script src="lforms-fhir-app/bower_components/autocomplete-lhc/source/fieldAlarms.js"></script>
+<script src="lforms-fhir-app/bower_components/autocomplete-lhc/soundmanager/bonk.js"></script>
+<script src="lforms-fhir-app/bower_components/autocomplete-lhc/source/dialog.js"></script>
+<script src="lforms-fhir-app/bower_components/autocomplete-lhc/source/autoCompBase.js"></script>
+<script src="lforms-fhir-app/bower_components/autocomplete-lhc/source/suggestionDialog.js"></script>
+<script src="lforms-fhir-app/bower_components/autocomplete-lhc/source/autoCompPrefetch.js"></script>
+<script src="lforms-fhir-app/bower_components/autocomplete-lhc/source/autoCompSearch.js"></script>
+<script src="lforms-fhir-app/bower_components/autocomplete-lhc/source/autoCompEvents.js"></script>
+<script src="lforms-fhir-app/bower_components/autocomplete-lhc/source/autocomplete-lhc.js"></script>
+<script src="lforms-fhir-app/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="lforms-fhir-app/bower_components/ngSmoothScroll/lib/angular-smooth-scroll.js"></script>
+<script src="lforms-fhir-app/bower_components/element-resize-detector/dist/element-resize-detector.js"></script>
+<script src="lforms-fhir-app/bower_components/lforms/app/lforms.js"></script>
+<script src="lforms-fhir-app/bower_components/lforms/app/scripts/lforms-constants.js"></script>
+<script src="lforms-fhir-app/bower_components/lforms/app/scripts/lforms-config.js"></script>
+<script src="lforms-fhir-app/bower_components/lforms/app/scripts/lforms-controllers.js"></script>
+<script src="lforms-fhir-app/bower_components/lforms/app/scripts/lforms-directives.js"></script>
+<script src="lforms-fhir-app/bower_components/lforms/app/scripts/bootstrap-decorators.js"></script>
+<script src="lforms-fhir-app/bower_components/lforms/app/scripts/lib/date.js"></script>
+<script src="lforms-fhir-app/bower_components/lforms/app/scripts/lib/js-class.js"></script>
+<script src="lforms-fhir-app/bower_components/lforms/app/scripts/lib/cross_browser.js"></script>
+<script src="lforms-fhir-app/bower_components/lforms/app/scripts/lib/lforms-util.js"></script>
+<script src="lforms-fhir-app/bower_components/lforms/app/scripts/lib/polyfill.js"></script>
+<script src="lforms-fhir-app/bower_components/lforms/app/scripts/lib/lforms-hl7.js"></script>
+<script src="lforms-fhir-app/bower_components/lforms/app/scripts/lib/lforms-fhir-diagnostic-report.js"></script>
+<script src="lforms-fhir-app/bower_components/lforms/app/scripts/lib/lforms-fhir-sdc.js"></script>
+<script src="lforms-fhir-app/bower_components/lforms/app/scripts/lib/lforms-fhir-sdc-converter.js"></script>
+<script src="lforms-fhir-app/bower_components/lforms/app/scripts/lib/lforms-validate.js"></script>
+<script src="lforms-fhir-app/bower_components/lforms/app/scripts/lib/lforms-data.js"></script>
+<script src="lforms-fhir-app/bower_components/lforms/app/lforms.tpl.js"></script>
+<script src="lforms-fhir-app/bower_components/json3/lib/json3.js"></script>
+<script src="lforms-fhir-app/bower_components/angular-aria/angular-aria.js"></script>
+<script src="lforms-fhir-app/bower_components/angular-messages/angular-messages.js"></script>
+<script src="lforms-fhir-app/bower_components/angular-material/angular-material.js"></script>
+<script src="lforms-fhir-app/bower_components/angular-file-upload/dist/angular-file-upload.min.js"></script>
 <!-- endbower -->
 <!-- endbuild -->
 
 <!-- FHIRPath library -->
-<script src="bower_components/lforms/app/scripts/fhirpath/fhirpath.min.js"></script>
+<script src="lforms-fhir-app/bower_components/lforms/app/scripts/fhirpath/fhirpath.min.js"></script>
 
 <!-- build:js({.tmp,client}) app/app.js -->
 <script src="app.js"></script>
@@ -129,7 +129,7 @@
 <script src="components/fhir-data/fhir.service.js"></script>
 <script src="components/selected-form-data/selected-form-data.js"></script>
 <!-- endinjector -->
-<script src="bower_components/lforms/app/scripts/themeList.js"></script>
+<script src="lforms-fhir-app/bower_components/lforms/app/scripts/themeList.js"></script>
 <!-- endbuild -->
 </body>
 </html>
