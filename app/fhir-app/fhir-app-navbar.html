@@ -1,0 +1,65 @@
+<div ng-controller="NavBarCtrl">
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="panel-title">
+          Saved QuestionnaireResponses
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="list-group">
+          <a href="#" class="list-group-item {{isSelected(1, $index)}}" ng-repeat="p in listSavedQR" role="presentation" id="{{p.resId}}" ng-click="showSavedQQR($index, p)">
+            <p class="form-name">{{p.resName}}</p>
+            <p class="res-type" ng-if="p.extensionType">{{p.resTypeDisplay}}</p>
+            <p class="last-updated">{{p.updatedAt}}</p>
+          </a>
+          <div class="btn-group btn-group-justified" role="group">
+            <a role="button" type="button" class="btn btn-default btn-sm glyphicon glyphicon-chevron-left" ng-disabled="!hasPagingLink('QuestionnaireResponse','previous')" ng-click="getPage('QuestionnaireResponse', 'previous')"></a>
+            <a role="button" type="button" class="btn btn-default btn-sm glyphicon glyphicon-chevron-right" ng-disabled="!hasPagingLink('QuestionnaireResponse','next')" ng-click="getPage('QuestionnaireResponse', 'next')"></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="panel-title">
+          Available Questionnaires
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="list-group">
+          <a href="#" class="list-group-item {{isSelected(2, $index)}}" ng-repeat="p in listSavedQ" role="presentation" id="{{p.resId}}" ng-click="showSavedQuestionnaire($index, p)">
+            <p class="form-name">{{p.resName}}</p>
+            <p class="last-updated">{{p.updatedAt}}</p>
+          </a>
+          <div class="btn-group btn-group-justified" role="group">
+            <a role="button" type="button" class="btn btn-default btn-sm glyphicon glyphicon-chevron-left" ng-disabled="!hasPagingLink('Questionnaire','previous')" ng-click="getPage('Questionnaire', 'previous')"></a>
+            <a role="button" type="button" class="btn btn-default btn-sm glyphicon glyphicon-chevron-right" ng-disabled="!hasPagingLink('Questionnaire','next')" ng-click="getPage('Questionnaire', 'next')"></a>
+          </div>
+          <div class="btn-group btn-group-justified" role="group">
+            <a role="button" type="button" class="btn btn-default btn-sm btn-success glyphicon glyphicon-search" ng-click="showQuestionnairePicker($event)" title="Choose a Questionnaire from the FHIR server."></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">
+        Upload From File
+      </div>
+    </div>
+    <div class="panel-body">
+      <input type="file" id="inputAnchor" nv-file-select uploader="uploader"
+             class="hide" />
+
+      <div class="btn-group btn-group-justified" role="group">
+        <a role="button" type="button" class="btn btn-default btn-sm btn-success glyphicon glyphicon-upload" ng-click="loadFromFile()"></a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+

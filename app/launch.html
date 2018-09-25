@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>LForms FHIR App</title>
+</head>
+Loading...
+<body>
+<!-- smart on fhir client -->
+<script src="https://rawgithub.com/smart-on-fhir/client-js/master/dist/fhir-client.js"></script>
+<script>
+  FHIR.oauth2.authorize({
+    "client_id": "my_web_app",  // hard coded client_id to work with SMART on FHIR starter server
+    "scope":  "user/*.* launch/patient"
+  });
+</script>
+</body>
+</html>
