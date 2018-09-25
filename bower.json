@@ -1,0 +1,42 @@
+{
+  "name": "lforms-fhir-app",
+  "version": "0.1.0",
+  "dependencies": {
+    "jquery-ui": "1.11.4",
+    "angular": "~1.6.x",
+    "angular-cookies": "~1.6.x",
+    "angular-resource": "~1.6.x",
+    "angular-route": "~1.6.x",
+    "angular-sanitize": "~1.6.x",
+    "angular-strap": "~2.3.3",
+    "angular-touch": "~1.6.x",
+    "angular-ui-utils": "~0.1.1",
+    "lforms": "^12.12.1",
+    "json3": "3.3.2",
+    "angular-animate": "~1.6.x",
+    "bootstrap": "3.3.5",
+    "angular-material": "^1.0.8",
+    "angular-file-upload": "^2.3.4"
+  },
+  "overrides": {
+    "jquery-ui": {
+      "main": [
+        "ui/core.js",
+        "ui/widget.js",
+        "ui/button.js",
+        "ui/dialog.js",
+        "ui/datepicker.js",
+        "themes/redmond/jquery-ui.min.css"
+      ]
+    }
+  },
+  "resolutions": {
+    "angular": "~1.6.x",
+    "angular-animate": "~1.6.x"
+  },
+  "devDependencies": {
+    "angular-mocks": "1.6.x",
+    "angular-scenario": "1.6.x"
+  },
+  "appPath": "client"
+}
