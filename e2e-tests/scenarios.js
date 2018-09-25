@@ -21,7 +21,10 @@ describe('fhir app', function() {
 
   describe("Load Button", function() {
 
-    var fileInput = element(by.css('input[type=file]'));
+    var fileInput = element(by.css('input[type=file]')),
+        height = element(by.id('/8302-2/1')),
+        weight = element(by.id('/29463-7/1')),
+        bmi = element(by.id('/39156-5/1'));
 
     it("should load a Questionnaire file", function() {
       browser.ignoreSynchronization = false;
@@ -38,6 +41,15 @@ describe('fhir app', function() {
       var EC = protractor.ExpectedConditions;
       browser.waitForAngular();
       browser.wait(EC.textToBePresentInElement(element(by.css('.lf-form-title')), "Weight"), 5000);
+
+      // BMI
+      height.sendKeys("70");
+      expect(bmi.getAttribute('value')).toBe("");
+      weight.sendKeys("70");
+      expect(bmi.getAttribute('value')).toBe("22.14290142866");
+      height.clear();
+      height.sendKeys("80");
+      expect(bmi.getAttribute('value')).toBe("16.953158906317814");
     });
   });
 
