@@ -1,0 +1,20 @@
+{
+  "name": "angular-aria",
+  "version": "1.7.4",
+  "license": "MIT",
+  "main": "./angular-aria.js",
+  "ignore": [],
+  "dependencies": {
+    "angular": "1.7.4"
+  },
+  "homepage": "https://github.com/angular/bower-angular-aria",
+  "_release": "1.7.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.7.4",
+    "commit": "d639c44f14910337d28f933a140c490c415808ae"
+  },
+  "_source": "https://github.com/angular/bower-angular-aria.git",
+  "_target": "^1.7.2",
+  "_originalSource": "angular-aria"
+}

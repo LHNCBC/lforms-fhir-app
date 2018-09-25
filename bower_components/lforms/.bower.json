@@ -1,0 +1,85 @@
+{
+  "name": "lforms",
+  "version": "12.12.1",
+  "dependencies": {
+    "jquery-ui": "~1.11.4",
+    "angular": "^1.4.7",
+    "angular-animate": "^1.4.7",
+    "angular-bootstrap": "^1.1.0",
+    "autocomplete-lhc": "^16.0.0",
+    "bootstrap": "^3.3.5",
+    "ngSmoothScroll": "^2.0.0",
+    "element-resize-detector": "^1.1.11"
+  },
+  "overrides": {
+    "jquery-ui": {
+      "main": [
+        "ui/core.js",
+        "ui/widget.js",
+        "ui/button.js",
+        "ui/dialog.js",
+        "ui/datepicker.js",
+        "themes/start/jquery-ui.min.css"
+      ]
+    }
+  },
+  "devDependencies": {
+    "angular-file-upload": "^2.3.4",
+    "angular-mocks": "^1.4.7",
+    "angular-scenario": "^1.4.7",
+    "angular-route": "^1.4.7",
+    "lforms-converter": "^1.1.0"
+  },
+  "appPath": "app",
+  "authors": [
+    "Ye Wang <wangye@mail.nih.gov>"
+  ],
+  "description": "An angular directive that displays forms defined in the lforms standard format.",
+  "main": [
+    "app/lforms.js",
+    "app/scripts/lforms-constants.js",
+    "app/scripts/lforms-config.js",
+    "app/scripts/lforms-controllers.js",
+    "app/scripts/lforms-directives.js",
+    "app/scripts/bootstrap-decorators.js",
+    "app/scripts/lib/date.js",
+    "app/scripts/lib/js-class.js",
+    "app/scripts/lib/cross_browser.js",
+    "app/scripts/lib/lforms-util.js",
+    "app/scripts/lib/polyfill.js",
+    "app/scripts/lib/lforms-hl7.js",
+    "app/scripts/lib/lforms-fhir-diagnostic-report.js",
+    "app/scripts/lib/lforms-fhir-sdc.js",
+    "app/scripts/lib/lforms-fhir-sdc-converter.js",
+    "app/scripts/lib/lforms-validate.js",
+    "app/scripts/lib/lforms-data.js",
+    "app/styles/lforms.css",
+    "app/styles/themes.css",
+    "app/lforms.tpl.js"
+  ],
+  "keywords": [
+    "lforms",
+    "angular",
+    "LOINC",
+    "form",
+    "panel"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/lhncbc/lforms",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "_release": "12.12.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "12.12.1",
+    "commit": "d400ce1438b4986b72945a5f7d108c0eeb163924"
+  },
+  "_source": "https://github.com/lhncbc/lforms.git",
+  "_target": "^12.12.1",
+  "_originalSource": "lforms"
+}
