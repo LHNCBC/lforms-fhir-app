@@ -29,7 +29,7 @@ describe('fhir app', function() {
       browser.wait(function() {
         return title.isDisplayed();
       }, 5000);
-      let qFilePath = path.resolve(__dirname, 'data/questionnaire-sample.json');
+      let qFilePath = path.resolve(__dirname, 'data/weight-height-questionnaire.json');
       // For Firefox, the file input field needs to be visible before it will
       // accept input.
       browser.executeScript('arguments[0].classList.toggle("hide")', fileInput.getWebElement());
@@ -37,7 +37,7 @@ describe('fhir app', function() {
       browser.executeScript('arguments[0].classList.toggle("hide")', fileInput.getWebElement());
       var EC = protractor.ExpectedConditions;
       browser.waitForAngular();
-      browser.wait(EC.textToBePresentInElement(element(by.css('.lf-form-title')), "Vital"), 5000);
+      browser.wait(EC.textToBePresentInElement(element(by.css('.lf-form-title')), "Weight"), 5000);
     });
   });
 
