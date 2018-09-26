@@ -3,7 +3,7 @@
     <div class="panel panel-default">
       <div class="panel-heading">
         <div class="panel-title">
-          Saved QuestionnaireResponses
+          Saved QuestionnaireResponses:
         </div>
       </div>
       <div class="panel-body">
@@ -24,7 +24,7 @@
     <div class="panel panel-default">
       <div class="panel-heading">
         <div class="panel-title">
-          Available Questionnaires
+          Available Questionnaires:
         </div>
       </div>
       <div class="panel-body">
@@ -38,24 +38,24 @@
             <a role="button" type="button" class="btn btn-default btn-sm glyphicon glyphicon-chevron-right" ng-disabled="!hasPagingLink('Questionnaire','next')" ng-click="getPage('Questionnaire', 'next')"></a>
           </div>
           <div class="btn-group btn-group-justified" role="group">
-            <a role="button" type="button" class="btn btn-default btn-sm btn-success glyphicon glyphicon-search" ng-click="showQuestionnairePicker($event)" title="Choose a Questionnaire from the FHIR server."></a>
+            <a role="button" type="button" class="btn btn-default btn-sm btn-success " ng-click="showQuestionnairePicker($event)" title="Choose a Questionnaire from the FHIR server."><span class="glyphicon glyphicon-search"></span><span class="lf-nav-button">Search</span></a>
           </div>
         </div>
       </div>
     </div>
 
   <div class="panel panel-default">
-    <div class="panel-heading">
-      <div class="panel-title">
-        Upload From File
-      </div>
-    </div>
+    <!--<div class="panel-heading">-->
+      <!--<div class="panel-title">-->
+        <!--Upload From File:-->
+      <!--</div>-->
+    <!--</div>-->
     <div class="panel-body">
       <input type="file" id="inputAnchor" nv-file-select uploader="uploader"
              class="hide" />
 
       <div class="btn-group btn-group-justified" role="group">
-        <a role="button" type="button" class="btn btn-default btn-sm btn-success glyphicon glyphicon-upload" ng-click="loadFromFile()"></a>
+        <a role="button" type="button" class="btn btn-default btn-sm btn-success" ng-click="loadFromFile()" title="Upload a file."><span class="glyphicon glyphicon-upload"></span><span class="lf-nav-button">Upload</span></a>
       </div>
     </div>
   </div>
