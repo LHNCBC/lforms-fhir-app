@@ -23,10 +23,14 @@ angular.module('lformsApp', [
     .config(['$routeProvider', '$locationProvider',
       function($routeProvider, $locationProvider) {
         $routeProvider
-            .when('/lforms-fhir-app/', {
-              templateUrl: 'lforms-fhir-app/fhir-app/fhir-app.html',
+            .when('/lforms-fhir-app', {
+              templateUrl: 'fhir-app/fhir-app.html',
               controller: 'FhirAppCtrl'
-            });
+            })
+      .when('/', {
+          templateUrl: 'fhir-app/fhir-app.html',
+          controller: 'FhirAppCtrl'
+        });
 
         $locationProvider.html5Mode(true);
 
