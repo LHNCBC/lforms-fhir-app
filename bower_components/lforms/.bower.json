@@ -1,6 +1,6 @@
 {
   "name": "lforms",
-  "version": "12.12.1",
+  "version": "12.12.2",
   "dependencies": {
     "jquery-ui": "~1.11.4",
     "angular": "^1.4.7",
@@ -73,13 +73,13 @@
     "test",
     "tests"
   ],
-  "_release": "12.12.1",
+  "_release": "12.12.2",
   "_resolution": {
     "type": "version",
-    "tag": "12.12.1",
-    "commit": "d400ce1438b4986b72945a5f7d108c0eeb163924"
+    "tag": "12.12.2",
+    "commit": "38ffb5f7f1dad46e9ea65c3c034226b728278f4c"
   },
   "_source": "https://github.com/lhncbc/lforms.git",
-  "_target": "^12.12.1",
+  "_target": "^12.12.2",
   "_originalSource": "lforms"
 }
