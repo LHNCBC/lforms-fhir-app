@@ -46,10 +46,10 @@ describe('fhir app', function() {
       height.sendKeys("70");
       expect(bmi.getAttribute('value')).toBe("");
       weight.sendKeys("70");
-      expect(bmi.getAttribute('value')).toBe("22.14290142866");
+      expect(bmi.getAttribute('value')).toBe("22.1");
       height.clear();
       height.sendKeys("80");
-      expect(bmi.getAttribute('value')).toBe("16.953158906317814");
+      expect(bmi.getAttribute('value')).toBe("17");
     });
   });
 
