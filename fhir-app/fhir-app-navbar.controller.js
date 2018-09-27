@@ -338,7 +338,7 @@ angular.module('lformsApp')
           $mdDialog.show({
             scope: $scope,
             preserveScope: true,
-            templateUrl: 'fhir-app/questionnaire-select-dialog.html',
+            templateUrl: 'lforms-fhir-app/fhir-app/questionnaire-select-dialog.html',
             parent: angular.element(document.body),
             targetEvent: event,
             controller: function DialogController($scope, $mdDialog) {

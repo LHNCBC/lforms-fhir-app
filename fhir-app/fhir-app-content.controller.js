@@ -194,7 +194,7 @@ angular.module('lformsApp')
             $mdDialog.show({
               scope: $scope,
               preserveScope: true,
-              templateUrl: 'fhir-app/hl7-dialog.html',
+              templateUrl: 'lforms-fhir-app/fhir-app/hl7-dialog.html',
               parent: angular.element(document.body),
               targetEvent: event
             });
@@ -217,7 +217,7 @@ angular.module('lformsApp')
             $mdDialog.show({
               scope: $scope,
               preserveScope: true,
-              templateUrl: 'fhir-app/fhir-resource-dialog.html',
+              templateUrl: 'lforms-fhir-app/fhir-app/fhir-resource-dialog.html',
               parent: angular.element(document.body),
               targetEvent: event
             });
@@ -239,7 +239,7 @@ angular.module('lformsApp')
             $mdDialog.show({
               scope: $scope,
               preserveScope: true,
-              templateUrl: 'fhir-app/fhir-resource-dialog.html',
+              templateUrl: 'lforms-fhir-app/fhir-app/fhir-resource-dialog.html',
               parent: angular.element(document.body),
               targetEvent: event
             });
@@ -262,7 +262,7 @@ angular.module('lformsApp')
             $mdDialog.show({
               scope: $scope,
               preserveScope: true,
-              templateUrl: 'fhir-app/fhir-resource-dialog.html',
+              templateUrl: 'lforms-fhir-app/fhir-app/fhir-resource-dialog.html',
               parent: angular.element(document.body),
               targetEvent: event
             });
@@ -285,7 +285,7 @@ angular.module('lformsApp')
             $mdDialog.show({
               scope: $scope,
               preserveScope: true,
-              templateUrl: 'fhir-app/fhir-resource-dialog.html',
+              templateUrl: 'lforms-fhir-app/fhir-app/fhir-resource-dialog.html',
               parent: angular.element(document.body),
               targetEvent: event
             });
@@ -307,7 +307,7 @@ angular.module('lformsApp')
             $mdDialog.show({
               scope: $scope,
               preserveScope: true,
-              templateUrl: 'fhir-app/fhir-resource-dialog.html',
+              templateUrl: 'lforms-fhir-app/fhir-app/fhir-resource-dialog.html',
               parent: angular.element(document.body),
               targetEvent: event
             });
@@ -329,7 +329,7 @@ angular.module('lformsApp')
             $mdDialog.show({
               scope: $scope,
               preserveScope: true,
-              templateUrl: 'fhir-app/fhir-resource-dialog.html',
+              templateUrl: 'lforms-fhir-app/fhir-app/fhir-resource-dialog.html',
               parent: angular.element(document.body),
               targetEvent: event
             });
