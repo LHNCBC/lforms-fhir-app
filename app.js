@@ -27,10 +27,10 @@ angular.module('lformsApp', [
               templateUrl: 'fhir-app/fhir-app.html',
               controller: 'FhirAppCtrl'
             })
-      .when('/', {
-          templateUrl: 'fhir-app/fhir-app.html',
-          controller: 'FhirAppCtrl'
-        });
+            .when('/', {
+                templateUrl: 'fhir-app/fhir-app.html',
+                controller: 'FhirAppCtrl'
+              });
 
         $locationProvider.html5Mode(true);
 
