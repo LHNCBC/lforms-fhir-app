@@ -114,3 +114,9 @@
 .demo-app .lf-form-view {
   margin: 15px 15px 15px 0;
 }
+
+.lf-nav-button {
+  /*font-weight: bold;*/
+  margin-left: 5px;
+  font-size: 14px;
+}
