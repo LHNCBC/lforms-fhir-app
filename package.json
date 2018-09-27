@@ -1,0 +1,12 @@
+{
+  "name": "lforms-fhir-app",
+  "version": "0.1.0",
+  "description": "A SMART on FHIR app for lforms",
+  "repository": "https://github.com/lhncbc/lforms-fhir-app",
+  "devDependencies": {
+    "http-server": "^0.9.0"
+  },
+  "scripts": {
+    "start": "http-server -a localhost -p 8000 -c-1 ."
+  }
+}
