@@ -24,11 +24,11 @@ angular.module('lformsApp', [
       function($routeProvider, $locationProvider) {
         $routeProvider
             .when('/lforms-fhir-app', {
-              templateUrl: 'fhir-app/fhir-app.html',
+              templateUrl: 'lforms-fhir-app/fhir-app/fhir-app.html',
               controller: 'FhirAppCtrl'
             })
             .when('/', {
-                templateUrl: 'fhir-app/fhir-app.html',
+                templateUrl: 'lforms-fhir-app/fhir-app/fhir-app.html',
                 controller: 'FhirAppCtrl'
               });
 
