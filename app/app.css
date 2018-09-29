@@ -65,17 +65,6 @@ md-dialog-content {
   margin-bottom: 1em;
 }
 
-#themeList {
-  margin-left: 1em;
-  display: inline-block;
-}
-#themeList > input {
-  width: 5.5em;
-  margin-left: 0.5em;
-  border: 1px solid #ced5d9;
-  border-radius: 4px;
-}
-
 /* loading msg */
 .loading {
   background-color: #458ac5;
