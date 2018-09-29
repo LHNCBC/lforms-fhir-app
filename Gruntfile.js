@@ -104,10 +104,6 @@ module.exports = function (grunt) {
           src: [
             '<%= yeoman.dist %>/*.js',
             '<%= yeoman.dist %>/*.css'
-          //  '<%= yeoman.dist %>/app/fhir-app/*.js',
-          //  '<%= yeoman.dist %>/app/fhir-app/*.css',
-          //  '<%= yeoman.dist %>/public/assets/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
-          //  '<%= yeoman.dist %>/public/assets/fonts/*'
           ]
         }
       }
