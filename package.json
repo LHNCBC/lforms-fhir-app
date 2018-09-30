@@ -35,7 +35,7 @@
     "postinstall": "bower install",
     "update-deps": "npm update",
     "postupdate-deps": "bower update",
-    "start": "http-server -a localhost -p 8000 -c-1 .",
+    "start": "echo 'Website starting at http://localhost:8000/lforms-fhir-app'; http-server -a localhost -p 8000 -c-1 .",
     "start-dist": "http-server -a localhost -p 8000 -c-1 dist",
     "update-webdriver": "webdriver-manager update",
     "preprotractor": "npm run update-webdriver",
