@@ -2,16 +2,6 @@
 'use strict';
 
 module.exports = function (grunt) {
-  /**
-   *  Returns the fully qualified domain name.
-   */
-  function fullHostname() {
-    let host = require('os').hostname() || 'localhost';
-    if (host.indexOf('.') === -1 && localConfig.hostDomain)
-      host += '.' + localConfig.hostDomain;
-    return host;
-  }
-
   // Load grunt tasks automatically, when needed
   require('jit-grunt')(grunt, {
     useminPrepare: 'grunt-usemin',
