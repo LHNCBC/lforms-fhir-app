@@ -32,7 +32,7 @@ module.exports = function (grunt) {
     yeoman: {
       // configurable paths
       client: 'app',
-      dist: 'dist',
+      dist: 'dist/lforms-fhir-app',
     },
 
     nsp: {
@@ -47,7 +47,7 @@ module.exports = function (grunt) {
           dot: true,
           src: [
             '.tmp',
-            '<%= yeoman.dist %>/*',
+            'dist/*',
             '!<%= yeoman.dist %>/.git*',
             '!<%= yeoman.dist %>/.openshift',
             '!<%= yeoman.dist %>/Procfile'
