@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.1.2] - 2018-09-30
+### Changed
+- Updated buttons style
+
 ## [0.1.1] - 2018-09-27
 ### Changed
 - Updated npm packages.
