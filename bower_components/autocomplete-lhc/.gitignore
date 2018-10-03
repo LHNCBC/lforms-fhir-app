@@ -1,7 +1,0 @@
-node_modules
-dist
-bower_components
-bonk.mp3
-.idea
-!.gitignore
-!.bowerrc
