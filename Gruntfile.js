@@ -123,7 +123,8 @@ module.exports = function (grunt) {
 
     cssmin: {
       options: {
-        root: '<%= yeoman.client %>'
+        relativeTo: '<%= yeoman.client %>/index.html',
+        target: '<%= yeoman.client %>/.'
       }
     },
 
@@ -228,8 +229,10 @@ module.exports = function (grunt) {
           filter: function(src) {
             // Only font and image files are needed from the bower_components
             // directories -- except that we also need fhirpath.min.js.
+            // Also, for jquery themes, only pick out the redmond theme.
             return src.match(/fhirpath.min.js/) || !src.match(/bower_components/) ||
-              src.match(/\.(eot|svg|ttf|woff|png|jpg|gif)/)
+              (src.match(/\.(eot|svg|ttf|woff|png|jpg|gif)/) &&
+              (!src.match('jquery-ui/themes') || src.match('redmond')))
             // When bower components are linked from development versions,
             // filter out the linked components' bower_components,
             // node_modules, and .git directories
