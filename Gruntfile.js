@@ -25,11 +25,6 @@ module.exports = function (grunt) {
       dist: 'dist/lforms-fhir-app',
     },
 
-    nsp: {
-      package: grunt.file.readJSON('./package.json'),
-      shrinkwrap: grunt.file.readJSON('./package-lock.json')
-    },
-
     // Empties folders to start fresh
     clean: {
       dist: {
@@ -145,29 +140,6 @@ module.exports = function (grunt) {
           ]
         }
         */
-      }
-    },
-
-    // The following *-min tasks produce minified files in the dist folder
-    imagemin: {
-      dist: {
-        files: [{
-          expand: true,
-          cwd: '<%= yeoman.client %>/assets/images',
-          src: '{,*/}*.{png,jpg,jpeg,gif}',
-          dest: '<%= yeoman.dist %>/public/assets/images'
-        }]
-      }
-    },
-
-    svgmin: {
-      dist: {
-        files: [{
-          expand: true,
-          cwd: '<%= yeoman.client %>/assets/images',
-          src: '{,*/}*.svg',
-          dest: '<%= yeoman.dist %>/public/assets/images'
-        }]
       }
     },
 
