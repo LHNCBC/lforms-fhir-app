@@ -6,12 +6,12 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <base href="/">
+  <base href="/lforms-fhir-app/">
   <title>LHC-Forms Questionnaire App</title>
 
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width">
-  <!-- build:css(client) app/vendor.css -->
+  <!-- build:css(app) vendor.css -->
   <!-- bower:css -->
   <link rel='stylesheet' href='bower_components/jquery-ui/themes/redmond/jquery-ui.min.css' />
   <link rel='stylesheet' href='bower_components/autocomplete-lhc/source/auto_completion.css' />
@@ -21,7 +21,7 @@
   <!-- endbower -->
   <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
   <!-- endbuild -->
-  <!-- build:css({.tmp,client}) app/app.css -->
+  <!-- build:css(app) app.css -->
   <!-- injector:css -->
   <link rel="stylesheet" href="app.css">
   <link rel="stylesheet" href="fhir-app/fhir-app.css">
@@ -32,9 +32,7 @@
 </head>
 <!-- Theme class needs to be on "body" for the jQuery datepicker and
      autocomplete-lhc -->
-<body ng-app="lformsApp" ng-class=
-        "otherScopes.panelContent.theme.code ? 'theme-'+otherScopes.panelContent.theme.code : ''"
-      ng-controller="themeController">
+<body ng-app="lformsApp">
 <!--[if lt IE 9]>
 <p class=alert><b>Note:</b> It appears you are using an unsupported
   version of the IE browser. This website will not work properly with
@@ -44,14 +42,14 @@
 <!-- Add your site or application content here -->
 <div ng-view=""></div>
 
-<!-- smart on fhir client -->
-<script src="https://rawgithub.com/smart-on-fhir/client-js/master/dist/fhir-client.js"></script>
-
 <!--[if lt IE 9]>
 <script src="bower_components/es5-shim/es5-shim.js"></script>
 <script src="bower_components/json3/lib/json3.min.js"></script>
 <![endif]-->
-<!-- build:js({client,node_modules}) app/vendor.js -->
+<!-- build:js(app) vendor.js -->
+<!-- smart on fhir client -->
+<script src="fhir-client.js"></script>
+
 <!-- bower:js -->
 <script src="bower_components/jquery/dist/jquery.js"></script>
 <script src="bower_components/jquery-ui/ui/core.js"></script>
@@ -67,7 +65,6 @@
 <script src="bower_components/angular-strap/dist/angular-strap.js"></script>
 <script src="bower_components/angular-strap/dist/angular-strap.tpl.js"></script>
 <script src="bower_components/angular-touch/angular-touch.js"></script>
-<script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
 <script src="bower_components/angular-ui-utils/ui-utils.js"></script>
 <script src="bower_components/angular-animate/angular-animate.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
@@ -120,7 +117,7 @@
 <!-- FHIRPath library -->
 <script src="bower_components/lforms/app/scripts/fhirpath/fhirpath.min.js"></script>
 
-<!-- build:js({.tmp,client}) app/app.js -->
+<!-- build:js(app) app.js -->
 <script src="app.js"></script>
 <!-- injector:js -->
 <script src="fhir-app/fhir-app-content.controller.js"></script>
@@ -129,7 +126,6 @@
 <script src="components/fhir-data/fhir.service.js"></script>
 <script src="components/selected-form-data/selected-form-data.js"></script>
 <!-- endinjector -->
-<script src="bower_components/lforms/app/scripts/themeList.js"></script>
 <!-- endbuild -->
 </body>
 </html>

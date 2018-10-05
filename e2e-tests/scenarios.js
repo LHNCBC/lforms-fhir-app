@@ -4,12 +4,13 @@ var path = require('path');
 describe('fhir app', function() {
 
   var title = element(by.id('siteName'));
+  let mainPageURL = '/lforms-fhir-app/';
 
   describe('Main View', function() {
 
     it('should render a page without any data', function() {
       browser.ignoreSynchronization = false;
-      browser.get('/');
+      browser.get(mainPageURL);
       browser.wait(function() {
         return title.isDisplayed();
       }, 5000);
@@ -28,7 +29,7 @@ describe('fhir app', function() {
 
     it("should load a Questionnaire file", function() {
       browser.ignoreSynchronization = false;
-      browser.get('/');
+      browser.get(mainPageURL);
       browser.wait(function() {
         return title.isDisplayed();
       }, 5000);
