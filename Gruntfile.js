@@ -126,7 +126,7 @@ module.exports = function (grunt) {
     usemin: {
       html: ['<%= yeoman.dist %>/*.html'],
       css: ['<%= yeoman.dist %>/*.css'],
-      js: ['<%= yeoman.dist %>/*.js'],
+      // js: ['<%= yeoman.dist %>/*.js'], -- we are not currently doing revved images
       options: { /*
         assetsDirs: [
           '<%= yeoman.dist %>/public',
