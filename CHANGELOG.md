@@ -3,8 +3,12 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
-## [0.2.0] - 2018-10/3
-###
+## [0.2.1] - 2018-10-16
+### Fixed
+- Updated some dependencies to avoid vulnerabilities.
+
+## [0.2.0] - 2018-10-03
+### Added
 - Now has a build system to build the gh-pages demo
 
 ## [0.1.2] - 2018-09-30
