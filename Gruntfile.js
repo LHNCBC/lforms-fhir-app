@@ -7,7 +7,7 @@ module.exports = function (grunt) {
     useminPrepare: 'grunt-usemin',
     ngtemplates: 'grunt-angular-templates',
     protractor: 'grunt-protractor-runner',
-    injector: 'grunt-asset-injector',
+    injector: 'grunt-injector',
   });
 
   // Time how long tasks take. Can help when optimizing build times
