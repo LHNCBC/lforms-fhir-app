@@ -100,11 +100,9 @@
 <script src="bower_components/lforms/app/scripts/lib/lforms-util.js"></script>
 <script src="bower_components/lforms/app/scripts/lib/polyfill.js"></script>
 <script src="bower_components/lforms/app/scripts/lib/lforms-hl7.js"></script>
-<script src="bower_components/lforms/app/scripts/lib/lforms-fhir-diagnostic-report.js"></script>
-<script src="bower_components/lforms/app/scripts/lib/lforms-fhir-sdc.js"></script>
-<script src="bower_components/lforms/app/scripts/lib/lforms-fhir-sdc-converter.js"></script>
 <script src="bower_components/lforms/app/scripts/lib/lforms-validate.js"></script>
 <script src="bower_components/lforms/app/scripts/lib/lforms-data.js"></script>
+<script src="bower_components/lforms/app/scripts/fhir/versions.js"></script>
 <script src="bower_components/lforms/app/lforms.tpl.js"></script>
 <script src="bower_components/json3/lib/json3.js"></script>
 <script src="bower_components/angular-aria/angular-aria.js"></script>
@@ -114,8 +112,8 @@
 <!-- endbower -->
 <!-- endbuild -->
 
-<!-- FHIRPath library -->
-<script src="bower_components/lforms/app/scripts/fhirpath/fhirpath.min.js"></script>
+<!-- FHIRPath library and converters -->
+<script src="bower_components/lforms/app/scripts/fhir/R4/lformsFHIR.js"></script>
 
 <!-- build:js(app) app.js -->
 <script src="app.js"></script>

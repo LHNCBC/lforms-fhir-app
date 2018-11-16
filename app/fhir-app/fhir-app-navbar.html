@@ -55,8 +55,11 @@
              class="hide" />
 
       <div class="btn-group btn-group-justified" role="group">
-        <a role="button" type="button" class="btn btn-default btn-sm btn-success" ng-click="loadFromFile()" title="Upload a file."><span class="glyphicon glyphicon-upload"></span><span class="lf-nav-button">Upload</span></a>
-      </div>
+        <a role="button" ng-disabled="!fhirVersion" type="button"
+         class="btn btn-default btn-sm btn-success" ng-click="loadFromFile()"
+         title="Upload a file."><span class="glyphicon glyphicon-upload"></span><span
+         class="lf-nav-button">Upload</span></a></div>
+      <div class="error" id="upload_error" ng-if="uploadError">{{uploadError}}</div>
     </div>
   </div>
 

@@ -51,18 +51,35 @@ angular.module('lformsApp')
 
           var reader = new FileReader(); // Read from local file system.
           reader.onload = function(event) {
-            var importedData = JSON.parse(event.target.result);
-            // if the imported data is in FHIR Questionnaire format
-            if (importedData.resourceType && importedData.resourceType === "Questionnaire") {
-              var questionnaire = LForms.FHIR_SDC.convertQuestionnaireToLForms(importedData);
-              $scope.$apply(selectedFormData.setFormData(new LFormsData(questionnaire)));
+            try {
+              var importedData = JSON.parse(event.target.result);
             }
-            // in the internal LForms format
-            else {
-              $scope.$apply(selectedFormData.setFormData(new LFormsData(importedData)));
+            catch(e) {
+              $scope.$apply(function() {$scope.uploadError = e});
+            }
+            if (importedData) {
+              // if the imported data is in FHIR Questionnaire format
+              if (importedData.resourceType && importedData.resourceType === "Questionnaire") {
+                var questionnaire;
+                var uploadError;
+                try {
+                  questionnaire = LForms.Util.convertFHIRQuestionnaireToLForms(importedData);
+                }
+                catch (e) {
+                  uploadError = e;
+                }
+                $scope.$apply(function() {$scope.uploadError = uploadError});
+                if (!$scope.uploadError)
+                  $scope.$apply(selectedFormData.setFormData(new LFormsData(questionnaire)));
+              }
+              // in the internal LForms format
+              else {
+                $scope.$apply(selectedFormData.setFormData(new LFormsData(importedData)));
+              }
             }
           };
           reader.readAsText(item._file);
+          $('#inputAnchor')[0].value = ''; // or we can't re-upload the same file twice in a row
         };
 
 
@@ -131,9 +148,10 @@ angular.module('lformsApp')
               formIndex: formIndex
             };
             // merge the QuestionnaireResponse into the form
-            var formData = LForms.FHIR_SDC.convertQuestionnaireToLForms(qrInfo.questionnaire);
+            var formData = LForms.Util.convertFHIRQuestionnaireToLForms(qrInfo.questionnaire);
             var newFormData = (new LFormsData(formData)).getFormData();
-            var mergedFormData = LForms.FHIR_SDC.mergeQuestionnaireResponseToLForms(newFormData, qrInfo.questionnaireresponse);
+            var mergedFormData = LForms.Util.mergeFHIRDataIntoLForms(
+              'QuestionnaireResponse', enewFormData, qrInfo.questionnaireresponse);
             var fhirResInfo = {
               resId : qrInfo.resId,
               resType : qrInfo.resType,
@@ -165,7 +183,7 @@ angular.module('lformsApp')
               formIndex: formIndex
             };
             // merge the QuestionnaireResponse into the form
-            var formData = LForms.FHIR_SDC.convertQuestionnaireToLForms(qInfo.questionnaire);
+            var formData = LForms.Util.convertFHIRQuestionnaireToLForms(qrInfo.questionnaire);
             var newFormData = (new LFormsData(formData)).getFormData();
             var fhirResInfo = {
               resId: null,
@@ -354,7 +372,7 @@ angular.module('lformsApp')
               // close the popup and select a questionnaire
               $scope.confirmAndCloseDialog = function () {
                 $scope.selectedQuestionnaire = angular.copy($scope.selectedQuestionnaireInDialog.resource);
-                var formData = LForms.FHIR_SDC.convertQuestionnaireToLForms($scope.selectedQuestionnaire);
+                var formData = LForms.Util.convertFHIRQuestionnaireToLForms($scope.selectedQuestionnaire);
                 // set the form data to be displayed
                 selectedFormData.setFormData(new LFormsData(formData));
                 fhirService.setCurrentQuestionnaire($scope.selectedQuestionnaire);
