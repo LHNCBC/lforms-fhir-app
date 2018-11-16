@@ -35,7 +35,7 @@
     "postupdate-deps": "bower update",
     "build": "grunt build",
     "start": "echo 'Website starting at http://localhost:8000/lforms-fhir-app'; http-server -a localhost -p 8000 -c-1 .",
-    "start-dist": "http-server -a localhost -p 8000 -c-1 dist",
+    "start-dist": "http-server -p 8000 -c-1 dist",
     "update-webdriver": "webdriver-manager update",
     "preprotractor": "npm run update-webdriver",
     "protractor": "protractor e2e-tests/protractor.conf.js"
