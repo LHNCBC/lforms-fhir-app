@@ -16,8 +16,9 @@ on FHIR context, try it out via the
 connection will be established, so you will be able to save and load FHIR
 resources.)
 
-The app relies on the LHC-Forms rendering widget for displaying forms.  It has
-partial support for both FHIR [STU3](http://hl7.org/fhir/us/sdc/) and
+The app relies on the [LHC-Forms](http://lhncbc.github.io/lforms/) rendering
+widget for displaying forms.  It has partial support for both FHIR
+[STU3](http://hl7.org/fhir/us/sdc/) and
 [R4](http://hl7.org/fhir/uv/sdc/2018Sep/index.html) SDC Questionnaires.
 
 For some sample forms to try, this repository comes with some forms under
@@ -35,7 +36,9 @@ file and then use "Upload" to use it in the app.
 
 If you wish to install and build the app locally so that you can customize it,
 see below.  Note that adding support for additional parts of the SDC specification will
-require edits to the LHC-Forms widget.  (Pull requests are very welcome!)
+require edits to the [LHC-Forms](http://lhncbc.github.io/lforms/) widget.  (Pull
+requests are very welcome, but it might be better to open an issue first to see
+if we are already working on that feature.)
 
 ### Install Dependencies
 
