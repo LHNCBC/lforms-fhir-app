@@ -7,6 +7,7 @@ EHR (electonic health record) systems supporting SMART on FHIR to display
 [Questionnaire](http://hl7.org/fhir/uv/sdc/2018Sep/sdc-questionnaire.html) forms
 and collect data as FHIR QuestionnaireResponse resources.
 
+## Demo
 There is a [demo](https://apps.smarthealthit.org/app/lforms-questionnaire-app)
 of this app running as a GitHub pages website, but to see it work with a SMART
 on FHIR context, try it out via the
@@ -18,6 +19,17 @@ resources.)
 The app relies on the LHC-Forms rendering widget for displaying forms.  It has
 partial support for both FHIR [STU3](http://hl7.org/fhir/us/sdc/) and
 [R4](http://hl7.org/fhir/uv/sdc/2018Sep/index.html) SDC Questionnaires.
+
+For some sample forms to try, this repository comes with some forms under
+e2e-test/data which are used by the test code to test the app.  The FHIR server
+in the SMART App Gallery gets reset nightly, so might not find Questionnaires
+there, but you can always use the Upload button to upload a new Questionnaire
+resource.  If downloading one of the forms from GitHub, be sure click on the
+"Raw" button, which will open a page which only has the Questionnaire data.  For
+example:
+https://raw.githubusercontent.com/lhncbc/lforms-fhir-app/master/e2e-tests/data/vital-sign-questionnaire.json
+will open a page for a vital signs Questionnaire which you can save to a local
+file and then use "Upload" to use it in the app.
 
 ## Customizing the App
 
