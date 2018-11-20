@@ -1,15 +1,39 @@
-# lforms-fhir-app 
-# A SMART on FHIR app that uses LHC-Forms widget to manage FHIR Questionnaire and QuestionniareResponse
+# A SMART app for FHIR SDC Questionnaire
+
+This is a [SMART](http://docs.smarthealthit.org/) app that can be used in
+EHR (electonic health record) systems supporting SMART on FHIR to display
+[FHIR](http://hl7.org/fhir/)
+[SDC](http://hl7.org/fhir/uv/sdc/2018Sep/index.html)
+[Questionnaire](http://hl7.org/fhir/uv/sdc/2018Sep/sdc-questionnaire.html) forms
+and collect data as FHIR QuestionnaireResponse resources.
+
+There is a [demo](https://apps.smarthealthit.org/app/lforms-questionnaire-app)
+of this app running as a GitHub pages website, but to see it work with a SMART
+on FHIR context, try it out via the
+[SMART App Gallery](https://apps.smarthealthit.org/app/lforms-questionnaire-app).
+(That will open a page containing the GitHub pages demo, but the SMART on FHIR
+connection will be established, so you will be able to save and load FHIR
+resources.)
+
+The app relies on the LHC-Forms rendering widget for displaying forms.  It has
+partial support for both FHIR [STU3](http://hl7.org/fhir/us/sdc/) and
+[R4](http://hl7.org/fhir/uv/sdc/2018Sep/index.html) SDC Questionnaires.
+
+## Customizing the App
+
+If you wish to install and build the app locally so that you can customize it,
+see below.  Note that adding support for additional parts of the SDC specification will
+require edits to the LHC-Forms widget.  (Pull requests are very welcome!)
 
 ### Install Dependencies
 
 We have two kinds of dependencies in this project: tools and Angular framework code. The tools help
 us manage and test the application.
 
-* We get the tools we depend upon via `npm`, the [Node package manager][npm].
-* We get the Angular code via `bower`, a [client-side code package manager][bower].
+* We get the tools we depend upon via `npm`, the Node package manager (npm).
+* We get the Angular code via `bower`, a client-side code package manager (bower).
 * In order to run the end-to-end tests, you will also need to have the
-  [Java Development Kit (JDK)][jdk] installed on your machine. Check out the section on
+  Java Development Kit (JDK) installed on your machine. Check out the section on
   [end-to-end testing](#e2e-testing) for more info.
 
 We have preconfigured `npm` to automatically run `bower` so we can simply do:
@@ -37,18 +61,18 @@ this server is:
 npm start
 ```
 
-Now browse to the app at [`localhost:8000/index.html`][local-app-url].
+Now browse to the app at `localhost:8000/lforms-fhir-app/`.
 
 
 <a name="e2e-testing"></a>
 ### Running End-to-End Tests
 
-The `angular-seed` app comes with end-to-end tests, again written in [Jasmine][jasmine]. These tests
-are run with the [Protractor][protractor] End-to-End test runner. It uses native events and has
+The `angular-seed` app comes with end-to-end tests, again written in Jasmine. These tests
+are run with the Protractor End-to-End test runner. It uses native events and has
 special features for Angular applications.
 
 * The configuration is found at `e2e-tests/protractor-conf.js`.
-* The end-to-end tests are found in `e2e-tests/scenarios.js`.
+* The end-to-end tests are found in `e2e-tests/*spec.js`.
 
 Protractor simulates interaction with our web app and verifies that the application responds
 correctly. Therefore, our web server needs to be serving up the application, so that Protractor can
