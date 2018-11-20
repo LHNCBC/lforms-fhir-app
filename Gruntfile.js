@@ -97,7 +97,8 @@ module.exports = function (grunt) {
     // concat, minify and revision files. Creates configurations in memory so
     // additional tasks can operate on them
     useminPrepare: {
-      html: ['<%= yeoman.client %>/index.html'],
+      html: ['<%= yeoman.client %>/index.html',
+             '<%= yeoman.client %>/launch.html'],
       options: {
         dest: '<%= yeoman.dist %>',
         flow: {
@@ -208,6 +209,7 @@ module.exports = function (grunt) {
             'bower_components/**/*',
             'assets/images/{,*/}*.{jpg,gif}',
             'assets/fonts/**/*',
+            'launch.html',
             'index.html',
             'ga.js'   // user supplied google analytics code
           ]
