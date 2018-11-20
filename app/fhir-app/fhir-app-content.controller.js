@@ -50,6 +50,7 @@ angular.module('lformsApp')
          * Save or update the data as a QuestionnaireResponse resource
          */
         $scope.saveQRToFhir = function() {
+          $('.spinner').show();
           // QuestionnaireResponse
           if ($scope.fhirResInfo.resType === "QuestionnaireResponse") {
             // existing resource
@@ -68,6 +69,7 @@ angular.module('lformsApp')
          * Delete the currently selected FHIR resource
          */
         $scope.deleteFromFhir = function() {
+          $('.spinner').show();
           if ($scope.fhirResInfo.resId) {
             fhirService.deleteFhirResource($scope.fhirResInfo.resType, $scope.fhirResInfo.resId);
           }
@@ -79,6 +81,7 @@ angular.module('lformsApp')
          * @param resType resource type, standard QuestionnaireResponse ("QR") or SDC QuestionnaireResponse ("SDC-QR").
          */
         $scope.saveAsToFhir = function(resType) {
+          $('.spinner').show();
           // QuestionnaireResponse
           if (resType === "QR") {
             $scope.createQRToFhir();
@@ -115,6 +118,7 @@ angular.module('lformsApp')
          * @param extensionType a flag indicate if it is a SDC type of QuestionnaireResponse
          */
         $scope.createQRToFhir = function(extensionType) {
+          $('.spinner').show();
 
           var noExtensions = extensionType === "SDC" ? false : true;
           var qr = LForms.Util.getFormFHIRData('QuestionnaireResponse',
@@ -162,6 +166,7 @@ angular.module('lformsApp')
          * @param extensionType a flag indicate if it is a SDC type of QuestionnaireResponse
          */
         $scope.updateQRToFhir = function(extensionType) {
+          $('.spinner').show();
           var noExtensions = extensionType === "SDC" ? false : true;
           if ($scope.fhirResInfo.resId && $scope.fhirResInfo.questionnaireResId) {
             var qr = LForms.Util.getFormFHIRData('QuestionnaireResponse',
@@ -377,6 +382,7 @@ angular.module('lformsApp')
           else {
             $scope.fhirResInfo.resTypeDisplay = arg.resType;
           }
+          $('.spinner').hide();
         });
 
 
@@ -388,6 +394,7 @@ angular.module('lformsApp')
           selectedFormData.setFormData(null);
           $scope.initialLoad = true;
           $scope.$apply();
+          $('.spinner').hide();
         });
 
 
@@ -409,6 +416,7 @@ angular.module('lformsApp')
           // clean up the initial message
           if ($scope.initialLoad)
             $scope.initialLoad = false;
+          $('.spinner').hide();
         });
 
       }

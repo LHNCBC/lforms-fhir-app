@@ -141,6 +141,7 @@ angular.module('lformsApp')
         $scope.showSavedQQR = function(formIndex, qrInfo) {
           // ResId, ResType, ResName
           if (qrInfo && qrInfo.resType === "QuestionnaireResponse") {
+            $('.spinner').show();
             selectedFormData.setFormData(null);
 
             $scope.formSelected = {
@@ -148,10 +149,13 @@ angular.module('lformsApp')
               formIndex: formIndex
             };
             // merge the QuestionnaireResponse into the form
-            var formData = LForms.Util.convertFHIRQuestionnaireToLForms(qrInfo.questionnaire);
+            var fhirVersion = fhirService.fhirVersion;
+            var formData = LForms.Util.convertFHIRQuestionnaireToLForms(
+               qrInfo.questionnaire, fhirVersion);
             var newFormData = (new LFormsData(formData)).getFormData();
             var mergedFormData = LForms.Util.mergeFHIRDataIntoLForms(
-              'QuestionnaireResponse', enewFormData, qrInfo.questionnaireresponse);
+              'QuestionnaireResponse', qrInfo.questionnaireresponse, newFormData,
+              fhirVersion);
             var fhirResInfo = {
               resId : qrInfo.resId,
               resType : qrInfo.resType,
@@ -176,6 +180,7 @@ angular.module('lformsApp')
 
           // ResId, ResType, ResName
           if (qInfo && qInfo.resType === "Questionnaire") {
+            $('.spinner').show();
             selectedFormData.setFormData(null);
 
             $scope.formSelected = {
@@ -183,7 +188,7 @@ angular.module('lformsApp')
               formIndex: formIndex
             };
             // merge the QuestionnaireResponse into the form
-            var formData = LForms.Util.convertFHIRQuestionnaireToLForms(qrInfo.questionnaire);
+            var formData = LForms.Util.convertFHIRQuestionnaireToLForms(qInfo.questionnaire);
             var newFormData = (new LFormsData(formData)).getFormData();
             var fhirResInfo = {
               resId: null,
@@ -271,6 +276,7 @@ angular.module('lformsApp')
             }
             $scope.processPagingLinks("QuestionnaireResponse", arg.link);
             $scope.$apply();
+            $('.spinner').hide();
           }
         });
 
@@ -302,6 +308,7 @@ angular.module('lformsApp')
             $scope.processPagingLinks("Questionnaire", arg.link);
             $scope.$apply();
           }
+          $('.spinner').hide();
         });
 
 
@@ -313,6 +320,7 @@ angular.module('lformsApp')
           fhirService.getAllQRByPatientId(patient.id);
           fhirService.getAllQ();
           $scope.formSelected = {};
+          $('.spinner').hide();
         });
 
 
@@ -327,6 +335,7 @@ angular.module('lformsApp')
             groupIndex: 1,
             formIndex: 0
           };
+          $('.spinner').hide();
         });
 
 
@@ -342,6 +351,7 @@ angular.module('lformsApp')
             groupIndex: 1,
             formIndex: 0
           };
+          $('.spinner').hide();
         });
 
 

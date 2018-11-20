@@ -7,7 +7,7 @@
       </div>
     </div>
     <div class="panel-body">
-      <div class="list-group">
+      <div id="qrList" class="list-group">
         <a href="#" class="list-group-item {{isSelected(1, $index)}}" ng-repeat="p in listSavedQR" role="presentation" id="{{p.resId}}" ng-click="showSavedQQR($index, p)">
           <p class="form-name">{{p.resName}}</p>
           <p class="res-type" ng-if="p.extensionType">{{p.resTypeDisplay}}</p>
@@ -28,7 +28,7 @@
       </div>
     </div>
     <div class="panel-body">
-      <div class="list-group">
+      <div id="qList" class="list-group">
         <a href="#" class="list-group-item {{isSelected(2, $index)}}" ng-repeat="p in listSavedQ" role="presentation" id="{{p.resId}}" ng-click="showSavedQuestionnaire($index, p)">
           <p class="form-name">{{p.resName}}</p>
           <p class="last-updated">{{p.updatedAt}}</p>
@@ -55,7 +55,7 @@
              class="hide" />
 
       <div class="btn-group btn-group-justified" role="group">
-        <a role="button" ng-disabled="!fhirVersion" type="button"
+        <a id="upload" role="button" ng-disabled="!fhirVersion" type="button"
          class="btn btn-default btn-sm btn-success" ng-click="loadFromFile()"
          title="Upload a file."><span class="glyphicon glyphicon-upload"></span><span
          class="lf-nav-button">Upload</span></a></div>
