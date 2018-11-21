@@ -39,20 +39,24 @@
   </div>
 
   <div class="btn-group btn-group-sm" role="group" ng-if="formData">
-    <button type="button" class="btn dropdown-toggle btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-            data-toggle="tooltip" data-placement="bottom" title="Show the form data as a FHIR resource in a popup window.">
+    <button type="button" class="btn dropdown-toggle btn-primary"
+     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+     id="btn-show-as" data-toggle="tooltip" data-placement="bottom" title="Show
+     the form data as a FHIR resource in a popup window.">
       <span class="glyphicon glyphicon-modal-window"></span>
       <span>Show As ... </span>
       <span class="caret"></span>
     </button>
     <ul class="dropdown-menu">
-      <li ng-if="fhirResInfo.questionnaireResId"><a href="#" class="" ng-click="showOrigFHIRQuestionnaire()">FHIR Questionnaire from Server</a></li>
+      <li ng-if="fhirResInfo.questionnaireResId"><a id="show-q-from-server" href="#"
+       class="" ng-click="showOrigFHIRQuestionnaire()">FHIR Questionnaire from
+       Server</a></li>
       <li ng-if="fhirResInfo.questionnaireResId" role="separator" class="divider"></li>
-      <li><a href="#" class="" ng-click="showFHIRQuestionnaire()">FHIR Questionnaire</a></li>
-      <li><a href="#" class="" ng-click="showFHIRQuestionnaireResponse()">FHIR QuestionnaireResponse</a></li>
+      <li><a id="show-q" href="#" class="" ng-click="showFHIRQuestionnaire()">FHIR Questionnaire</a></li>
+      <li><a id="show-qr" href="#" class="" ng-click="showFHIRQuestionnaireResponse()">FHIR QuestionnaireResponse</a></li>
       <li role="separator" class="divider"></li>
-      <li><a href="#" class="" ng-click="showFHIRSDCQuestionnaire()">FHIR Questionnaire (SDC)</a></li>
-      <li><a href="#" class="" ng-click="showFHIRSDCQuestionnaireResponse()">FHIR QuestionnaireResponse (SDC)</a></li>
+      <li><a id="show-sdc-q" href="#" class="" ng-click="showFHIRSDCQuestionnaire()">FHIR Questionnaire (SDC)</a></li>
+      <li><a id="show-sdc-qr" href="#" class="" ng-click="showFHIRSDCQuestionnaireResponse()">FHIR QuestionnaireResponse (SDC)</a></li>
       <!--<li role="separator" class="divider"></li>-->
       <!--<li><a href="#" class="" ng-click="showFHIRDiagnosticReport()">FHIR DiagnosticReport</a></li>-->
       <!--<li role="separator" class="divider"></li>-->

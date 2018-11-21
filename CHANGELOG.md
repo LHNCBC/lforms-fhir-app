@@ -3,6 +3,11 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.3.0] - 2018-11-21
+### Added
+- Now has some support pre-poluation via questionnaire-launchContext and
+  questionnaire-calculatedExpression.
+
 ## [0.2.1] - 2018-10-16
 ### Fixed
 - Updated some dependencies to avoid vulnerabilities.

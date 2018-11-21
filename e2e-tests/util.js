@@ -1,4 +1,5 @@
 // Helper functions for the tests.
+var EC = protractor.ExpectedConditions;
 
 let util = {
   /**
@@ -40,11 +41,8 @@ let util = {
     util.clearField(launchURL);
     launchURL.sendKeys('http://localhost:8000/lforms-fhir-app/launch.html');
     let launchButton = element(by.id('ehr-launch-url'));
-    // For some reason, if the launch button is clicked too quickly, the new
-    // window never finishes loading, even if stopped and restarted by hand,
-    // so sleep a bit.
-    browser.sleep(200);
     launchButton.click(); // opens new window
+    browser.sleep(500);
 
     // Switch to new window to continue
     // https://stackoverflow.com/a/32243857/360782
@@ -72,6 +70,10 @@ let util = {
         browser.wait(EC.presenceOf($('#upload')), 2000);
         return $('#upload').getAttribute('disabled').then(function(disabled) {
           return !disabled;
+        },
+        function() {
+          // usually a "stale element" error-- #upload is missing/replaced
+          return false;
         });
       });
     });
@@ -95,7 +97,7 @@ let util = {
     browser.executeScript('arguments[0].classList.toggle("hide")', util.fileInput.getWebElement());
     // Wait for the form to appear
     var EC = protractor.ExpectedConditions;
-    browser.wait(EC.presenceOf($('#th_Name')), 2000).then(function() {console.log("found tn_name") });
+    browser.wait(EC.presenceOf($('#th_Name')), 2000);
   },
 
   /**
@@ -111,6 +113,55 @@ let util = {
     // Apparently, even waiting for the spinner is not long enough for angular
     // to finish updating elements on the page, so sleep a bit.
     browser.sleep(200);
+  },
+
+
+  /**
+   *  Returns a function, which when called, will send the given message to the
+   *  log.  The purpose is to be used in .then clauses for debugging.
+   */
+  log: function(msg) {
+    return ()=>console.log(msg);
+  },
+
+
+  /**
+   *  Deletes the currently displayed QuestionnaireResponse.
+   */
+  deleteCurrentQR: function() {
+    let deleteBtn = $('#btn-delete');
+    browser.wait(EC.presenceOf(deleteBtn), 2000);
+    deleteBtn.click();
+    util.waitForSpinnerStopped();
+  },
+
+
+  pageObjects: {
+    /**
+     *  Returns an element finder for the link to show the first saved questionnaire.
+     */
+    firstSavedQ: function() {return $('#qList a.list-group-item:first-child')},
+
+    /**
+     *  Returns an element finder for the link to show the first saved QuestionnaireResponse.
+     */
+    firstSavedQR: function() {return $('#qrList a.list-group-item:first-child')},
+
+    /**
+     *  Returns an element finder for the link to show the first saved USSG
+     *  questionnaire.
+     */
+    firstSavedUSSGQ: function() {
+      return element(by.cssContainingText('#qList a.list-group-item', 'Surgeon'));
+    },
+
+    /**
+     *  Returns an element finder for the message body of the resource dialog.
+     */
+    resDialogBody: function () {
+      return $('#message-body');
+    }
+
   }
 }
 module.exports = util;
