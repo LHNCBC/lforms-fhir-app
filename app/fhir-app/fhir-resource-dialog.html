@@ -7,7 +7,6 @@
     </md-toolbar>
     <md-dialog-content>
       <div>
-        <p>Please note that this is still a work in progress.</p>
         <pre id="message-body" ng-bind-html="fhirResourceString"></pre>
       </div>
     </md-dialog-content>
@@ -15,7 +14,7 @@
       <md-button aria-label="Copy to clipboard" ng-click="copyToClipboard('message-body')" class="md-primary">
         Copy to Clipboard
       </md-button>
-      <md-button aria-label="Close dialog" ng-click="closeDialog()" class="md-primary">
+      <md-button id="close-res-dialog" aria-label="Close dialog" ng-click="closeDialog()" class="md-primary">
         Close
       </md-button>
     </md-dialog-actions>

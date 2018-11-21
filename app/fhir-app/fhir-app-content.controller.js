@@ -265,8 +265,9 @@ angular.module('lformsApp')
         $scope.showFHIRQuestionnaire = function (event) {
           if ($scope.formData) {
             var copyOfFormData = $scope.valueCleanUp($scope.formData);
-            var sdc = LForms.FHIR_SDC.convertLFormsToQuestionnaire(copyOfFormData, true);
-            var fhirString = JSON.stringify(sdc, null, 2);
+            var q = LForms.Util.getFormFHIRData('Questionnaire',
+              FHIR_VERSION, copyOfFormData, {noExtensions: true});
+            var fhirString = JSON.stringify(q, null, 2);
             $scope.fhirResourceString = fhirString;
             $scope.fhirResourceTitle = "FHIR Questionnaire Resource";
 
@@ -288,7 +289,8 @@ angular.module('lformsApp')
         $scope.showFHIRSDCQuestionnaire = function (event) {
           if ($scope.formData) {
             var copyOfFormData = $scope.valueCleanUp($scope.formData);
-            var sdc = LForms.FHIR_SDC.convertLFormsToQuestionnaire(copyOfFormData, false);
+            var sdc = LForms.Util.getFormFHIRData('Questionnaire',
+              FHIR_VERSION, copyOfFormData);
             var fhirString = JSON.stringify(sdc, null, 2);
             $scope.fhirResourceString = fhirString;
             $scope.fhirResourceTitle = "FHIR SDC Questionnaire Resource";
@@ -310,7 +312,8 @@ angular.module('lformsApp')
          */
         $scope.showFHIRQuestionnaireResponse = function (event) {
           if ($scope.formData) {
-            var sdc = LForms.FHIR_SDC.convertLFormsToQuestionnaireResponse($scope.formData, true);
+            var sdc = LForms.Util.getFormFHIRData('QuestionnaireResponse',
+              FHIR_VERSION, $scope.formData, {noExtensions: true});
             var fhirString = JSON.stringify(sdc, null, 2);
             $scope.fhirResourceString = fhirString;
             $scope.fhirResourceTitle = "FHIR QuestionnaireResponse Resource";
@@ -332,7 +335,8 @@ angular.module('lformsApp')
          */
         $scope.showFHIRSDCQuestionnaireResponse = function (event) {
           if ($scope.formData) {
-            var sdc = LForms.FHIR_SDC.convertLFormsToQuestionnaireResponse($scope.formData);
+            var sdc = LForms.Util.getFormFHIRData('QuestionnaireResponse',
+              FHIR_VERSION, $scope.formData);
             var fhirString = JSON.stringify(sdc, null, 2);
             $scope.fhirResourceString = fhirString;
             $scope.fhirResourceTitle = "FHIR SDC QuestionnaireResponse Resource";
