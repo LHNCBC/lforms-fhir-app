@@ -11,6 +11,7 @@ angular.module('lformsApp')
       function ($scope, $window, $http, $timeout, $routeParams, selectedFormData, $mdDialog, fhirService) {
 
         //$scope.debug  = true;
+        var FHIR_VERSION = 'R4'; // version supported by this app
 
         $scope.initialLoad = true;
         $scope.previewOptions = {hideCheckBoxes: true};
@@ -49,6 +50,7 @@ angular.module('lformsApp')
          * Save or update the data as a QuestionnaireResponse resource
          */
         $scope.saveQRToFhir = function() {
+          $('.spinner').show();
           // QuestionnaireResponse
           if ($scope.fhirResInfo.resType === "QuestionnaireResponse") {
             // existing resource
@@ -67,6 +69,7 @@ angular.module('lformsApp')
          * Delete the currently selected FHIR resource
          */
         $scope.deleteFromFhir = function() {
+          $('.spinner').show();
           if ($scope.fhirResInfo.resId) {
             fhirService.deleteFhirResource($scope.fhirResInfo.resType, $scope.fhirResInfo.resId);
           }
@@ -78,6 +81,7 @@ angular.module('lformsApp')
          * @param resType resource type, standard QuestionnaireResponse ("QR") or SDC QuestionnaireResponse ("SDC-QR").
          */
         $scope.saveAsToFhir = function(resType) {
+          $('.spinner').show();
           // QuestionnaireResponse
           if (resType === "QR") {
             $scope.createQRToFhir();
@@ -114,9 +118,11 @@ angular.module('lformsApp')
          * @param extensionType a flag indicate if it is a SDC type of QuestionnaireResponse
          */
         $scope.createQRToFhir = function(extensionType) {
+          $('.spinner').show();
 
-          var noExtension = extensionType === "SDC" ? false : true;
-          var qr = LForms.FHIR_SDC.convertLFormsToQuestionnaireResponse($scope.formData, noExtension);
+          var noExtensions = extensionType === "SDC" ? false : true;
+          var qr = LForms.Util.getFormFHIRData('QuestionnaireResponse',
+            FHIR_VERSION, $scope.formData, {noExtensions: noExtensions})
           if (qr) {
             // patient data
             var patient = fhirService.getCurrentPatient();
@@ -138,7 +144,8 @@ angular.module('lformsApp')
             else {
               var copyOfFormData = $scope.valueCleanUp($scope.formData);
               // always get the SDC Questionnaire, with extensions
-              var q = LForms.FHIR_SDC.convertLFormsToQuestionnaire(copyOfFormData, false);
+              var q = LForms.Util.getFormFHIRData('Questionnaire',
+                FHIR_VERSION, copyOfFormData)
               if (q) {
                 delete q.id;
                 fhirService.createQQR(q, qr, extensionType);
@@ -159,9 +166,11 @@ angular.module('lformsApp')
          * @param extensionType a flag indicate if it is a SDC type of QuestionnaireResponse
          */
         $scope.updateQRToFhir = function(extensionType) {
-          var noExtension = extensionType === "SDC" ? false : true;
+          $('.spinner').show();
+          var noExtensions = extensionType === "SDC" ? false : true;
           if ($scope.fhirResInfo.resId && $scope.fhirResInfo.questionnaireResId) {
-            var qr = LForms.FHIR_SDC.convertLFormsToQuestionnaireResponse($scope.formData, noExtension);
+            var qr = LForms.Util.getFormFHIRData('QuestionnaireResponse',
+              FHIR_VERSION, $scope.formData, {noExtensions: noExtensions})
             if (qr) {
               // patient data
               var patient = fhirService.getCurrentPatient();
@@ -208,6 +217,8 @@ angular.module('lformsApp')
          */
         $scope.showFHIRDiagnosticReport = function (event) {
           if ($scope.formData) {
+            var dr = LForms.Util.getFormFHIRData('DiagnosticReport',
+              FHIR_VERSION, $scope.formData, {bundleType: "collection"})
             var dr = LForms.FHIR.createDiagnosticReport($scope.formData,
               fhirService.getCurrentPatient().resource, true, "collection");
             var fhirString = JSON.stringify(dr, null, 2);
@@ -371,6 +382,7 @@ angular.module('lformsApp')
           else {
             $scope.fhirResInfo.resTypeDisplay = arg.resType;
           }
+          $('.spinner').hide();
         });
 
 
@@ -382,6 +394,7 @@ angular.module('lformsApp')
           selectedFormData.setFormData(null);
           $scope.initialLoad = true;
           $scope.$apply();
+          $('.spinner').hide();
         });
 
 
@@ -403,6 +416,7 @@ angular.module('lformsApp')
           // clean up the initial message
           if ($scope.initialLoad)
             $scope.initialLoad = false;
+          $('.spinner').hide();
         });
 
       }

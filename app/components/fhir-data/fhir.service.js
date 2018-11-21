@@ -27,7 +27,29 @@ fb.service('fhirService', [
       thisService.connection = connection;
       //thisService.fhir = connection.patient.api;
       thisService.fhir = connection.api;
+      LForms.Util.setFHIRContext({getCurrent:  function(typeList, callback) {
+        var rtn = null;
+        if (typeList.indexOf('Patient') >= 0) {
+          connection.patient.read().then(function(patientRes) {
+            callback(patientRes);
+          });
+        }
+      }});
 
+      // Retrieve the fhir version
+      // For some reason this gets called multiple times.  We just need to
+      // determine this once.
+      if (!thisService.requestedFHIRVersion) {
+        thisService.fhir.conformance({}).then(function(res) {
+          var fhirVersion = res.data.fhirVersion;
+          thisService.fhirVersion = (fhirVersion.indexOf('3.') === 0) ?
+            'STU3' : (fhirVersion.indexOf('4.') === 0) ?
+            'R4' : fhirVersion;
+          $rootScope.fhirVersion = fhirVersion;
+          console.log('Server FHIR version is ' + thisService.fhirVersion);
+        });
+        thisService.requestedFHIRVersion = true;
+      }
     };
 
 
