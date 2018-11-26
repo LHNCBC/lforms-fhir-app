@@ -26,6 +26,39 @@ let util = {
 
 
   /**
+   *  Waits for a new window to open after calling the provided function.
+   * @param action a function which should trigger the opening of a new window.
+   * @return a promise for when the window has opened
+   */
+  waitForNewWindow: function(action) {
+    return browser.getAllWindowHandles().then(function(oldHandles) {
+      let oldNumHandles = oldHandles.length;
+      action();
+      browser.wait(function () {
+        return browser.getAllWindowHandles().then(function(newHandles) {
+          return newHandles.length > oldNumHandles;
+        });
+      });
+    });
+  },
+
+  /**
+   *  Switches to the newest window and runs the provided function in that context.
+   * @param fn the function to be run against he new window.
+   * @return Retuns a promise that resolves to whatever fn returns
+   */
+  runInNewestWindow: function(fn) {
+    browser.sleep(500); // sometimes going to the new window too soon prevents the window from loading
+    return browser.getAllWindowHandles().then(function(handles) {
+      let newWindowHandle = handles[handles.length-1];
+      return browser.switchTo().window(newWindowHandle).then(function () {
+        return fn();
+      });
+    });
+  },
+
+
+  /**
    *  Opens up the SMART app in the SMART on FHIR developer sandbox.
    */
   launchSmartAppInSandbox: function () {
@@ -41,20 +74,8 @@ let util = {
     util.clearField(launchURL);
     launchURL.sendKeys('http://localhost:8000/lforms-fhir-app/launch.html');
     let launchButton = element(by.id('ehr-launch-url'));
-    launchButton.click(); // opens new window
-    browser.sleep(500);
-
-    // Switch to new window to continue
-    // https://stackoverflow.com/a/32243857/360782
-    // Wait for there to be more than one.
-    browser.wait(function() {
-      return browser.getAllWindowHandles().then(function(handles){
-        return handles.length > 1;
-      });
-    });
-
-    browser.getAllWindowHandles().then(function(handles){
-      browser.switchTo().window(handles[1]);
+    this.waitForNewWindow(function() {launchButton.click()});
+    this.runInNewestWindow(function() {
       let iframe = $('#frame');
       var EC = protractor.ExpectedConditions;
       browser.wait(EC.presenceOf(iframe), 2000);

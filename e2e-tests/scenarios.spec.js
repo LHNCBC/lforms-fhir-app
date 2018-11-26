@@ -21,21 +21,11 @@ describe('fhir app', function() {
     });
 
     it('should have a link to a sample Questionnaire', function() {
-      browser.getAllWindowHandles().then(function(oldHandles) {
-        let oldNumHandles = oldHandles.length;
-        $('#sampleQ').click();
-        browser.wait(function () {
-          return browser.getAllWindowHandles().then(function(newHandles) {
-            return newHandles.length > oldNumHandles;
-          });
-        });
-        browser.getAllWindowHandles().then(function(handles) {
-          let newWindowHandle = handles[handles.length-1];
-          return browser.switchTo().window(newWindowHandle).then(function () {
-            browser.driver.executeScript('return document.body.firstChild.innerHTML').then(function(json) {
-              expect(json.indexOf('"resourceType": "Questionnaire"')).toBeGreaterThan(-1);
-            });
-          });
+      util.waitForNewWindow(function() {$('#sampleQ').click()});
+      util.runInNewestWindow(function() {
+        let contentPromise = browser.driver.executeScript('return document.body.firstChild.innerHTML');
+        return contentPromise.then(function(json) {
+          expect(json.indexOf('"resourceType": "Questionnaire"')).toBeGreaterThan(-1);
         });
       });
     });

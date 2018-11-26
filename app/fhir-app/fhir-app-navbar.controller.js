@@ -2,8 +2,10 @@
 
 angular.module('lformsApp')
   .controller('NavBarCtrl', [
-      '$scope', '$http', '$mdDialog', 'selectedFormData', 'fhirService', 'FileUploader',
-      function ($scope, $http, $mdDialog, selectedFormData, fhirService, FileUploader) {
+      '$scope', '$http', '$mdDialog', 'selectedFormData', 'fhirService',
+      'FileUploader', 'userMessages', '$timeout',
+      function ($scope, $http, $mdDialog, selectedFormData, fhirService,
+                FileUploader, userMessages, $timeout) {
 
         $scope.search = {};
 
@@ -12,10 +14,10 @@ angular.module('lformsApp')
         $scope.uploader = new FileUploader({removeAfterUpload: true});
 
         // Saved QuestionnaireResponse of a patient
-        $scope.listSavedQR = [];
+        $scope.listSavedQR = null;
 
         // Questionnaire created by all users using the LHC form builder
-        $scope.listSavedQ = [];
+        $scope.listSavedQ = null;
 
         // the current form displayed
         $scope.formSelected = {};
@@ -48,6 +50,7 @@ angular.module('lformsApp')
         $scope.uploader.onAfterAddingFile = function(item) {
           // clean up the form before assigning a new one for performance reasons related to AngularJS watches
           selectedFormData.setFormData(null);
+          delete userMessages.error;
 
           var reader = new FileReader(); // Read from local file system.
           reader.onload = function(event) {
@@ -55,7 +58,7 @@ angular.module('lformsApp')
               var importedData = JSON.parse(event.target.result);
             }
             catch(e) {
-              $scope.$apply(function() {$scope.uploadError = e});
+              $scope.$apply(function() {userMessages.error = e});
             }
             if (importedData) {
               // if the imported data is in FHIR Questionnaire format
@@ -181,29 +184,38 @@ angular.module('lformsApp')
           // ResId, ResType, ResName
           if (qInfo && qInfo.resType === "Questionnaire") {
             $('.spinner').show();
+            delete userMessages.error;
             selectedFormData.setFormData(null);
 
-            $scope.formSelected = {
-              groupIndex: 2,
-              formIndex: formIndex
-            };
-            // merge the QuestionnaireResponse into the form
-            var formData = LForms.Util.convertFHIRQuestionnaireToLForms(qInfo.questionnaire);
-            var newFormData = (new LFormsData(formData)).getFormData();
-            var fhirResInfo = {
-              resId: null,
-              resType: null,
-              resTypeDisplay: null,
-              extensionType: null,
-              questionnaireResId: qInfo.resId,
-              questionnaireName: qInfo.questionnaire.name
-            };
-            // set the form data to be displayed
-            selectedFormData.setFormData(new LFormsData(newFormData), fhirResInfo);
-            fhirService.setCurrentQuestionnaire(qInfo.questionnaire);
-
+            // Allow the page to update
+            $timeout(function() {
+              $scope.formSelected = {
+                groupIndex: 2,
+                formIndex: formIndex
+              };
+              // merge the QuestionnaireResponse into the form
+              try {
+                var formData = LForms.Util.convertFHIRQuestionnaireToLForms(qInfo.questionnaire);
+              }
+              catch(e) {
+                userMessages.error = e;
+              }
+              if (!userMessages.error) {
+                var newFormData = (new LFormsData(formData)).getFormData();
+                var fhirResInfo = {
+                  resId: null,
+                  resType: null,
+                  resTypeDisplay: null,
+                  extensionType: null,
+                  questionnaireResId: qInfo.resId,
+                  questionnaireName: qInfo.questionnaire.name
+                };
+                // set the form data to be displayed
+                selectedFormData.setFormData(new LFormsData(newFormData), fhirResInfo);
+                fhirService.setCurrentQuestionnaire(qInfo.questionnaire);
+              }
+            }, 10);
           }
-
         };
 
         /**
