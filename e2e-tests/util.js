@@ -133,7 +133,7 @@ let util = {
     });
     // Apparently, even waiting for the spinner is not long enough for angular
     // to finish updating elements on the page, so sleep a bit.
-    browser.sleep(200);
+    browser.sleep(400);
   },
 
 
@@ -181,7 +181,12 @@ let util = {
      */
     resDialogBody: function () {
       return $('#message-body');
-    }
+    },
+
+    /**
+     *  The autocompletion list.
+     */
+    answerList: $('#searchResults')
 
   }
 }
