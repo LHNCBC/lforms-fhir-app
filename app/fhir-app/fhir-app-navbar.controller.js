@@ -64,15 +64,13 @@ angular.module('lformsApp')
               // if the imported data is in FHIR Questionnaire format
               if (importedData.resourceType && importedData.resourceType === "Questionnaire") {
                 var questionnaire;
-                var uploadError;
                 try {
                   questionnaire = LForms.Util.convertFHIRQuestionnaireToLForms(importedData);
                 }
                 catch (e) {
-                  uploadError = e;
+                  $scope.$apply(function() {userMessages.error = e});
                 }
-                $scope.$apply(function() {$scope.uploadError = uploadError});
-                if (!$scope.uploadError)
+                if (!userMessages.error)
                   $scope.$apply(selectedFormData.setFormData(new LFormsData(questionnaire)));
               }
               // in the internal LForms format

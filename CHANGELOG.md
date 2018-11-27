@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.3.2] - 2018-11-27
+### Fixed
+ - Error messages for unsupported Questionnaire formats were not displayed.
+
 ## [0.3.1] - 2018-11-26
 ### Fixed
  - Corrected the sample test Questionnaires and made separate version for STU3
