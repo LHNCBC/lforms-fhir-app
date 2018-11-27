@@ -61,7 +61,7 @@ describe('fhir app', function() {
   });
 
   describe('R4 examples', function() {
-    it('should have have working answer lists', function() {
+    it('should have working answer lists', function() {
       browser.get(mainPageURL);
       util.uploadForm('R4/weight-height-questionnaire.json');
       let bodyPos = element(by.id('/8361-8/1'));
@@ -71,7 +71,7 @@ describe('fhir app', function() {
   });
 
   describe('STU3 examples', function() {
-    it('should have have working answer lists', function() {
+    it('should have working answer lists', function() {
       browser.get(mainPageURL);
       util.uploadForm('STU3/weight-height-questionnaire.json');
       let bodyPos = element(by.id('/8361-8/1'));
