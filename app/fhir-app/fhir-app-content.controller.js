@@ -8,7 +8,8 @@ angular.module('lformsApp')
       'selectedFormData',
       '$mdDialog',
       'fhirService',
-      function ($scope, $window, $http, $timeout, $routeParams, selectedFormData, $mdDialog, fhirService) {
+      'userMessages',
+      function ($scope, $window, $http, $timeout, $routeParams, selectedFormData, $mdDialog, fhirService, userMessages) {
 
         //$scope.debug  = true;
         var FHIR_VERSION = 'R4'; // version supported by this app
@@ -31,6 +32,8 @@ angular.module('lformsApp')
           questionnaireResId : null,
           questionnaireName : null
         };
+
+        $scope.userMessages = userMessages;
 
         /**
          * Clean up value field in form data object

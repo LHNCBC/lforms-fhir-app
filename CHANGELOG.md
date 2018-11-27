@@ -3,6 +3,11 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.3.1] - 2018-11-26
+### Fixed
+ - Corrected the sample test Questionnaires and made separate version for STU3
+   and R4.
+
 ## [0.3.0] - 2018-11-21
 ### Added
 - Now has some support pre-poluation via questionnaire-launchContext and

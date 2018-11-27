@@ -12,7 +12,7 @@ describe('SMART on FHIR connection', function () {
 
   it ('should display a saved form', function () {
     // Upload, edit, and save a form.
-    util.uploadForm('ussg-fhp.json');
+    util.uploadForm('R4/ussg-fhp.json');
     // Wait for name to be auto-filled (pre-population test)
     let name = element(by.id('/54126-8/54125-0/1/1'));
     browser.wait(EC.presenceOf(name), 2000);
@@ -54,7 +54,7 @@ describe('SMART on FHIR connection', function () {
     beforeAll(function() {
       // Load a form
       browser.waitForAngular();
-      util.uploadForm('ussg-fhp.json');
+      util.uploadForm('R4/ussg-fhp.json');
       browser.wait(EC.textToBePresentInElement(element(by.css('.lf-form-title')), "Surgeon"), 5000);
 
       // Save the form

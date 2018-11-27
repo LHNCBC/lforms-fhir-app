@@ -1,7 +1,9 @@
 'use strict';
 var path = require('path');
 var util = require('./util');
+var po = util.pageObjects;
 var EC = protractor.ExpectedConditions;
+
 
 describe('fhir app', function() {
 
@@ -20,6 +22,15 @@ describe('fhir app', function() {
         toMatch(/Saved QuestionnaireResponses/);
     });
 
+    it('should have a link to a sample Questionnaire', function() {
+      util.waitForNewWindow(function() {$('#sampleQ').click()});
+      util.runInNewestWindow(function() {
+        let contentPromise = browser.driver.executeScript('return document.body.firstChild.innerHTML');
+        return contentPromise.then(function(json) {
+          expect(json.indexOf('"resourceType": "Questionnaire"')).toBeGreaterThan(-1);
+        });
+      });
+    });
   });
 
   describe("Load Button", function() {
@@ -33,7 +44,7 @@ describe('fhir app', function() {
       browser.wait(function() {
         return title.isDisplayed();
       }, 5000);
-      util.uploadForm('weight-height-questionnaire.json');
+      util.uploadForm('R4/weight-height-questionnaire.json');
 
       browser.waitForAngular();
       browser.wait(EC.textToBePresentInElement(element(by.css('.lf-form-title')), "Weight"), 5000);
@@ -46,6 +57,26 @@ describe('fhir app', function() {
       height.clear();
       height.sendKeys("80");
       expect(bmi.getAttribute('value')).toBe("17");
+    });
+  });
+
+  describe('R4 examples', function() {
+    it('should have working answer lists', function() {
+      browser.get(mainPageURL);
+      util.uploadForm('R4/weight-height-questionnaire.json');
+      let bodyPos = element(by.id('/8361-8/1'));
+      bodyPos.click();
+      expect(po.answerList.isDisplayed()).toBeTruthy();
+    });
+  });
+
+  describe('STU3 examples', function() {
+    it('should have working answer lists', function() {
+      browser.get(mainPageURL);
+      util.uploadForm('STU3/weight-height-questionnaire.json');
+      let bodyPos = element(by.id('/8361-8/1'));
+      bodyPos.click();
+      expect(po.answerList.isDisplayed()).toBeTruthy();
     });
   });
 

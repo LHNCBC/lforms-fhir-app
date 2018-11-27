@@ -7,7 +7,10 @@
       </div>
     </div>
     <div class="panel-body">
-      <div id="qrList" class="list-group">
+      <div ng-if="!listSavedQR">Loading QuestionnaireResponses from server...</div>
+      <div ng-if="listSavedQR && listSavedQR.length==0">No saved
+        QuestionnaireResponse resources were found for this patient.</div>
+      <div ng-if="listSavedQR && listSavedQR.length>0" id="qrList" class="list-group">
         <a href="#" class="list-group-item {{isSelected(1, $index)}}" ng-repeat="p in listSavedQR" role="presentation" id="{{p.resId}}" ng-click="showSavedQQR($index, p)">
           <p class="form-name">{{p.resName}}</p>
           <p class="res-type" ng-if="p.extensionType">{{p.resTypeDisplay}}</p>
@@ -28,7 +31,10 @@
       </div>
     </div>
     <div class="panel-body">
-      <div id="qList" class="list-group">
+      <div ng-if="!listSavedQ">Loading Questionnaires from server...</div>
+      <div ng-if="listSavedQ && listSavedQ.length==0">No saved
+        Questionnaire resources were found.  Try uploading one.</div>
+      <div ng-if="listSavedQ && listSavedQ.length>0"  id="qList" class="list-group">
         <a href="#" class="list-group-item {{isSelected(2, $index)}}" ng-repeat="p in listSavedQ" role="presentation" id="{{p.resId}}" ng-click="showSavedQuestionnaire($index, p)">
           <p class="form-name">{{p.resName}}</p>
           <p class="last-updated">{{p.updatedAt}}</p>
@@ -59,7 +65,10 @@
          class="btn btn-default btn-sm btn-success" ng-click="loadFromFile()"
          title="Upload a file."><span class="glyphicon glyphicon-upload"></span><span
          class="lf-nav-button">Upload</span></a></div>
-      <div class="error" id="upload_error" ng-if="uploadError">{{uploadError}}</div>
+      <p>If you do not have a Questionnaire of your own to upload, you can try
+       downloading one of our <a href=
+       "https://raw.githubusercontent.com/lhncbc/lforms-fhir-app/master/e2e-tests/data/R4/weight-height-questionnaire.json"
+       target="_blank" id=sampleQ>samples</a> (saving it to file, and then uploading it here).</p>
     </div>
   </div>
 
