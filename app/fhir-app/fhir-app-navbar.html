@@ -30,7 +30,7 @@
         Available Questionnaires:
       </div>
     </div>
-    <div class="panel-body">
+    <div class="panel-body" id="qListContainer">
       <div ng-if="!listSavedQ">Loading Questionnaires from server...</div>
       <div ng-if="listSavedQ && listSavedQ.length==0">No saved
         Questionnaire resources were found.  Try uploading one.</div>
@@ -61,7 +61,7 @@
              class="hide" />
 
       <div class="btn-group btn-group-justified" role="group">
-        <a id="upload" role="button" ng-disabled="!fhirVersion" type="button"
+        <a id="upload" role="button" type="button"
          class="btn btn-default btn-sm btn-success" ng-click="loadFromFile()"
          title="Upload a file."><span class="glyphicon glyphicon-upload"></span><span
          class="lf-nav-button">Upload</span></a></div>

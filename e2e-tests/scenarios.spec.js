@@ -58,6 +58,30 @@ describe('fhir app', function() {
       height.sendKeys("80");
       expect(bmi.getAttribute('value')).toBe("17");
     });
+
+    describe('Unloadable files', function () {
+      let tmpObj;
+      beforeEach(function() {
+        let tmp = require('tmp');
+        tmpObj = tmp.fileSync();
+      });
+      afterEach(function() {
+        tmpObj.removeCallback();
+      });
+
+      it("should show an error message if the FHIR version is not supported", function() {
+        // Edit a working sample file.
+        browser.get(mainPageURL);
+        let qFilePath = path.resolve(__dirname, 'data',
+          'R4/weight-height-questionnaire.json');
+        let fs = require('fs');
+        let qData = JSON.parse(fs.readFileSync(qFilePath));
+        qData.meta.profile = ['http://hl7.org/fhir/2.0/StructureDefinition/Questionnaire'];
+        fs.writeFileSync(tmpObj.name, JSON.stringify(qData, null, 2));
+        util.uploadForm(tmpObj.name);
+        expect($('.error').isDisplayed()).toBe(true);
+      });
+    });
   });
 
   describe('R4 examples', function() {

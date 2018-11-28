@@ -83,20 +83,12 @@ let util = {
       let patient = element(by.id('patient-eb3271e1-ae1b-4644-9332-41e32c829486'));
       browser.wait(EC.presenceOf(patient), 2000);
       patient.click();
+      // Wait for the server resources to finish loading.
       var EC = protractor.ExpectedConditions;
-      browser.wait(function() {
-        // Note: EC.elementToBeClickable did not work.  Apparently a button can
-        // be "clickable" and yet disabled?
-        // Sometimes says upload is "not on page", so use $
-        browser.wait(EC.presenceOf($('#upload')), 2000);
-        return $('#upload').getAttribute('disabled').then(function(disabled) {
-          return !disabled;
-        },
-        function() {
-          // usually a "stale element" error-- #upload is missing/replaced
-          return false;
-        });
-      });
+      browser.wait(EC.presenceOf($('#qListContainer')), 2000);
+      // Wait for the Loading message to go away
+      browser.wait(EC.not(EC.textToBePresentInElement($('#qListContainer'),
+        "Loading")));
     });
   },
 
@@ -109,16 +101,18 @@ let util = {
    *  Uploads the requested form from the e2e-tests/data directory.
    */
   uploadForm: function(formFileName) {
-    let qFilePath = require('path').resolve(__dirname, 'data', formFileName);
+    let qFilePath = formFileName.indexOf('/') == 0 ? formFileName :
+      require('path').resolve(__dirname, 'data', formFileName);
     let upload = $('#upload');
     var EC = protractor.ExpectedConditions;
     browser.wait(EC.elementToBeClickable(upload), 2000);
     browser.executeScript('arguments[0].classList.toggle("hide")', util.fileInput.getWebElement());
     util.fileInput.sendKeys(qFilePath);
     browser.executeScript('arguments[0].classList.toggle("hide")', util.fileInput.getWebElement());
-    // Wait for the form to appear
+    // Wait for the form to appear, or an error
     var EC = protractor.ExpectedConditions;
-    browser.wait(EC.presenceOf($('#th_Name')), 2000);
+    browser.wait(EC.or(EC.presenceOf($('#th_Name')), EC.presenceOf($('.error'))),
+      2000);
   },
 
   /**
