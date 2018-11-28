@@ -79,6 +79,7 @@ describe('fhir app', function() {
         qData.meta.profile = ['http://hl7.org/fhir/2.0/StructureDefinition/Questionnaire'];
         fs.writeFileSync(tmpObj.name, JSON.stringify(qData, null, 2));
         util.uploadForm(tmpObj.name);
+        expect($('.error').isDisplayed()).toBe(true);
       });
     });
   });
