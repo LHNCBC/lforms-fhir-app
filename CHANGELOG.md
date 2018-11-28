@@ -3,6 +3,11 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.3.3] - 2018-11-28
+### Fixed
+ - When saved Questionnaires are used, the FHIR version used is now the FHIR
+   version from the server.
+
 ## [0.3.2] - 2018-11-27
 ### Fixed
  - Error messages for unsupported Questionnaire formats were not displayed.
