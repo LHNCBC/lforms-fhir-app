@@ -193,7 +193,8 @@ angular.module('lformsApp')
               };
               // merge the QuestionnaireResponse into the form
               try {
-                var formData = LForms.Util.convertFHIRQuestionnaireToLForms(qInfo.questionnaire);
+                var formData = LForms.Util.convertFHIRQuestionnaireToLForms(
+                  qInfo.questionnaire, fhirService.fhirVersion);
               }
               catch(e) {
                 userMessages.error = e;
