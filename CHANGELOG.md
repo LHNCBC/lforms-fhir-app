@@ -3,6 +3,11 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.4.0] - 2018-11-29
+### Added
+ - Questionnaires can now be uploaded that do not explicitly indicate their FHIR version
+   with meta.profile if the FHIR version can be guessed from the structure.
+
 ## [0.3.3] - 2018-11-28
 ### Fixed
  - When saved Questionnaires are used, the FHIR version used is now the FHIR
