@@ -32,6 +32,14 @@ angular.module('lformsApp')
           }
         ];
 
+        /**
+         *  Deletes all messages from userMessages.
+         */
+        function removeMessages() {
+          var keys = Object.keys(userMessages);
+          for (var i=0, len=keys.length; i<len; ++i)
+            delete userMessages[keys[i]];
+        }
 
         /**
          * Open the file dialog and load a file
@@ -50,7 +58,7 @@ angular.module('lformsApp')
         $scope.uploader.onAfterAddingFile = function(item) {
           // clean up the form before assigning a new one for performance reasons related to AngularJS watches
           selectedFormData.setFormData(null);
-          delete userMessages.error;
+          $scope.$apply(function() {removeMessages()});
 
           var reader = new FileReader(); // Read from local file system.
           reader.onload = function(event) {
@@ -65,12 +73,40 @@ angular.module('lformsApp')
               if (importedData.resourceType && importedData.resourceType === "Questionnaire") {
                 var questionnaire;
                 try {
-                  questionnaire = LForms.Util.convertFHIRQuestionnaireToLForms(importedData);
+                  var fhirVersion = LForms.Util.detectFHIRVersion(importedData);
+                  if (!fhirVersion) {
+                    fhirVersion = LForms.Util.guessFHIRVersion(importedData);
+                    var metaProfMsg =
+                      'specified via meta.profile (see documentation for versioning '+
+                      '<a href="http://build.fhir.org/versioning.html#mp-version">resources</a> and '+
+                      '<a href="https://www.hl7.org/fhir/references.html#canonical">canonical URLs</a>.</p>'+
+                      '<p>Example 1:  http://hl7.org/fhir/3.5/StructureDefinition/Questionnaire'+
+                      ' (for Questionnaire version 3.5).<br>'+
+                      'Example 2:  http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire|3.5.0 '+
+                      ' (for SDC Questionnaire version 3.5).</p>';
+                    if (!fhirVersion) {
+                      $scope.$apply(function() {
+                        userMessages.htmlError = '<p>Could not determine the '+
+                        'FHIR version for this resource.  Please make sure it is '+
+                        metaProfMsg;
+                      });
+                    }
+                    else {
+                      $scope.$apply(function() {
+                        userMessages.htmlWarning = '<p>Warning:  Assuming this '+
+                        'resource is for FHIR version ' +fhirVersion+'.'+
+                        'To avoid this warning, please make sure the FHIR version is '+
+                        metaProfMsg;
+                      });
+                    }
+                  }
+                  fhirVersion = LForms.Util.validateFHIRVersion(fhirVersion); // might throw
+                  questionnaire = LForms.Util.convertFHIRQuestionnaireToLForms(importedData, fhirVersion);
                 }
                 catch (e) {
                   $scope.$apply(function() {userMessages.error = e});
                 }
-                if (!userMessages.error)
+                if (questionnaire)
                   $scope.$apply(selectedFormData.setFormData(new LFormsData(questionnaire)));
               }
               // in the internal LForms format
@@ -151,23 +187,33 @@ angular.module('lformsApp')
             };
             // merge the QuestionnaireResponse into the form
             var fhirVersion = fhirService.fhirVersion;
-            var formData = LForms.Util.convertFHIRQuestionnaireToLForms(
-               qrInfo.questionnaire, fhirVersion);
-            var newFormData = (new LFormsData(formData)).getFormData();
-            var mergedFormData = LForms.Util.mergeFHIRDataIntoLForms(
-              'QuestionnaireResponse', qrInfo.questionnaireresponse, newFormData,
-              fhirVersion);
-            var fhirResInfo = {
-              resId : qrInfo.resId,
-              resType : qrInfo.resType,
-              resTypeDisplay : qrInfo.resTypeDisplay,
-              extensionType : qrInfo.extensionType,
-              questionnaireResId : qrInfo.questionnaire.id,
-              questionnaireName : qrInfo.questionnaire.name
-            };
-            // set the form data to be displayed
-            selectedFormData.setFormData(new LFormsData(mergedFormData), fhirResInfo);
-            fhirService.setCurrentQuestionnaire(qrInfo.questionnaire);
+            var mergedFormData;
+            try {
+              var formData = LForms.Util.convertFHIRQuestionnaireToLForms(
+                 qrInfo.questionnaire, fhirVersion);
+              var newFormData = (new LFormsData(formData)).getFormData();
+              mergedFormData = LForms.Util.mergeFHIRDataIntoLForms(
+                'QuestionnaireResponse', qrInfo.questionnaireresponse, newFormData,
+                fhirVersion);
+            }
+            catch (e) {
+              console.error(e);
+              userMessages.error = 'Sorry.  Could not process that '+
+                'QuestionnaireResponse.  See the console for details.'
+            }
+            if (mergedFormData) {
+              var fhirResInfo = {
+                resId : qrInfo.resId,
+                resType : qrInfo.resType,
+                resTypeDisplay : qrInfo.resTypeDisplay,
+                extensionType : qrInfo.extensionType,
+                questionnaireResId : qrInfo.questionnaire.id,
+                questionnaireName : qrInfo.questionnaire.name
+              };
+              // set the form data to be displayed
+              selectedFormData.setFormData(new LFormsData(mergedFormData), fhirResInfo);
+              fhirService.setCurrentQuestionnaire(qrInfo.questionnaire);
+            }
           }
         };
 
@@ -182,7 +228,7 @@ angular.module('lformsApp')
           // ResId, ResType, ResName
           if (qInfo && qInfo.resType === "Questionnaire") {
             $('.spinner').show();
-            delete userMessages.error;
+            removeMessages();
             selectedFormData.setFormData(null);
 
             // Allow the page to update

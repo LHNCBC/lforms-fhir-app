@@ -59,7 +59,7 @@ describe('fhir app', function() {
       expect(bmi.getAttribute('value')).toBe("17");
     });
 
-    describe('Unloadable files', function () {
+    describe('Warnings or errors', function () {
       let tmpObj;
       beforeEach(function() {
         let tmp = require('tmp');
@@ -81,8 +81,30 @@ describe('fhir app', function() {
         util.uploadForm(tmpObj.name);
         expect($('.error').isDisplayed()).toBe(true);
       });
+
+      it("should show an warning message if the FHIR version was guessed", function() {
+        // Edit a working sample file.
+        browser.get(mainPageURL);
+        let qFilePath = path.resolve(__dirname, 'data',
+          'R4/weight-height-questionnaire.json');
+        let fs = require('fs');
+        let qData = JSON.parse(fs.readFileSync(qFilePath));
+        delete qData.meta;
+        fs.writeFileSync(tmpObj.name, JSON.stringify(qData, null, 2));
+        util.uploadForm(tmpObj.name);
+        expect($('.warning').isDisplayed()).toBe(true);
+      });
+
+      it("should remove the warning if a new files is loaded with the "+
+         "FHIR version specified", function () {
+        // This test requires the previous one to have shown a warning.
+        // Load a file that shouldn't trigger a warning.
+        util.uploadForm('R4/weight-height-questionnaire.json');
+        expect($('.warning').isPresent()).toBe(false);
+      });
     });
   });
+
 
   describe('R4 examples', function() {
     it('should have working answer lists', function() {

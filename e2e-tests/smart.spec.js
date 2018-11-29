@@ -25,6 +25,8 @@ describe('SMART on FHIR connection', function () {
     let sdcSave = $('#btn-save-sdc-qr');
     sdcSave.click();
     util.waitForSpinnerStopped();
+    // Confirm that a warning message (about an unknown FHIR version) is not shown.
+    expect(EC.not(EC.presenceOf($('.warning'))));
 
     // Wait for the first saved questionnaire to be this form.
     let firstQ = po.firstSavedUSSGQ();
@@ -36,6 +38,8 @@ describe('SMART on FHIR connection', function () {
     height = element(by.id('/54126-8/8302-2/1/1')); // new on page
     browser.wait(EC.presenceOf(height), 2000);
     expect(height.getAttribute('value')).not.toBe('70');
+    // Confirm that a warning message (about an unknown FHIR version) is not shown.
+    expect(EC.not(EC.presenceOf($('.warning'))));
 
     // Now open up the saved QuestionnaireResponse and confirm we can see the
     // saved value.
@@ -43,6 +47,8 @@ describe('SMART on FHIR connection', function () {
     // height = element(by.id('/54126-8/8302-2/1/1')); // new on page
     browser.wait(EC.presenceOf(element(by.id('/54126-8/8302-2/1/1'))), 2000);
     expect(height.getAttribute('value')).toBe('70');
+    // Confirm that a warning message (about an unknown FHIR version) is not shown.
+    expect(EC.not(EC.presenceOf($('.warning'))));
 
     util.deleteCurrentQR(); // clean up
   });
