@@ -82,7 +82,7 @@ describe('fhir app', function() {
         expect($('.error').isDisplayed()).toBe(true);
       });
 
-      it("should show an warning message if the FHIR version was guessed", function() {
+      it("should show a warning message if the FHIR version was guessed", function() {
         // Edit a working sample file.
         browser.get(mainPageURL);
         let qFilePath = path.resolve(__dirname, 'data',
