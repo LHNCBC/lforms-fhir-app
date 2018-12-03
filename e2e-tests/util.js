@@ -99,6 +99,8 @@ let util = {
 
   /**
    *  Uploads the requested form from the e2e-tests/data directory.
+   * @param formFileName the pathname to the form, relative to the test/data
+   *  directory, or an absolute path.
    */
   uploadForm: function(formFileName) {
     let qFilePath = formFileName.indexOf('/') == 0 ? formFileName :
@@ -111,9 +113,53 @@ let util = {
     browser.executeScript('arguments[0].classList.toggle("hide")', util.fileInput.getWebElement());
     // Wait for the form to appear, or an error
     var EC = protractor.ExpectedConditions;
-    browser.wait(EC.or(EC.presenceOf($('#th_Name')), EC.presenceOf($('.error'))),
-      2000);
+    browser.wait(EC.or(EC.presenceOf($('#th_Name')), EC.presenceOf($('.error'))), 2000);
   },
+
+
+  /**
+   *  Temporary files removed by cleanUpTmpFiles.  These should be objects
+   *  return by the "tmp" package.
+   */
+  _tmpFiles: [],
+
+
+  /**
+   *  Uploads a modified form with the given prefix prepended to the form's title, so that
+   *  the instance of the form can be found and selected.  This will also modify
+   *  the form's first identifier, to make it unique.
+   * @param formFilePath the pathname to the form, relative to the test/data
+   *  directory.
+   * @param prefix the text to prepend to the actual form title and to the
+   *  form's first idenifier (so it cannot contain characters that identifer does
+   *  not permit).
+   */
+  uploadFormWithTitleChange: function(formFilePath, prefix) {
+    let tmp = require('tmp');
+    let tmpObj = tmp.fileSync();
+    this._tmpFiles.push(tmpObj);
+    let qFilePath = require('path').resolve(__dirname, 'data', formFilePath);
+    let fs = require('fs');
+    let qData = JSON.parse(fs.readFileSync(qFilePath));
+    qData.title = prefix + qData.title;
+    qData.name = prefix + qData.name;
+    qData.identifier[0].value = prefix + qData.identifier[0].value;
+    qData.code[0].display = prefix + qData.code[0].display;
+    qData.code[0].code = prefix + qData.code[0].code;
+    fs.writeFileSync(tmpObj.name, JSON.stringify(qData, null, 2));
+    util.uploadForm(tmpObj.name);
+  },
+
+
+  /**
+   *  Deletes temporary files that were created by the tmp package.
+   */
+  cleanUpTmpFiles: function() {
+    for (var i=0, len=this._tmpFiles.length; i<len; ++i) {
+      this._tmpFiles[i].removeCallback();
+    }
+  },
+
 
   /**
    *  Waits for the spinner to be gone.
@@ -145,7 +191,7 @@ let util = {
    */
   deleteCurrentQR: function() {
     let deleteBtn = $('#btn-delete');
-    browser.wait(EC.presenceOf(deleteBtn), 2000);
+    browser.wait(EC.presenceOf(deleteBtn), 4000);
     deleteBtn.click();
     util.waitForSpinnerStopped();
   },
@@ -153,14 +199,25 @@ let util = {
 
   pageObjects: {
     /**
-     *  Returns an element finder for the link to show the first saved questionnaire.
+     *  Returns an element finder for the link to show the first saved
+     *  questionnaire, or if provided, the first one that matches the given
+     *  text.
+     * @param matchText the text to the returned Questionnaire should have.
      */
     firstSavedQ: function() {return $('#qList a.list-group-item:first-child')},
 
     /**
-     *  Returns an element finder for the link to show the first saved QuestionnaireResponse.
+     *  Returns an element finder for the link to show the first saved
+     *  QuestionnaireResponse, or if provided, the first saved
+     *  QuestionnaireResponse whose label contains the given text.
+     * @param matchText the text to the returned QR should have.
      */
-    firstSavedQR: function() {return $('#qrList a.list-group-item:first-child')},
+    firstSavedQR: function(matchText) {
+      if (matchText)
+        return element(by.cssContainingText('#qrList a.list-group-item', matchText));
+      else
+        return $('#qrList a.list-group-item:first-child')
+    },
 
     /**
      *  Returns an element finder for the link to show the first saved USSG

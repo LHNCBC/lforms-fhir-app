@@ -179,6 +179,7 @@ angular.module('lformsApp')
           // ResId, ResType, ResName
           if (qrInfo && qrInfo.resType === "QuestionnaireResponse") {
             $('.spinner').show();
+            removeMessages();
             selectedFormData.setFormData(null);
 
             $scope.formSelected = {
