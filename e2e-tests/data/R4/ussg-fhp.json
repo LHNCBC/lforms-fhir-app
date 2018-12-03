@@ -74,7 +74,6 @@
               "valueExpression": {
                 "description": "Name from patient resource",
                 "language" : "text/fhirpath",
-                "zexpression": "%patient.name[0].given.first() + ' ' +  %patient.name[0].family",
                 "expression": "%patient.name[0].select(given.first() + ' ' +  family)"
               }
             }
