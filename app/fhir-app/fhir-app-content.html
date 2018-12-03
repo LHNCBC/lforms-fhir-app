@@ -65,11 +65,14 @@
   </div>
 
 
-  <lforms lf-data="formData" lf-options="lfOptions"></lforms>
-
   <div ng-if="initialLoad" class="" ng-include="'initial.html'"></div>
   <div ng-if="userMessages.error" class="error">{{userMessages.error}}</div>
-  <div ng-if="!initialLoad && !formData && !userMessages.error" class="" ng-include="'loading.html'"></div>
+  <div ng-if="userMessages.htmlError" class="error" ng-bind-html="userMessages.htmlError"></div>
+  <div ng-if="userMessages.htmlWarning" class="warning" ng-bind-html="userMessages.htmlWarning"></div>
+  <div ng-if="!initialLoad && !formData && !userMessages.error &&
+    !userMessages.htmlError" class="" ng-include="'loading.html'"></div>
+
+  <lforms lf-data="formData" lf-options="lfOptions"></lforms>
 
   <!-- inline templates. these could be in template files too. -->
   <script type="text/ng-template" id="initial.html">

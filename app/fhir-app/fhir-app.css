@@ -125,6 +125,11 @@
   margin: 1em;
   color: red;
 }
+.warning {
+  border: 2px solid orange;
+  padding: 0.5em;
+  margin: 1em;
+}
 
 /* Spinner from http://tobiasahlin.com/spinkit/ */
 .spinner {
