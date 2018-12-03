@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.4.1] - 2018-12-03
+### Fixed
+ - Saved Questionnaires were missing their lists.
+
 ## [0.4.0] - 2018-11-29
 ### Added
  - Questionnaires can now be uploaded that do not explicitly indicate their FHIR version
