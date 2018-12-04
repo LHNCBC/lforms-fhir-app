@@ -125,7 +125,7 @@ angular.module('lformsApp')
 
           var noExtensions = extensionType === "SDC" ? false : true;
           var qr = LForms.Util.getFormFHIRData('QuestionnaireResponse',
-            FHIR_VERSION, $scope.formData, {noExtensions: noExtensions})
+            fhirService.fhirVersion, $scope.formData, {noExtensions: noExtensions})
           if (qr) {
             // patient data
             var patient = fhirService.getCurrentPatient();
@@ -148,7 +148,7 @@ angular.module('lformsApp')
               var copyOfFormData = $scope.valueCleanUp($scope.formData);
               // always get the SDC Questionnaire, with extensions
               var q = LForms.Util.getFormFHIRData('Questionnaire',
-                FHIR_VERSION, copyOfFormData)
+                fhirService.fhirVersion, copyOfFormData)
               if (q) {
                 delete q.id;
                 fhirService.createQQR(q, qr, extensionType);
@@ -173,7 +173,7 @@ angular.module('lformsApp')
           var noExtensions = extensionType === "SDC" ? false : true;
           if ($scope.fhirResInfo.resId && $scope.fhirResInfo.questionnaireResId) {
             var qr = LForms.Util.getFormFHIRData('QuestionnaireResponse',
-              FHIR_VERSION, $scope.formData, {noExtensions: noExtensions})
+              fhirService.fhirVersion, $scope.formData, {noExtensions: noExtensions})
             if (qr) {
               // patient data
               var patient = fhirService.getCurrentPatient();

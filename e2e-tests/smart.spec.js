@@ -54,6 +54,58 @@ describe('SMART on FHIR connection', function () {
   });
 
 
+  describe('Saved QuestionnaireResponses', function() {
+    afterAll(function() {
+      util.cleanUpTmpFiles();
+      // Clean up test questionnaires
+      browser.executeScript(function () {
+        var fhirService = angular.element(document.body).injector().get("fhirService")
+        fhirService.fhir.search({
+          type: "Questionnaire",
+          query: {'title:contains': 'LHC-Forms-Test'},
+          headers: {'Cache-Control': 'no-cache'}
+        }).then(function success(resp){
+          var bundle = resp.data;
+          var count = (bundle.entry && bundle.entry.length) || 0;
+          for (var i=0; i<count; ++i) {
+            var qr = bundle.entry[i].resource;
+            var qrId = qr.id;
+            fhirService.deleteFhirResource('Questionnaire', qrId);
+          }
+        });
+      });
+      browser.wait(EC.not(EC.presenceOf(po.firstSavedQ('LHC-Forms-Test'))), 2000);
+    });
+
+    afterEach(function() {
+      util.deleteCurrentQR(); // clean up
+    });
+
+    ['R4', 'STU3'].forEach(function(fhirVersion) {
+      describe(fhirVersion, function() {
+        it('should have working answer lists', function() {
+          var prefix = 'LHC-Forms-Test-WHQ-'+fhirVersion;
+          util.uploadFormWithTitleChange(fhirVersion+'/weight-height-questionnaire.json',
+            prefix);
+          let bodyPos = element(by.id('/8361-8/1'));
+          expect(bodyPos.isDisplayed()).toBeTruthy();
+          $('#btn-save-as').click(); // open save as menu
+          $('#btn-save-sdc-qr').click(); // save the Q & QR
+          util.waitForSpinnerStopped();
+          // Wait for the saved questionnaire response to be this page.
+          let qr = po.firstSavedQR(prefix);
+          browser.wait(EC.presenceOf(qr), 2000);
+          qr.click();
+          bodyPos = element(by.id('/8361-8/1')); // get new copy
+          browser.wait(EC.presenceOf(bodyPos), 2000);
+          bodyPos.click();
+          expect(po.answerList.isDisplayed()).toBeTruthy();
+        });
+      });
+    });
+  });
+
+
   describe("'Show' Menu", function () {
     var showMenu = $('#btn-show-as');
     var msgBody;
