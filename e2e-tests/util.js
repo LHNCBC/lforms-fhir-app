@@ -204,7 +204,12 @@ let util = {
      *  text.
      * @param matchText the text to the returned Questionnaire should have.
      */
-    firstSavedQ: function() {return $('#qList a.list-group-item:first-child')},
+    firstSavedQ: function(matchText) {
+      if (matchText)
+        return element(by.cssContainingText('#qList a.list-group-item', matchText));
+      else
+        return $('#qList a.list-group-item:first-child')
+    },
 
     /**
      *  Returns an element finder for the link to show the first saved

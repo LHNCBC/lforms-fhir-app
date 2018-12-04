@@ -74,7 +74,7 @@ describe('SMART on FHIR connection', function () {
           }
         });
       });
-      browser.wait(EC.not(EC.presenceOf(po.firstSavedQ('LHC-Forms-Test', 2000))));
+      browser.wait(EC.not(EC.presenceOf(po.firstSavedQ('LHC-Forms-Test'))), 2000);
     });
 
     afterEach(function() {
@@ -94,10 +94,10 @@ describe('SMART on FHIR connection', function () {
           util.waitForSpinnerStopped();
           // Wait for the saved questionnaire response to be this page.
           let qr = po.firstSavedQR(prefix);
-          browser.wait(EC.presenceOf(qr, 2000));
+          browser.wait(EC.presenceOf(qr), 2000);
           qr.click();
           bodyPos = element(by.id('/8361-8/1')); // get new copy
-          browser.wait(EC.presenceOf(bodyPos, 2000));
+          browser.wait(EC.presenceOf(bodyPos), 2000);
           bodyPos.click();
           expect(po.answerList.isDisplayed()).toBeTruthy();
         });
