@@ -137,6 +137,10 @@ body {
 #siteName {
   font-size: 300%;
 }
+#version {
+  float: right;
+  padding-right: 1em;
+}
 /* End of styles for the header */
 /* Styles for the footer */
 #fine-print {

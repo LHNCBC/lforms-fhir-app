@@ -92,6 +92,11 @@ module.exports = function (grunt) {
         }
       }
     },
+    shell: {
+      insertVersionIntoPage: {
+        command: 'v=`node -e 'console.log(require("./package.json").version)` && sed -i s/VERSION/$v/ dist/lforms-fhir-app/index.html'
+      }
+    },
 
     // Reads HTML for usemin blocks to enable smart builds that automatically
     // concat, minify and revision files. Creates configurations in memory so
@@ -297,6 +302,7 @@ module.exports = function (grunt) {
       'concat',
       'ngAnnotate',
       'copy:dist',
+      'shell:insertVersionIntoPage',
       'cssmin',
       'uglify',
       'rev',
