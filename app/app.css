@@ -140,6 +140,7 @@ body {
 #version {
   float: right;
   padding-right: 1em;
+  font-weight: bold;
 }
 /* End of styles for the header */
 /* Styles for the footer */

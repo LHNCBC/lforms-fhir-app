@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.5.0] - 2018-12-06
+### Added
+ - Support for questionnaire-initialExpression (with FHIRPath).
+
 ## [0.4.1] - 2018-12-03
 ### Fixed
  - Saved Questionnaires were missing their lists.

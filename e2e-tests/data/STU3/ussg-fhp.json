@@ -67,17 +67,7 @@
             }
           ],
           "text": "Name",
-          "type": "string",
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-calculatedExpression",
-              "valueExpression": {
-                "description": "Name from patient resource",
-                "language" : "text/fhirpath",
-                "expression": "%patient.name[0].select(given.first() + ' ' +  family)"
-              }
-            }
-          ]
+          "type": "string"
         },
         {
           "extension": [
@@ -149,14 +139,6 @@
                     "display": "{mm/dd/yyyy}"
                   }
                 ]
-              }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-calculatedExpression",
-              "valueExpression": {
-                "description": "Birth date from patient resource",
-                "language" : "text/fhirpath",
-                "expression": "%patient.birthDate"
               }
             }
           ],

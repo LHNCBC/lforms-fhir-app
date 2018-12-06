@@ -92,9 +92,10 @@ module.exports = function (grunt) {
         }
       }
     },
+
     shell: {
       insertVersionIntoPage: {
-        command: 'v=`node -e 'console.log(require("./package.json").version)` && sed -i s/VERSION/$v/ dist/lforms-fhir-app/index.html'
+        command: 'v=`node -e \'console.log(require("./package.json").version)\'` && sed -i s/VERSION/$v/ dist/lforms-fhir-app/*.app.js'
       }
     },
 
@@ -302,11 +303,11 @@ module.exports = function (grunt) {
       'concat',
       'ngAnnotate',
       'copy:dist',
-      'shell:insertVersionIntoPage',
       'cssmin',
       'uglify',
       'rev',
-      'usemin'
+      'usemin',
+      'shell:insertVersionIntoPage'
 //      'prune_modules'
     ]);
   });

@@ -32,7 +32,7 @@ describe('SMART on FHIR connection', function () {
     let firstQ = po.firstSavedUSSGQ();
     browser.wait(EC.textToBePresentInElement(firstQ, 'Surgeon'), 2000);
     // Open the form and wait for it to render
-    firstQ.click();
+    po.firstSavedUSSGQ().click(); // sometimes firstQ is "stale"
     util.waitForSpinnerStopped();
     // Confirm that the edited field value is no longer there.
     height = element(by.id('/54126-8/8302-2/1/1')); // new on page
