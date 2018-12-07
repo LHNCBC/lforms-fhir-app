@@ -95,7 +95,8 @@ module.exports = function (grunt) {
 
     shell: {
       insertVersionIntoPage: {
-        command: 'v=`node -e \'console.log(require("./package.json").version)\'` && sed -i s/VERSION/$v/ dist/lforms-fhir-app/*.app.js'
+        command: 'v=`node -e \'console.log(require("./package.json").version)\'` && '+
+          'sed -i s/VERSION_PLACEHOLDER/$v/ dist/lforms-fhir-app/*.app.js'
       }
     },
 
