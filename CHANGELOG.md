@@ -3,6 +3,11 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.5.1] - 2018-12-11
+### Fixed
+ - Updated the LHC-Forms renderer to 13.7.1, to get the corrected settings for
+   %context and %resource in FHIRPath expressions.
+
 ## [0.5.0] - 2018-12-06
 ### Added
  - Support for questionnaire-initialExpression (with FHIRPath).
