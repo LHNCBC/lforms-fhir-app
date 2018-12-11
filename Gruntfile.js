@@ -93,6 +93,13 @@ module.exports = function (grunt) {
       }
     },
 
+    shell: {
+      insertVersionIntoPage: {
+        command: 'v=`node -e \'console.log(require("./package.json").version)\'` && '+
+          'sed -i s/VERSION_PLACEHOLDER/$v/ dist/lforms-fhir-app/*.app.js'
+      }
+    },
+
     // Reads HTML for usemin blocks to enable smart builds that automatically
     // concat, minify and revision files. Creates configurations in memory so
     // additional tasks can operate on them
@@ -300,7 +307,8 @@ module.exports = function (grunt) {
       'cssmin',
       'uglify',
       'rev',
-      'usemin'
+      'usemin',
+      'shell:insertVersionIntoPage'
 //      'prune_modules'
     ]);
   });

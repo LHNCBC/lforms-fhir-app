@@ -70,7 +70,7 @@
           "type": "string",
           "extension": [
             {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-calculatedExpression",
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-initialExpression",
               "valueExpression": {
                 "description": "Name from patient resource",
                 "language" : "text/fhirpath",
@@ -152,7 +152,7 @@
               }
             },
             {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-calculatedExpression",
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-initialExpression",
               "valueExpression": {
                 "description": "Birth date from patient resource",
                 "language" : "text/fhirpath",
