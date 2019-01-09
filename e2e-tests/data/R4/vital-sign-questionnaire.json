@@ -12,7 +12,7 @@
   "identifier": [
     {
       "system": "http://loinc.org",
-      "value": "74728-7"
+      "value": "74728-7_modified"
     }
   ],
   "version": "2.56",
@@ -23,7 +23,7 @@
   "code": [
     {
       "system": "http://loinc.org",
-      "code": "74728-7",
+      "code": "74728-7_modified",
       "display": "Vital signs, weight, height, head circumference, oximetry, BMI, & BSA panel"
     }
   ],
@@ -185,38 +185,6 @@
         }
       ],
       "text": "Bdy height",
-      "type": "string",
-      "required": false
-    },
-    {
-      "extension": [
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "[in_us]",
-                "display": "[in_us]"
-              },
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "cm",
-                "display": "cm"
-              }
-            ]
-          }
-        }
-      ],
-      "linkId": "/8306-3/1",
-      "code": [
-        {
-          "system": "http://loinc.org",
-          "code": "8306-3",
-          "display": "Bdy height lying"
-        }
-      ],
-      "text": "Bdy height lying",
       "type": "string",
       "required": false
     },
