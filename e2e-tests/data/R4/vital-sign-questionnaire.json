@@ -8,7 +8,6 @@
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire|3.5.0"
     ]
   },
-  "url": "http://hl7.org/fhir/us/sdc/Questionnaire/74728-7",
   "identifier": [
     {
       "system": "http://loinc.org",
