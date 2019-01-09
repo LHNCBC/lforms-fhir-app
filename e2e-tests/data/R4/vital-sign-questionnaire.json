@@ -31,6 +31,51 @@
     "Patient",
     "Person"
   ],
+  "extension" : [
+    {
+      "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression" : {
+        "name": "weightQuantity",
+        "language": "text/fhirpath",
+        "expression": "%resource.item.where(linkId='/3141-9/1').answer.valueQuantity"
+      }
+    }, {
+      "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression" : {
+        "name": "weight",
+        "language": "text/fhirpath",
+        "expression": "iif(%weightQuantity.unit='lbs', %weightQuantity.value*0.45359237, iif(%weightQuantity.unit='kgs', %weightQuantity.value, {}))"
+      }
+    }, {
+      "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression" : {
+        "name": "heightQuantity",
+        "language": "text/fhirpath",
+        "expression": "%resource.item.where(linkId='/8302-2/1').answer.valueQuantity"
+      }
+    }, {
+      "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression" : {
+        "name": "hNum",
+        "language": "text/fhirpath",
+        "expression": "%heightQuantity.value"
+      }
+    }, {
+      "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression" : {
+        "name": "hUnit",
+        "language": "text/fhirpath",
+        "expression": "%heightQuantity.unit"
+      }
+    }, {
+      "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression" : {
+        "name": "height",
+        "language": "text/fhirpath",
+        "expression": "iif(%hUnit='inches', %hNum*0.0254, iif(%hUnit='feet', %hNum*0.3048, iif(%hUnit='centimeters', %hNum*0.01, iif(%hUnit='meters', %hNum, {}))))"
+      }
+    }
+  ],
   "item": [
     {
       "extension": [
@@ -102,7 +147,7 @@
         }
       ],
       "text": "Weight Measured",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -411,6 +456,14 @@
                 "display": "kg/m2"
               }
             ]
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-calculatedExpression",
+          "valueExpression": {
+            "description": "BMI calculation",
+            "language" : "text/fhirpath",
+            "expression": "((%weight/%height/%height*10 +0.5) div 1)/10"
           }
         }
       ],
