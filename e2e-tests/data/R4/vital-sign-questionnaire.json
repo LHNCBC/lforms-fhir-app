@@ -108,7 +108,7 @@
         }
       ],
       "text": "SaO2 % BldC Oximetry",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -181,7 +181,7 @@
         }
       ],
       "text": "Head Circumf OFC by Tape measure",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -230,7 +230,7 @@
         }
       ],
       "text": "Bdy height",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -264,7 +264,7 @@
         }
       ],
       "text": "Body temperature",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -298,7 +298,7 @@
         }
       ],
       "text": "BP dias",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -332,7 +332,7 @@
         }
       ],
       "text": "BP sys",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -366,7 +366,7 @@
         }
       ],
       "text": "Heart rate",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -400,7 +400,7 @@
         }
       ],
       "text": "Resp rate",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -434,7 +434,7 @@
         }
       ],
       "text": "BSA Derived",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -476,7 +476,7 @@
         }
       ],
       "text": "BMI",
-      "type": "string",
+      "type": "decimal",
       "required": false
     }
   ]
