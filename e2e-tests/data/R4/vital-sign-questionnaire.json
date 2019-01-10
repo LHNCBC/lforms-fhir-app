@@ -36,7 +36,7 @@
       "valueExpression" : {
         "name": "weightQuantity",
         "language": "text/fhirpath",
-        "expression": "%resource.item.where(linkId='/3141-9/1').answer.valueQuantity"
+        "expression": "%resource.item.where(linkId='/3141-9').answer.valueQuantity"
       }
     }, {
       "url" : "http://hl7.org/fhir/StructureDefinition/variable",
@@ -50,7 +50,7 @@
       "valueExpression" : {
         "name": "heightQuantity",
         "language": "text/fhirpath",
-        "expression": "%resource.item.where(linkId='/8302-2/1').answer.valueQuantity"
+        "expression": "%resource.item.where(linkId='/8302-2').answer.valueQuantity"
       }
     }, {
       "url" : "http://hl7.org/fhir/StructureDefinition/variable",
@@ -98,7 +98,7 @@
           }
         }
       ],
-      "linkId": "/2710-2/1",
+      "linkId": "/2710-2",
       "code": [
         {
           "system": "http://loinc.org",
@@ -137,7 +137,7 @@
           }
         }
       ],
-      "linkId": "/3141-9/1",
+      "linkId": "/3141-9",
       "code": [
         {
           "system": "http://loinc.org",
@@ -171,7 +171,7 @@
           }
         }
       ],
-      "linkId": "/8287-5/1",
+      "linkId": "/8287-5",
       "code": [
         {
           "system": "http://loinc.org",
@@ -220,7 +220,7 @@
           }
         }
       ],
-      "linkId": "/8302-2/1",
+      "linkId": "/8302-2",
       "code": [
         {
           "system": "http://loinc.org",
@@ -254,7 +254,7 @@
           }
         }
       ],
-      "linkId": "/8310-5/1",
+      "linkId": "/8310-5",
       "code": [
         {
           "system": "http://loinc.org",
@@ -288,7 +288,7 @@
           }
         }
       ],
-      "linkId": "/8462-4/1",
+      "linkId": "/8462-4",
       "code": [
         {
           "system": "http://loinc.org",
@@ -322,7 +322,7 @@
           }
         }
       ],
-      "linkId": "/8480-6/1",
+      "linkId": "/8480-6",
       "code": [
         {
           "system": "http://loinc.org",
@@ -356,7 +356,7 @@
           }
         }
       ],
-      "linkId": "/8867-4/1",
+      "linkId": "/8867-4",
       "code": [
         {
           "system": "http://loinc.org",
@@ -390,7 +390,7 @@
           }
         }
       ],
-      "linkId": "/9279-1/1",
+      "linkId": "/9279-1",
       "code": [
         {
           "system": "http://loinc.org",
@@ -424,7 +424,7 @@
           }
         }
       ],
-      "linkId": "/3140-1/1",
+      "linkId": "/3140-1",
       "code": [
         {
           "system": "http://loinc.org",
@@ -466,7 +466,7 @@
           }
         }
       ],
-      "linkId": "/39156-5/1",
+      "linkId": "/39156-5",
       "code": [
         {
           "system": "http://loinc.org",
