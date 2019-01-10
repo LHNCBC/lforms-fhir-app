@@ -281,6 +281,8 @@ angular.module('lformsApp')
           return ret;
         };
 
+        // The format for showing the update date/time strings.
+        var dateTimeFormat = "MM/dd/yyyy HH:mm:ss";
 
         /**
          * Update the saved QuestionnaireResponse list when the data is returned
@@ -294,10 +296,10 @@ angular.module('lformsApp')
               if (qr.resourceType === "QuestionnaireResponse") {
                 var updated;
                 if (qr.meta && qr.meta.lastUpdated) {
-                  updated = new Date(qr.meta.lastUpdated).toString("MM/dd/yyyy HH:MM:ss");
+                  updated = new Date(qr.meta.lastUpdated).toString(dateTimeFormat);
                 }
                 else if (qr.authored) {
-                  updated = new Date(qr.authored).toString("MM/dd/yyyy HH:MM:ss");
+                  updated = new Date(qr.authored).toString(dateTimeFormat);
                 }
                 var q = null, qName = null;
                 if (qr.questionnaire && qr.questionnaire.reference) {
@@ -349,10 +351,10 @@ angular.module('lformsApp')
               var q = arg.entry[i].resource;
               var updated;
               if (q.meta && q.meta.lastUpdated) {
-                updated = new Date(q.meta.lastUpdated).toString("MM/dd/yyyy HH:MM:ss");
+                updated = new Date(q.meta.lastUpdated).toString(dateTimeFormat);
               }
               else if (q.date) {
-                updated = new Date(q.date).toString("MM/dd/yyyy HH:MM:ss");
+                updated = new Date(q.date).toString(dateTimeFormat);
               }
               $scope.listSavedQ.push({
                 resId: q.id,
