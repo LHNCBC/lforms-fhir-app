@@ -3,6 +3,15 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+
+## [0.6.1] - 2019-01-10
+### Fixed
+- Revised the sample "vital signs" form to remove / characters from the linkId
+  output, which has a special meaning for LHC-Forms.  (We hope to remove that
+  special meaning soon.)
+- Updated LHC-Forms to get a fix for QuestionnaireResponses that include items
+  without answers.
+
 ## [0.6.0] - 2019-01-09
 ### Added
 - The "variable" extension is now supported with FHIRPath expressions.
