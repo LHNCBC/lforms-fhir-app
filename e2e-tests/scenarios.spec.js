@@ -114,6 +114,43 @@ describe('fhir app', function() {
       bodyPos.click();
       expect(po.answerList.isDisplayed()).toBeTruthy();
     });
+
+    describe('vital signs panel', function() {
+      it('should compute the correct BMI based on units', function() {
+        function setUnit(field, unit) {
+          util.clearField(field);
+          field.click();
+          field.sendKeys(unit);
+          field.sendKeys(protractor.Key.TAB);
+        }
+
+        browser.get(mainPageURL);
+        let weightNum = element(by.id('/3141-9/1'));
+        let weightUnit = element(by.id('unit_/3141-9/1'));
+        let heightNum = element(by.id('/8302-2/1'));
+        let heightUnit = element(by.id('unit_/8302-2/1'));
+        let bmi = element(by.id('/39156-5/1'));
+        util.uploadForm('R4/vital-sign-questionnaire.json');
+        weightNum.sendKeys('70');
+        heightNum.sendKeys('5');
+        // lbs and inches
+        setUnit(weightUnit, 'lbs');
+        setUnit(heightUnit, 'inches');
+        expect(bmi.getAttribute('value')).toBe('1968.6');
+        // kgs and inches
+        setUnit(weightUnit, 'kgs');
+        expect(bmi.getAttribute('value')).toBe('4340');
+        // kgs and feet
+        setUnit(heightUnit, 'feet');
+        expect(bmi.getAttribute('value')).toBe('30.1');
+        // kgs and centimeters
+        setUnit(heightUnit, 'centimeters');
+        expect(bmi.getAttribute('value')).toBe('28000');
+        // kgs and meters
+        setUnit(heightUnit, 'meters');
+        expect(bmi.getAttribute('value')).toBe('2.8');
+      });
+    });
   });
 
   describe('STU3 examples', function() {

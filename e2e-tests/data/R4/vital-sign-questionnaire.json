@@ -8,11 +8,10 @@
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire|3.5.0"
     ]
   },
-  "url": "http://hl7.org/fhir/us/sdc/Questionnaire/74728-7",
   "identifier": [
     {
       "system": "http://loinc.org",
-      "value": "74728-7"
+      "value": "74728-7_modified"
     }
   ],
   "version": "2.56",
@@ -23,13 +22,58 @@
   "code": [
     {
       "system": "http://loinc.org",
-      "code": "74728-7",
+      "code": "74728-7_modified",
       "display": "Vital signs, weight, height, head circumference, oximetry, BMI, & BSA panel"
     }
   ],
   "subjectType": [
     "Patient",
     "Person"
+  ],
+  "extension" : [
+    {
+      "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression" : {
+        "name": "weightQuantity",
+        "language": "text/fhirpath",
+        "expression": "%resource.item.where(linkId='/3141-9/1').answer.valueQuantity"
+      }
+    }, {
+      "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression" : {
+        "name": "weight",
+        "language": "text/fhirpath",
+        "expression": "iif(%weightQuantity.unit='lbs', %weightQuantity.value*0.45359237, iif(%weightQuantity.unit='kgs', %weightQuantity.value, {}))"
+      }
+    }, {
+      "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression" : {
+        "name": "heightQuantity",
+        "language": "text/fhirpath",
+        "expression": "%resource.item.where(linkId='/8302-2/1').answer.valueQuantity"
+      }
+    }, {
+      "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression" : {
+        "name": "hNum",
+        "language": "text/fhirpath",
+        "expression": "%heightQuantity.value"
+      }
+    }, {
+      "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression" : {
+        "name": "hUnit",
+        "language": "text/fhirpath",
+        "expression": "%heightQuantity.unit"
+      }
+    }, {
+      "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression" : {
+        "name": "height",
+        "language": "text/fhirpath",
+        "expression": "iif(%hUnit='inches', %hNum*0.0254, iif(%hUnit='feet', %hNum*0.3048, iif(%hUnit='centimeters', %hNum*0.01, iif(%hUnit='meters', %hNum, {}))))"
+      }
+    }
   ],
   "item": [
     {
@@ -63,7 +107,7 @@
         }
       ],
       "text": "SaO2 % BldC Oximetry",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -102,7 +146,7 @@
         }
       ],
       "text": "Weight Measured",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -136,7 +180,7 @@
         }
       ],
       "text": "Head Circumf OFC by Tape measure",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -185,39 +229,7 @@
         }
       ],
       "text": "Bdy height",
-      "type": "string",
-      "required": false
-    },
-    {
-      "extension": [
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "[in_us]",
-                "display": "[in_us]"
-              },
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "cm",
-                "display": "cm"
-              }
-            ]
-          }
-        }
-      ],
-      "linkId": "/8306-3/1",
-      "code": [
-        {
-          "system": "http://loinc.org",
-          "code": "8306-3",
-          "display": "Bdy height lying"
-        }
-      ],
-      "text": "Bdy height lying",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -251,7 +263,7 @@
         }
       ],
       "text": "Body temperature",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -285,7 +297,7 @@
         }
       ],
       "text": "BP dias",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -319,7 +331,7 @@
         }
       ],
       "text": "BP sys",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -353,7 +365,7 @@
         }
       ],
       "text": "Heart rate",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -387,7 +399,7 @@
         }
       ],
       "text": "Resp rate",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -421,7 +433,7 @@
         }
       ],
       "text": "BSA Derived",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -444,6 +456,14 @@
               }
             ]
           }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-calculatedExpression",
+          "valueExpression": {
+            "description": "BMI calculation",
+            "language" : "text/fhirpath",
+            "expression": "((%weight/%height/%height*10 +0.5) div 1)/10"
+          }
         }
       ],
       "linkId": "/39156-5/1",
@@ -455,7 +475,7 @@
         }
       ],
       "text": "BMI",
-      "type": "string",
+      "type": "decimal",
       "required": false
     }
   ]
