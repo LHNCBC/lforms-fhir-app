@@ -11,6 +11,7 @@ This project follows [Semantic Versioning](http://semver.org/).
   special meaning soon.)
 - Updated LHC-Forms to get a fix for QuestionnaireResponses that include items
   without answers.
+- Corrected the display of time stamps for saved resources.
 
 ## [0.6.0] - 2019-01-09
 ### Added
