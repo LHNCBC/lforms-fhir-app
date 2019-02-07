@@ -310,11 +310,12 @@ angular.module('lformsApp')
                 // if the questionnaire resource is included/found in the searchset
                 if (q) {
                   qName = q.name;
-                  var extension = null,
-                    sdcUrl = "http://hl7.org/fhir/us/sdc/StructureDefinition/sdc-questionnaireresponse";
+                  var sdcPattern =
+                    new RegExp('http://hl7.org/fhir/u./sdc/StructureDefinition/sdc-questionnaire\\|(\\d+\.?\\d+)');
+                  var extension = null;
                   if (qr.meta && qr.meta.profile) {
                     for (var j=0, jLen=qr.meta.profile.length; j<jLen; j++) {
-                      if (qr.meta.profile[j] === sdcUrl) {
+                      if (qr.meta.profile[j].match(sdcPattern)) {
                         extension = "SDC"
                       }
                     }
