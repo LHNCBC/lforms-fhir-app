@@ -30,8 +30,7 @@ let util = {
    *  in the string.
    */
   sendKeys: function(field, str) {
-expect(field.isDisplayed()).toBe(true);
-    browser.executeScript('arguments[0].value = '+str.slice(0,-1), field.getWebElement());
+    browser.executeScript('arguments[0].value = "'+str.slice(0,-1)+'"', field.getWebElement());
     field.sendKeys(str.slice(-1));
   },
 
@@ -83,8 +82,8 @@ expect(field.isDisplayed()).toBe(true);
     element(by.cssContainingText('#fhir-version-2 option', 'R3 (STU3)')).click();
     let launchURL = element(by.id('launch-url'));
     util.clearField(launchURL);
-    //this.sendKeys(launchURL, 'http://localhost:8000/lforms-fhir-app/launch.html');
-    launchURL.sendKeys('http://localhost:8000/lforms-fhir-app/launch.html');
+    this.sendKeys(launchURL, 'http://localhost:8000/lforms-fhir-app/launch.html');
+//    launchURL.sendKeys('http://localhost:8000/lforms-fhir-app/launch.html');
     let launchButton = element(by.id('ehr-launch-url'));
     this.waitForNewWindow(function() {launchButton.click()});
     this.runInNewestWindow(function() {
