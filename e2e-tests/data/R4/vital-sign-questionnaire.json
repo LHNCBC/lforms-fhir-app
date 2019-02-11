@@ -144,7 +144,7 @@
           "display": "Weight Measured"
         }
       ],
-      "text": "zWeight Measured",
+      "text": "Weight Measured",
       "type": "quantity",
       "required": false
     },
@@ -185,37 +185,35 @@
     {
       "extension": [
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption",
           "valueCoding": {
             "system": "http://unitsofmeasure.org",
-            "code": "inches"
+            "code": "[in_i]",
+            "display": "inches"
           }
         },
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "inches",
-                "display": "inches"
-              },
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "feet",
-                "display": "feet"
-              },
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "centimeters",
-                "display": "centimeters"
-              },
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "meters",
-                "display": "meters"
-              }
-            ]
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption",
+          "valueCoding": {
+            "system": "http://unitsofmeasure.org",
+            "code": "[ft_i]",
+            "display": "feet"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption",
+          "valueCoding": {
+            "system": "http://unitsofmeasure.org",
+            "code": "cm",
+            "display": "centimeters"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption",
+          "valueCoding": {
+            "system": "http://unitsofmeasure.org",
+            "code": "m",
+            "display": "meters"
           }
         }
       ],
@@ -228,7 +226,14 @@
         }
       ],
       "text": "Bdy height",
-      "type": "decimal",
+      "type": "quantity",
+      "initial": [{
+        "valueQuantity": {
+          "system": "http://unitsofmeasure.org",
+          "unit": "inches",
+          "code": "[in_i]"
+        }
+      }],
       "required": false
     },
     {
