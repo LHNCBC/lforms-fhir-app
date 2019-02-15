@@ -84,18 +84,6 @@
             "system": "http://unitsofmeasure.org",
             "code": "%"
           }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "%",
-                "display": "%"
-              }
-            ]
-          }
         }
       ],
       "linkId": "/2710-2",
@@ -155,18 +143,6 @@
           "valueCoding": {
             "system": "http://unitsofmeasure.org",
             "code": "cm"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "cm",
-                "display": "cm"
-              }
-            ]
           }
         }
       ],
@@ -244,18 +220,6 @@
             "system": "http://unitsofmeasure.org",
             "code": "Cel"
           }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "Cel",
-                "display": "Cel"
-              }
-            ]
-          }
         }
       ],
       "linkId": "/8310-5",
@@ -277,18 +241,6 @@
           "valueCoding": {
             "system": "http://unitsofmeasure.org",
             "code": "mm[Hg]"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "mm[Hg]",
-                "display": "mm[Hg]"
-              }
-            ]
           }
         }
       ],
@@ -312,18 +264,6 @@
             "system": "http://unitsofmeasure.org",
             "code": "mm[Hg]"
           }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "mm[Hg]",
-                "display": "mm[Hg]"
-              }
-            ]
-          }
         }
       ],
       "linkId": "/8480-6",
@@ -345,18 +285,6 @@
           "valueCoding": {
             "system": "http://unitsofmeasure.org",
             "code": "{beats}/min"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "{beats}/min",
-                "display": "{beats}/min"
-              }
-            ]
           }
         }
       ],
@@ -380,18 +308,6 @@
             "system": "http://unitsofmeasure.org",
             "code": "{breaths}/min"
           }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "{breaths}/min",
-                "display": "{breaths}/min"
-              }
-            ]
-          }
         }
       ],
       "linkId": "/9279-1",
@@ -414,18 +330,6 @@
             "system": "http://unitsofmeasure.org",
             "code": "m2"
           }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "m2",
-                "display": "m2"
-              }
-            ]
-          }
         }
       ],
       "linkId": "/3140-1",
@@ -447,18 +351,6 @@
           "valueCoding": {
             "system": "http://unitsofmeasure.org",
             "code": "kg/m2"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "kg/m2",
-                "display": "kg/m2"
-              }
-            ]
           }
         },
         {
