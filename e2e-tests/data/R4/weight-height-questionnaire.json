@@ -159,6 +159,15 @@
               }
             ]
           }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+          "valueDuration": {
+            "value": "1",
+            "unit": "year",
+            "system": "http://ucum.org",
+            "code": "a"
+          }
         }
       ],
       "required": false,

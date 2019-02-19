@@ -127,6 +127,15 @@
             "code": "kgs",
             "display": "kgs"
           }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+          "valueDuration": {
+            "value": "1",
+            "unit": "year",
+            "system": "http://ucum.org",
+            "code": "a"
+          }
         }
       ],
       "initial": [{
@@ -214,6 +223,15 @@
             "system": "http://unitsofmeasure.org",
             "code": "m",
             "display": "meters"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+          "valueDuration": {
+            "value": "1",
+            "unit": "year",
+            "system": "http://ucum.org",
+            "code": "a"
           }
         }
       ],
