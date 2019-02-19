@@ -40,18 +40,6 @@
             "system": "http://unitsofmeasure.org",
             "code": "%"
           }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "%",
-                "display": "%"
-              }
-            ]
-          }
         }
       ],
       "linkId": "/2710-2",
@@ -63,36 +51,33 @@
         }
       ],
       "text": "SaO2 % BldC Oximetry",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
       "extension": [
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption",
           "valueCoding": {
             "system": "http://unitsofmeasure.org",
-            "code": "lbs"
+            "code": "lbs",
+            "display": "lbs"
           }
         },
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "lbs",
-                "display": "lbs"
-              },
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "kgs",
-                "display": "kgs"
-              }
-            ]
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption",
+          "valueCoding": {
+            "system": "http://unitsofmeasure.org",
+            "code": "kgs",
+            "display": "kgs"
           }
         }
       ],
+      "initialQuantity": {
+        "unit": "lbs",
+        "system": "http://unitsofmeasure.org",
+        "code": "lbs"
+      },
       "linkId": "/3141-9",
       "code": [
         {
@@ -102,7 +87,7 @@
         }
       ],
       "text": "Weight Measured",
-      "type": "string",
+      "type": "quantity",
       "required": false
     },
     {
@@ -112,18 +97,6 @@
           "valueCoding": {
             "system": "http://unitsofmeasure.org",
             "code": "cm"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "cm",
-                "display": "cm"
-              }
-            ]
           }
         }
       ],
@@ -136,43 +109,41 @@
         }
       ],
       "text": "Head Circumf OFC by Tape measure",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
       "extension": [
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption",
           "valueCoding": {
             "system": "http://unitsofmeasure.org",
-            "code": "inches"
+            "code": "[in_i]",
+            "display": "inches"
           }
         },
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "inches",
-                "display": "inches"
-              },
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "feet",
-                "display": "feet"
-              },
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "centimeters",
-                "display": "centimeters"
-              },
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "meters",
-                "display": "meters"
-              }
-            ]
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption",
+          "valueCoding": {
+            "system": "http://unitsofmeasure.org",
+            "code": "[ft_i]",
+            "display": "feet"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption",
+          "valueCoding": {
+            "system": "http://unitsofmeasure.org",
+            "code": "cm",
+            "display": "centimeters"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption",
+          "valueCoding": {
+            "system": "http://unitsofmeasure.org",
+            "code": "m",
+            "display": "meters"
           }
         }
       ],
@@ -185,39 +156,12 @@
         }
       ],
       "text": "Bdy height",
-      "type": "string",
-      "required": false
-    },
-    {
-      "extension": [
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "[in_us]",
-                "display": "[in_us]"
-              },
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "cm",
-                "display": "cm"
-              }
-            ]
-          }
-        }
-      ],
-      "linkId": "/8306-3",
-      "code": [
-        {
-          "system": "http://loinc.org",
-          "code": "8306-3",
-          "display": "Bdy height lying"
-        }
-      ],
-      "text": "Bdy height lying",
-      "type": "string",
+      "type": "quantity",
+      "initialQuantity": {
+          "system": "http://unitsofmeasure.org",
+          "unit": "inches",
+          "code": "[in_i]"
+      },
       "required": false
     },
     {
@@ -227,18 +171,6 @@
           "valueCoding": {
             "system": "http://unitsofmeasure.org",
             "code": "Cel"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "Cel",
-                "display": "Cel"
-              }
-            ]
           }
         }
       ],
@@ -251,7 +183,7 @@
         }
       ],
       "text": "Body temperature",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -261,18 +193,6 @@
           "valueCoding": {
             "system": "http://unitsofmeasure.org",
             "code": "mm[Hg]"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "mm[Hg]",
-                "display": "mm[Hg]"
-              }
-            ]
           }
         }
       ],
@@ -285,7 +205,7 @@
         }
       ],
       "text": "BP dias",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -295,18 +215,6 @@
           "valueCoding": {
             "system": "http://unitsofmeasure.org",
             "code": "mm[Hg]"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "mm[Hg]",
-                "display": "mm[Hg]"
-              }
-            ]
           }
         }
       ],
@@ -319,7 +227,7 @@
         }
       ],
       "text": "BP sys",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -329,18 +237,6 @@
           "valueCoding": {
             "system": "http://unitsofmeasure.org",
             "code": "{beats}/min"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "{beats}/min",
-                "display": "{beats}/min"
-              }
-            ]
           }
         }
       ],
@@ -353,7 +249,7 @@
         }
       ],
       "text": "Heart rate",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -363,18 +259,6 @@
           "valueCoding": {
             "system": "http://unitsofmeasure.org",
             "code": "{breaths}/min"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "{breaths}/min",
-                "display": "{breaths}/min"
-              }
-            ]
           }
         }
       ],
@@ -387,7 +271,7 @@
         }
       ],
       "text": "Resp rate",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -397,18 +281,6 @@
           "valueCoding": {
             "system": "http://unitsofmeasure.org",
             "code": "m2"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "m2",
-                "display": "m2"
-              }
-            ]
           }
         }
       ],
@@ -421,7 +293,7 @@
         }
       ],
       "text": "BSA Derived",
-      "type": "string",
+      "type": "decimal",
       "required": false
     },
     {
@@ -431,18 +303,6 @@
           "valueCoding": {
             "system": "http://unitsofmeasure.org",
             "code": "kg/m2"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "kg/m2",
-                "display": "kg/m2"
-              }
-            ]
           }
         }
       ],
@@ -455,7 +315,7 @@
         }
       ],
       "text": "BMI",
-      "type": "string",
+      "type": "decimal",
       "required": false
     }
   ]
