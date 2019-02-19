@@ -30,7 +30,6 @@ let util = {
    *  in the string.
    */
   sendKeys: function(field, str) {
-expect(field.isDisplayed()).toBe(true);
     browser.executeScript('arguments[0].value = '+str.slice(0,-1), field.getWebElement());
     field.sendKeys(str.slice(-1));
   },
