@@ -59,24 +59,18 @@
         {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption",
           "valueCoding": {
-            "system": "http://unitsofmeasure.org",
-            "code": "lbs",
             "display": "lbs"
           }
         },
         {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption",
           "valueCoding": {
-            "system": "http://unitsofmeasure.org",
-            "code": "kgs",
             "display": "kgs"
           }
         }
       ],
       "initialQuantity": {
-        "unit": "lbs",
-        "system": "http://unitsofmeasure.org",
-        "code": "lbs"
+        "unit": "lbs"
       },
       "linkId": "/3141-9",
       "code": [
