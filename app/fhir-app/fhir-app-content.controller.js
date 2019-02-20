@@ -125,7 +125,8 @@ angular.module('lformsApp')
 
           var noExtensions = extensionType === "SDC" ? false : true;
           var qr = LForms.Util.getFormFHIRData('QuestionnaireResponse',
-            fhirService.fhirVersion, $scope.formData, {noExtensions: noExtensions})
+            fhirService.fhirVersion, $scope.formData, {noExtensions: noExtensions,
+            subject: fhirService.getCurrentPatient()})
           if (qr) {
             // patient data
             var patient = fhirService.getCurrentPatient();
@@ -316,7 +317,8 @@ angular.module('lformsApp')
         $scope.showFHIRQuestionnaireResponse = function (event) {
           if ($scope.formData) {
             var sdc = LForms.Util.getFormFHIRData('QuestionnaireResponse',
-              FHIR_VERSION, $scope.formData, {noExtensions: true});
+              FHIR_VERSION, $scope.formData, {noExtensions: true,
+              subject: fhirService.getCurrentPatient()});
             var fhirString = JSON.stringify(sdc, null, 2);
             $scope.fhirResourceString = fhirString;
             $scope.fhirResourceTitle = "FHIR QuestionnaireResponse Resource";
@@ -339,7 +341,7 @@ angular.module('lformsApp')
         $scope.showFHIRSDCQuestionnaireResponse = function (event) {
           if ($scope.formData) {
             var sdc = LForms.Util.getFormFHIRData('QuestionnaireResponse',
-              FHIR_VERSION, $scope.formData);
+              FHIR_VERSION, $scope.formData, {subject: fhirService.getCurrentPatient()});
             var fhirString = JSON.stringify(sdc, null, 2);
             $scope.fhirResourceString = fhirString;
             $scope.fhirResourceTitle = "FHIR SDC QuestionnaireResponse Resource";

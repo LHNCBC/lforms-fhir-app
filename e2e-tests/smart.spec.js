@@ -166,7 +166,7 @@ describe('SMART on FHIR connection', function () {
       });
 
       it('should contain a Questionnaire resource', function () {
-        expect(EC.textToBePresentInElement(msgBody, '"resourceType": "Questionnaire"'));
+        browser.wait(EC.textToBePresentInElement(msgBody, '"resourceType": "Questionnaire"'), 50);
       });
     });
 
@@ -179,11 +179,11 @@ describe('SMART on FHIR connection', function () {
       });
 
       it('should contain a Questionnaire resource', function () {
-        expect(EC.textToBePresentInElement(msgBody, '"resourceType": "Questionnaire"'));
+        browser.wait(EC.textToBePresentInElement(msgBody, '"resourceType": "Questionnaire"'), 50);
       });
 
       it('should not be an SDC questionnaire', function() {
-        expect(EC.not(EC.textToBePresentInElement(msgBody, 'sdc-questionnaire')));
+        browser.wait(EC.not(EC.textToBePresentInElement(msgBody, 'sdc-questionnaire')), 50);
       });
     });
 
@@ -196,11 +196,16 @@ describe('SMART on FHIR connection', function () {
       });
 
       it('should contain a QuestionnaireResponse resource', function () {
-        expect(EC.textToBePresentInElement(msgBody, '"resourceType": "QuestionnaireResponse"'));
+        browser.wait(EC.textToBePresentInElement(msgBody, '"resourceType": "QuestionnaireResponse"'), 50);
       });
 
       it('should not be an SDC QuestionnaireResponse', function() {
-        expect(EC.not(EC.textToBePresentInElement(msgBody, 'sdc-questionnaire')));
+        browser.wait(EC.not(EC.textToBePresentInElement(msgBody, 'sdc-questionnaire')), 50);
+      });
+
+      it('should contain a subject', function() {
+        browser.wait(EC.textToBePresentInElement(msgBody, '"subject":'), 50);
+        browser.wait(EC.textToBePresentInElement(msgBody, '"reference": "Patient/'), 50);
       });
     });
 

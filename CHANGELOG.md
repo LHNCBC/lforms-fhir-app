@@ -3,6 +3,18 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.7.0] - 2019-02-19
+This version updates the LForms library from 13.10.2 to 14.2.0, which includes
+the following changes.
+### Added
+- Output QuestionnaireResponses now include the selected patient as the subject.
+### Fixed
+- The selection of extensions for representing units has been corrected.
+  (Samples can be seen under e2e-tests/data.)
+### Changed
+- Standard Questionnaire exports for R4 now contain '4.0' (instead of '3.5') as
+  the FHIR version.
+- Standard QuestionnaireResponse exports now include meta.profile.
 
 ## [0.6.1] - 2019-01-10
 ### Fixed

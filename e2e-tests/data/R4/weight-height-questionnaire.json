@@ -55,15 +55,12 @@
           }
         },
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "kg",
-                "display": "kg"
-              }
-            ]
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+          "valueDuration": {
+            "value": "1",
+            "unit": "year",
+            "system": "http://ucum.org",
+            "code": "a"
           }
         }
       ],
@@ -138,18 +135,6 @@
             "system": "http://unitsofmeasure.org",
             "code": "[in_i]"
           }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "[in_i]",
-                "display": "[in_i]"
-              }
-            ]
-          }
         }
       ],
       "required": false,
@@ -171,18 +156,6 @@
           "valueCoding": {
             "system": "http://unitsofmeasure.org",
             "code": "kg/m2"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://unitsofmeasure.org",
-                "code": "kg/m2",
-                "display": "kg/m2"
-              }
-            ]
           }
         },
         {
