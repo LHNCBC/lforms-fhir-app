@@ -110,16 +110,13 @@ angular.module('lformsApp')
                 }
                 catch (e) {
                   $timeout(function() {userMessages.error = e});
-                  userMessages.error = e;
                 }
                 if (questionnaire)
-                  $timeout(selectedFormData.setFormData(new LFormsData(questionnaire)));
-                  selectedFormData.setFormData(new LFormsData(questionnaire));
+                  $timeout(function() {selectedFormData.setFormData(new LFormsData(questionnaire))});
               }
               // in the internal LForms format
               else {
-                $timeout(selectedFormData.setFormData(new LFormsData(importedData)));
-                selectedFormData.setFormData(new LFormsData(importedData));
+                $timeout(function() {selectedFormData.setFormData(new LFormsData(importedData))});
               }
             }
           };
