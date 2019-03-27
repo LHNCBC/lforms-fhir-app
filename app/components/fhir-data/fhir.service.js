@@ -18,6 +18,34 @@ fb.service('fhirService', [
     // Current Questionnaire resource
     thisService.currentQuestionnaire = null;
 
+    /**
+     *  Requests a SMART on FHIR connection.  Once a connection request is in
+     *  progress, further requests are ignored until a connection is
+     *  established.  (So, only one request can be in progress at a time.)
+     * @param callback a callback for when the connection is obtained.  If a
+     * connection request was already in progress, the callback will not be
+     * called.
+     */
+    thisService.requestSmartConnection = function(callback) {
+      thisService.connection = null;
+      if (!thisService._connectionInProgress) {
+        thisService._connectionInProgress = true;
+        FHIR.oauth2.ready(function(smart) {
+          thisService.setSmartConnection(smart);
+          thisService._connectionInProgress = false;
+          callback();
+        });
+      }
+    };
+
+    /**
+     *  Returns true if the smart connection has been requested and is in
+     *  progress.
+     */
+    thisService.smartConnectionInProgress = function() {
+      return thisService._connectionInProgress;
+    };
+
 
     /**
      * Set the smart on fhir connection
@@ -25,31 +53,27 @@ fb.service('fhirService', [
      */
     thisService.setSmartConnection = function(connection) {
       thisService.connection = connection;
-      //thisService.fhir = connection.patient.api;
-      thisService.fhir = connection.api;
-      LForms.Util.setFHIRContext({getCurrent:  function(typeList, callback) {
-        var rtn = null;
-        if (typeList.indexOf('Patient') >= 0) {
-          connection.patient.read().then(function(patientRes) {
-            callback(patientRes);
-          });
+      thisService.fhir = connection.patient.api;
+      //thisService.fhir = connection.api;
+      LForms.Util.setFHIRContext({
+        getCurrent:  function(typeList, callback) {
+          var rtn = null;
+          if (typeList.indexOf('Patient') >= 0) {
+            connection.patient.read().then(function(patientRes) {
+              callback(patientRes);
+            });
+          }
+        },
+        getFHIRAPI: function() {
+          return thisService.fhir;
         }
-      }});
+      });
 
       // Retrieve the fhir version
-      // For some reason this gets called multiple times.  We just need to
-      // determine this once.
-      if (!thisService.requestedFHIRVersion) {
-        thisService.fhir.conformance({}).then(function(res) {
-          var fhirVersion = res.data.fhirVersion;
-          thisService.fhirVersion = (fhirVersion.indexOf('3.') === 0) ?
-            'STU3' : (fhirVersion.indexOf('4.') === 0) ?
-            'R4' : fhirVersion;
-          $rootScope.fhirVersion = fhirVersion;
-          console.log('Server FHIR version is ' + thisService.fhirVersion);
-        });
-        thisService.requestedFHIRVersion = true;
-      }
+      // For some reason setSmartConnection gets called multiple times on page load.
+      LForms.Util.getServerFHIRReleaseID(function(releaseID) {
+        thisService.fhirVersion = releaseID;
+      });
     };
 
 

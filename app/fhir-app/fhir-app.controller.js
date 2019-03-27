@@ -61,16 +61,18 @@ angular.module('lformsApp')
        * just to make a simple demo.
        */
       $scope.getSmartReady = function() {
-        FHIR.oauth2.ready(function(smart) {
-          fhirService.setSmartConnection(smart);
-          smart.patient.read().then(function (pt) {
-            $scope.selectedPatient = pt;
-            fhirService.setCurrentPatient(pt);
-            fhirService.getAllQRByPatientId(pt.id);
-            fhirService.getAllQ();
-            $scope.$apply();
+        if (!fhirService.getSmartConnection() && !fhirService.smartConnectionInProgress()) {
+          fhirService.requestSmartConnection(function() {
+            var smart = fhirService.getSmartConnection();
+            smart.patient.read().then(function (pt) {
+              $scope.selectedPatient = pt;
+              fhirService.setCurrentPatient(pt);
+              fhirService.getAllQRByPatientId(pt.id);
+              fhirService.getAllQ();
+              $scope.$apply();
+            });
           });
-        });
+        }
       };
 
     }]);
