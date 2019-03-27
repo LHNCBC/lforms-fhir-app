@@ -3,6 +3,12 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.7.1] - 2019-03-21
+### Fixed
+- The "upload" button did not work in Edge (and probably IE).
+- This version also includes an update to the LHC-Forms library, which includes
+  a fix for Safari for calculatedExpressions.
+
 ## [0.7.0] - 2019-02-19
 This version updates the LForms library from 13.10.2 to 14.2.0, which includes
 the following changes.
