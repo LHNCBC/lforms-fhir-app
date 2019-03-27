@@ -8,6 +8,12 @@ This project follows [Semantic Versioning](http://semver.org/).
 - Questionnaire pre-population with Observation data is now supported via the
   questionnaire-observationLinkPeriod extension.
 
+## [0.7.2] - 2019-03-27
+### Removed
+- The non-SDC menu options have been removed.  These were not really non-SDC,
+  but simply removed any extension from the resource.  Also, any system that
+  accepts a Questionnaire should be able to accept an SDC Questionnaire.
+
 ## [0.7.1] - 2019-03-21
 ### Fixed
 - The "upload" button did not work in Edge (and probably IE).

@@ -84,7 +84,7 @@ angular.module('lformsApp')
                     var metaProfMsg =
                       'specified via meta.profile (see documentation for versioning '+
                       '<a href="http://build.fhir.org/versioning.html#mp-version">resources</a> and '+
-                      '<a href="https://www.hl7.org/fhir/references.html#canonical">canonical URLs</a>.</p>'+
+                      '<a href="https://www.hl7.org/fhir/references.html#canonical">canonical URLs</a>).</p>'+
                       '<p>Example 1:  http://hl7.org/fhir/3.5/StructureDefinition/Questionnaire'+
                       ' (for Questionnaire version 3.5).<br>'+
                       'Example 2:  http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire|3.5.0 '+
