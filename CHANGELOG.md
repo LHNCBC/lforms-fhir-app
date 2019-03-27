@@ -3,6 +3,11 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.8.0] - 2019-03-27
+### Added
+- Questionnaire pre-population with Observation data is now supported via the
+  questionnaire-observationLinkPeriod extension.
+
 ## [0.7.1] - 2019-03-21
 ### Fixed
 - The "upload" button did not work in Edge (and probably IE).
