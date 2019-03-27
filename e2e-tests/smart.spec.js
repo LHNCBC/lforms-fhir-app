@@ -170,6 +170,8 @@ describe('SMART on FHIR connection', function () {
       });
     });
 
+    /* The menu options for  Questionnaire and QR without extensions have been
+     * removed.
     describe('Questionnaire', function() {
       beforeAll(() => clickShowMenuItem('#show-q'));
       afterAll(()=>closeResDialog());
@@ -208,6 +210,7 @@ describe('SMART on FHIR connection', function () {
         browser.wait(EC.textToBePresentInElement(msgBody, '"reference": "Patient/'), 50);
       });
     });
+    */
 
     describe('SDC Questionnaire', function() {
       beforeAll(() => clickShowMenuItem('#show-sdc-q'));
