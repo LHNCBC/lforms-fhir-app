@@ -3,6 +3,11 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.8.0] - 2019-03-27
+### Added
+- Questionnaire pre-population with Observation data is now supported via the
+  questionnaire-observationLinkPeriod extension.
+
 ## [0.7.2] - 2019-03-27
 ### Removed
 - The non-SDC menu options have been removed.  These were not really non-SDC,

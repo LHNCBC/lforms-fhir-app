@@ -53,6 +53,14 @@ describe('SMART on FHIR connection', function () {
     util.deleteCurrentQR(); // clean up
   });
 
+  it('should provide data for observationLinkPeriod', function() {
+    util.uploadForm('R4/weight-height-questionnaire.json');
+    let height = element(by.id('/8302-2/1'));
+    browser.wait(EC.presenceOf(height), 2000);
+    browser.wait(EC.textToBePresentInElementValue(height, '64'), 2000);
+    expect(height.getAttribute('value')).toMatch(/^64\./);
+  });
+
 
   describe('Saved QuestionnaireResponses', function() {
     afterAll(function() {

@@ -1,6 +1,6 @@
 {
   "name": "lforms-fhir-app",
-  "version": "0.7.2",
+  "version": "0.8.0",
   "description": "A SMART on FHIR app for lforms",
   "repository": "https://github.com/lhncbc/lforms-fhir-app",
   "devDependencies": {
@@ -32,7 +32,7 @@
     "tmp": "0.0.33"
   },
   "scripts": {
-    "postinstall": "bower install",
+    "postinstall": "bower install && webdriver-manager update",
     "update-deps": "npm update",
     "postupdate-deps": "bower update",
     "build": "grunt build",
