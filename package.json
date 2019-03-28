@@ -32,7 +32,7 @@
     "tmp": "0.0.33"
   },
   "scripts": {
-    "postinstall": "bower install",
+    "postinstall": "bower install && webdriver-manager update",
     "update-deps": "npm update",
     "postupdate-deps": "bower update",
     "build": "grunt build",
