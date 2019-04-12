@@ -357,6 +357,31 @@ fb.service('fhirService', [
         });
     };
 
+    function createQR(qrData, qData, extensionType) {
+      var qID = qData.id;
+      if (thisService.fhirVersion === 'STU3')
+        qrData.questionnaire = {"reference": "Questionnaire/" + qID};
+      else
+        qrData.questionnaire = "Questionnaire/" + qID
+
+      // create QuestionnaireResponse
+      thisService.fhir.create({resource: qrData}).then(
+        function success(resp) {
+          $rootScope.$broadcast('LF_FHIR_RESOURCE_CREATED',
+            { resType: "QuestionnaireResponse",
+              resource: resp.data,
+              resId: resp.data.id,
+              qResId: qID,
+              qName: qData.name,
+              extensionType: extensionType
+            });
+        },
+        function error(error) {
+          console.log(error);
+        }
+      );
+    }
+
 
     /**
      * Create Questionnaire if it does not exist, and QuestionnaireResponse
@@ -381,53 +406,13 @@ fb.service('fhirService', [
           // found existing Questionnaires
           if (count > 0 ) {
             var oneQuestionnaireResource = bundle.entry[0].resource;
-            var questionnaireResId = oneQuestionnaireResource.id;
-
-            // update reference to Questionnaire in QuestionnaireResponse
-            qr.questionnaire = {
-              "reference": "Questionnaire/" + questionnaireResId
-            };
-            // create QuestionnaireResponse
-            thisService.fhir.create({resource: qr})
-              .then(function success(resp) {
-                  $rootScope.$broadcast('LF_FHIR_RESOURCE_CREATED',
-                    { resType: "QuestionnaireResponse",
-                      resource: resp.data,
-                      resId: resp.data.id,
-                      qResId: questionnaireResId,
-                      qName: q.name,
-                      extensionType: extensionType
-                    });
-                },
-                function error(error) {
-                  console.log(error);
-                });
+            createQR(qr, oneQuestionnaireResource, extensionType);
           }
           // no Questionnaire found, create a new Questionnaire first
           else {
             thisService.fhir.create({resource: q})
               .then(function success(resp) {
-                  var qResId = resp.data.id;
-                  // then create QuestionnaireResponse
-                  qr.questionnaire = {
-                    "reference": "Questionnaire/" + qResId
-                  };
-
-                  thisService.fhir.create({resource: qr})
-                    .then(function success(resp) {
-                        $rootScope.$broadcast('LF_FHIR_RESOURCE_CREATED',
-                          {
-                            resType: "QuestionnaireResponse",
-                            resource: resp.data,
-                            resId: resp.data.id,
-                            qResId: questionnaireResId,
-                            qName: q.name,
-                            extensionType: extensionType
-                          });
-                      },
-                      function error(error) {
-                        console.log(error);
-                      });
+                  createQR(qr, resp.data, extensionType);
                 },
                 function error(error) {
                   console.log(error);
@@ -559,7 +544,7 @@ fb.service('fhirService', [
         query: {
           subject: 'Patient/' + pId,
           _include: 'QuestionnaireResponse:questionnaire',
-          _sort: '-authored',
+          _sort: '-_lastUpdated',
           _count: 10
         },
         headers: {
@@ -604,7 +589,7 @@ fb.service('fhirService', [
       thisService.fhir.search({
         type: 'Questionnaire',
         query: {
-          _sort: '-date',
+          _sort: '-_lastUpdated',
           _count: 10
         },
         headers: {

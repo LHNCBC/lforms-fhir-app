@@ -60,6 +60,7 @@ describe('SMART on FHIR connection', function () {
     util.deleteCurrentQR(); // clean up
   });
 
+
   it('should provide data for observationLinkPeriod', function() {
     util.uploadForm('R4/weight-height-questionnaire.json');
     let height = element(by.id('/8302-2/1'));

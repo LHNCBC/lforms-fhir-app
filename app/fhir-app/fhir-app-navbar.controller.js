@@ -310,8 +310,11 @@ angular.module('lformsApp')
                   updated = new Date(qr.authored).toString(dateTimeFormat);
                 }
                 var q = null, qName = null;
-                if (qr.questionnaire && qr.questionnaire.reference) {
-                  var qId = qr.questionnaire.reference.slice("Questionnaire".length+1);
+                var qRefURL =  (qr.questionnaire && qr.questionnaire.reference) ?
+                  qr.questionnaire.reference : // STU3
+                  qr.questionnaire; // R4+
+                if (qRefURL) {
+                  var qId = qRefURL.slice("Questionnaire".length+1);
                   var q = fhirService.findQuestionnaire(arg, qId);
                 }
 

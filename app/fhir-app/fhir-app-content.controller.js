@@ -139,9 +139,12 @@ angular.module('lformsApp')
             delete qr.id;
 
             if ($scope.fhirResInfo.questionnaireResId) {
-              qr.questionnaire = {
-                "reference": "Questionnaire/" + $scope.fhirResInfo.questionnaireResId
-              };
+              // TBD use fhirservice for setting the reference; remove duplicate code
+              var qID = $scope.fhirResInfo.questionnaireResId;
+              if (fhirService.fhirVersion === 'STU3')
+                qr.questionnaire = {"reference": "Questionnaire/" + qID};
+              else
+                qr.questionnaire = "Questionnaire/" + qID
               fhirService.createFhirResource("QuestionnaireResponse", qr, extensionType);
             }
 
