@@ -133,16 +133,21 @@
 
 /* Spinner from http://tobiasahlin.com/spinkit/ */
 .spinner {
-  position: absolute;
+  position: fixed;
   top: 50%;
-  width: 100%;
+  left: 40%;
+  width: 200px;
+  background-color: rgba(225, 225, 225, 0.5);
   text-align: center;
+  border-radius: 16px;
+  padding-top: 40px;
+  padding-bottom: 40px;
 }
 
 .spinner > div {
-  width: 18px;
-  height: 18px;
-  background-color: #333;
+  width: 40px;
+  height: 40px;
+  background-color: orange;
 
   border-radius: 100%;
   display: inline-block;
