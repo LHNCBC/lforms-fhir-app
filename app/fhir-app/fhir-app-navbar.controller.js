@@ -79,7 +79,6 @@ angular.module('lformsApp')
                 var questionnaire;
                 try {
                   var fhirVersion = LForms.Util.detectFHIRVersion(importedData);
-                  console.log("A: fhirVersion for uploaded Questionnaire = "+fhirVersion);
 
                   if (!fhirVersion) {
                     fhirVersion = LForms.Util.guessFHIRVersion(importedData);
