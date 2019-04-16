@@ -3,6 +3,11 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.8.1] - 2019-04-12
+### Fixed
+- Missing patient information in the status bar.
+- Issue with the QuestionnaireResponse list not updating from R4 servers.
+
 ## [0.8.0] - 2019-03-27
 ### Added
 - Questionnaire pre-population with Observation data is now supported via the

@@ -7,16 +7,13 @@ angular.module('lformsApp')
         '$scope', '$timeout', '$http', 'fhirService',
         function ($scope, $timeout, $http, fhirService) {
 
-      // the selected patient
-      $scope.selectedPatient = null;
-
 
       /**
        * Get the name of the selected patient
        * @returns {*|string}
        */
       $scope.getPatientName = function() {
-        return fhirService.getPatientName($scope.selectedPatient);
+        return fhirService.getPatientName();
       };
 
 
@@ -25,7 +22,7 @@ angular.module('lformsApp')
        * @returns {*|string}
        */
       $scope.getPatientGender = function() {
-        return $scope.selectedPatient.gender;
+        return fhirService.getCurrentPatient().gender;
       };
 
 
@@ -34,7 +31,7 @@ angular.module('lformsApp')
        * @returns {*|string}
        */
       $scope.getPatientDob = function() {
-        return $scope.selectedPatient.birthDate;
+        return fhirService.getCurrentPatient().birthDate;
       };
 
 
@@ -43,7 +40,7 @@ angular.module('lformsApp')
        * @returns {*|string}
        */
       $scope.getPatientPhone = function() {
-        return fhirService.getPatientPhoneNumber($scope.selectedPatient);
+        return fhirService.getPatientPhoneNumber();
       };
 
 
@@ -65,7 +62,6 @@ angular.module('lformsApp')
           fhirService.requestSmartConnection(function() {
             var smart = fhirService.getSmartConnection();
             smart.patient.read().then(function (pt) {
-              $scope.selectedPatient = pt;
               fhirService.setCurrentPatient(pt);
               fhirService.getAllQRByPatientId(pt.id);
               fhirService.getAllQ();

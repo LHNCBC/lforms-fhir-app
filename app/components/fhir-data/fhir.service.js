@@ -359,6 +359,39 @@ fb.service('fhirService', [
 
 
     /**
+     *  Creates a QuestionnairResponse.
+     * @param qrData the QuestionnaireResponse to be created.
+     * @param qData the Questionnaire resource, or at least the ID and name
+     *  fields.
+     * @param extenstionType optional, for Questionnaire/QuestionnaireResponse it could be "SDC"
+     */
+    thisService.createQR = function (qrData, qData, extensionType) {
+      var qID = qData.id;
+      if (thisService.fhirVersion === 'STU3')
+        qrData.questionnaire = {"reference": "Questionnaire/" + qID};
+      else
+        qrData.questionnaire = "Questionnaire/" + qID
+
+      // create QuestionnaireResponse
+      thisService.fhir.create({resource: qrData}).then(
+        function success(resp) {
+          $rootScope.$broadcast('LF_FHIR_RESOURCE_CREATED',
+            { resType: "QuestionnaireResponse",
+              resource: resp.data,
+              resId: resp.data.id,
+              qResId: qID,
+              qName: qData.name,
+              extensionType: extensionType
+            });
+        },
+        function error(error) {
+          console.log(error);
+        }
+      );
+    }
+
+
+    /**
      * Create Questionnaire if it does not exist, and QuestionnaireResponse
      * Data returned through an angular broadcast event.
      * @param q the Questionnaire resource
@@ -381,53 +414,13 @@ fb.service('fhirService', [
           // found existing Questionnaires
           if (count > 0 ) {
             var oneQuestionnaireResource = bundle.entry[0].resource;
-            var questionnaireResId = oneQuestionnaireResource.id;
-
-            // update reference to Questionnaire in QuestionnaireResponse
-            qr.questionnaire = {
-              "reference": "Questionnaire/" + questionnaireResId
-            };
-            // create QuestionnaireResponse
-            thisService.fhir.create({resource: qr})
-              .then(function success(resp) {
-                  $rootScope.$broadcast('LF_FHIR_RESOURCE_CREATED',
-                    { resType: "QuestionnaireResponse",
-                      resource: resp.data,
-                      resId: resp.data.id,
-                      qResId: questionnaireResId,
-                      qName: q.name,
-                      extensionType: extensionType
-                    });
-                },
-                function error(error) {
-                  console.log(error);
-                });
+            thisService.createQR(qr, oneQuestionnaireResource, extensionType);
           }
           // no Questionnaire found, create a new Questionnaire first
           else {
             thisService.fhir.create({resource: q})
               .then(function success(resp) {
-                  var qResId = resp.data.id;
-                  // then create QuestionnaireResponse
-                  qr.questionnaire = {
-                    "reference": "Questionnaire/" + qResId
-                  };
-
-                  thisService.fhir.create({resource: qr})
-                    .then(function success(resp) {
-                        $rootScope.$broadcast('LF_FHIR_RESOURCE_CREATED',
-                          {
-                            resType: "QuestionnaireResponse",
-                            resource: resp.data,
-                            resId: resp.data.id,
-                            qResId: questionnaireResId,
-                            qName: q.name,
-                            extensionType: extensionType
-                          });
-                      },
-                      function error(error) {
-                        console.log(error);
-                      });
+                  thisService.createQR(qr, resp.data, extensionType);
                 },
                 function error(error) {
                   console.log(error);
@@ -436,31 +429,6 @@ fb.service('fhirService', [
         },
         function error(error) {
           console.log(error);
-        });
-    };
-
-
-    /**
-     * Create a FHIR resource
-     * Data returned through an angular broadcast event.
-     * @param resType FHIR resource type
-     * @param resource the FHIR resource
-     * @param extenstionType optional, for Questionnaire/QuestionnaireResponse it could be "SDC"
-     */
-    thisService.createFhirResource = function(resType, resource, extensionType) {
-      thisService.fhir.create({resource: resource})
-        .then(function success(response) {
-          resource.id = response.data.id;
-          $rootScope.$broadcast('LF_FHIR_RESOURCE_CREATED',
-            {
-              resType: resType,
-              resource: response.data,
-              resId: response.data.id,
-              extensionType: extensionType
-            });
-        },
-        function error(response) {
-          console.log(response);
         });
     };
 
@@ -559,7 +527,7 @@ fb.service('fhirService', [
         query: {
           subject: 'Patient/' + pId,
           _include: 'QuestionnaireResponse:questionnaire',
-          _sort: '-authored',
+          _sort: '-_lastUpdated',
           _count: 10
         },
         headers: {
@@ -604,7 +572,7 @@ fb.service('fhirService', [
       thisService.fhir.search({
         type: 'Questionnaire',
         query: {
-          _sort: '-date',
+          _sort: '-_lastUpdated',
           _count: 10
         },
         headers: {

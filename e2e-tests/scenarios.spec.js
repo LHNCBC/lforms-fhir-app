@@ -76,7 +76,7 @@ describe('fhir app', function() {
           'R4/weight-height-questionnaire.json');
         let fs = require('fs');
         let qData = JSON.parse(fs.readFileSync(qFilePath));
-        qData.meta.profile = ['http://hl7.org/fhir/2.0/StructureDefinition/Questionnaire'];
+        qData.meta.profile = ['http://hl7.org/fhir/1.0/StructureDefinition/Questionnaire'];
         fs.writeFileSync(tmpObj.name, JSON.stringify(qData, null, 2));
         util.uploadForm(tmpObj.name);
         expect($('.error').isDisplayed()).toBe(true);

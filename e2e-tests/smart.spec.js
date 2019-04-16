@@ -10,6 +10,13 @@ describe('SMART on FHIR connection', function () {
   });
 
 
+  it('should show patient information', function() {
+    var name = $('#ptName');
+    browser.wait(EC.presenceOf(name), 5000);
+    browser.wait(EC.textToBePresentInElement(name, 'Pok'), 2000);
+  });
+
+
   it ('should display a saved form', function () {
     // Upload, edit, and save a form.
     util.uploadForm('R4/ussg-fhp.json');
@@ -52,6 +59,7 @@ describe('SMART on FHIR connection', function () {
 
     util.deleteCurrentQR(); // clean up
   });
+
 
   it('should provide data for observationLinkPeriod', function() {
     util.uploadForm('R4/weight-height-questionnaire.json');

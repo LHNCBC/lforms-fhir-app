@@ -79,6 +79,7 @@ angular.module('lformsApp')
                 var questionnaire;
                 try {
                   var fhirVersion = LForms.Util.detectFHIRVersion(importedData);
+
                   if (!fhirVersion) {
                     fhirVersion = LForms.Util.guessFHIRVersion(importedData);
                     var metaProfMsg =
@@ -105,6 +106,7 @@ angular.module('lformsApp')
                       });
                     }
                   }
+                  console.log("fhirVersion for uploaded Questionnaire = "+fhirVersion);
                   fhirVersion = LForms.Util.validateFHIRVersion(fhirVersion); // might throw
                   questionnaire = LForms.Util.convertFHIRQuestionnaireToLForms(importedData, fhirVersion);
                 }
@@ -112,11 +114,11 @@ angular.module('lformsApp')
                   $timeout(function() {userMessages.error = e});
                 }
                 if (questionnaire)
-                  $timeout(function() {selectedFormData.setFormData(new LFormsData(questionnaire))});
+                  $timeout(function() {selectedFormData.setFormData(new LForms.LFormsData(questionnaire))});
               }
               // in the internal LForms format
               else {
-                $timeout(function() {selectedFormData.setFormData(new LFormsData(importedData))});
+                $timeout(function() {selectedFormData.setFormData(new LForms.LFormsData(importedData))});
               }
             }
           };
@@ -197,7 +199,7 @@ angular.module('lformsApp')
             try {
               var formData = LForms.Util.convertFHIRQuestionnaireToLForms(
                  qrInfo.questionnaire, fhirVersion);
-              var newFormData = (new LFormsData(formData)).getFormData();
+              var newFormData = (new LForms.LFormsData(formData)).getFormData();
               mergedFormData = LForms.Util.mergeFHIRDataIntoLForms(
                 'QuestionnaireResponse', qrInfo.questionnaireresponse, newFormData,
                 fhirVersion);
@@ -217,7 +219,7 @@ angular.module('lformsApp')
                 questionnaireName : qrInfo.questionnaire.name
               };
               // set the form data to be displayed
-              selectedFormData.setFormData(new LFormsData(mergedFormData), fhirResInfo);
+              selectedFormData.setFormData(new LForms.LFormsData(mergedFormData), fhirResInfo);
               fhirService.setCurrentQuestionnaire(qrInfo.questionnaire);
             }
           }
@@ -252,7 +254,7 @@ angular.module('lformsApp')
                 userMessages.error = e;
               }
               if (!userMessages.error) {
-                var newFormData = (new LFormsData(formData)).getFormData();
+                var newFormData = (new LForms.LFormsData(formData)).getFormData();
                 var fhirResInfo = {
                   resId: null,
                   resType: null,
@@ -262,7 +264,7 @@ angular.module('lformsApp')
                   questionnaireName: qInfo.questionnaire.name
                 };
                 // set the form data to be displayed
-                selectedFormData.setFormData(new LFormsData(newFormData), fhirResInfo);
+                selectedFormData.setFormData(new LForms.LFormsData(newFormData), fhirResInfo);
                 fhirService.setCurrentQuestionnaire(qInfo.questionnaire);
               }
             }, 10);
@@ -307,8 +309,11 @@ angular.module('lformsApp')
                   updated = new Date(qr.authored).toString(dateTimeFormat);
                 }
                 var q = null, qName = null;
-                if (qr.questionnaire && qr.questionnaire.reference) {
-                  var qId = qr.questionnaire.reference.slice("Questionnaire".length+1);
+                var qRefURL =  (qr.questionnaire && qr.questionnaire.reference) ?
+                  qr.questionnaire.reference : // STU3
+                  qr.questionnaire; // R4+
+                if (qRefURL) {
+                  var qId = qRefURL.slice("Questionnaire".length+1);
                   var q = fhirService.findQuestionnaire(arg, qId);
                 }
 
@@ -450,7 +455,7 @@ angular.module('lformsApp')
                 $scope.selectedQuestionnaire = angular.copy($scope.selectedQuestionnaireInDialog.resource);
                 var formData = LForms.Util.convertFHIRQuestionnaireToLForms($scope.selectedQuestionnaire);
                 // set the form data to be displayed
-                selectedFormData.setFormData(new LFormsData(formData));
+                selectedFormData.setFormData(new LForms.LFormsData(formData));
                 fhirService.setCurrentQuestionnaire($scope.selectedQuestionnaire);
                 $scope.selectedQuestionnaireInDialog = null;
                 $mdDialog.hide();
