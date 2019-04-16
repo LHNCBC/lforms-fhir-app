@@ -20,7 +20,7 @@
 
     <div class="md-toolbar-tools">
       <span class="glyphicon glyphicon-user"></span>
-      <span ng-if="getPatientName()" flex="" class="lf-patient-info">
+      <span ng-if="getCurrentPatient()" flex="" class="lf-patient-info">
         <div id=ptName class="col-xs-6 col-md-3">Name: {{getPatientName()}}</div>
         <div class="col-xs-6 col-md-3">Gender: {{getPatientGender()}}</div>
         <div class="col-xs-6 col-md-3">DoB: {{getPatientDob()}}</div>

@@ -23,8 +23,9 @@ fb.service('fhirService', [
      *  progress, further requests are ignored until a connection is
      *  established.  (So, only one request can be in progress at a time.)
      * @param callback a callback for when the connection is obtained.  If a
-     * connection request was already in progress, the callback will not be
-     * called.
+     *  connection request was already in progress, the callback will not be
+     *  called.  If called, it will be passed a boolean indicating the success
+     *  of the connection attempt.
      */
     thisService.requestSmartConnection = function(callback) {
       thisService.connection = null;
@@ -33,8 +34,8 @@ fb.service('fhirService', [
         FHIR.oauth2.ready(function(smart) {
           thisService.setSmartConnection(smart);
           thisService._connectionInProgress = false;
-          callback();
-        });
+          callback(true);
+        }, function() {callback(false)});
       }
     };
 
@@ -78,6 +79,40 @@ fb.service('fhirService', [
 
 
     /**
+     *  Sets up a client for a standard (open) FHIR server.
+     * @param baseURL the base URL of the FHIR server.
+     * @param callback A callback function that will be passed a boolean as to
+     *  whether communication with the server was successfully established.
+     */
+    thisService.setNonSmartServer = function(baseURL, callback) {
+      try {
+        thisService.fhir = FHIR.client({serviceUrl: baseURL}).api
+        thisService.nonSmartContext = {
+          getCurrent: function(typeList, callback) {
+            var rtn = null;
+            if (typeList.indexOf('Patient') >= 0) {
+              setTimeout(function() {callback(thisService.currentPatient)});
+            }
+          },
+          getFHIRAPI: function() {
+            return thisService.fhir;
+          }
+        }
+        LForms.Util.setFHIRContext(thisService.nonSmartContext);
+        // Retrieve the fhir version
+        LForms.Util.getServerFHIRReleaseID(function(releaseID) {
+          thisService.fhirVersion = releaseID;
+          callback(true);
+        });
+      }
+      catch (e) {
+        callback(false);
+        throw e;
+      }
+    };
+
+
+    /**
      * Get the smart on fhir connection
      * @returns the smart on fhir connection or null
      */
@@ -114,7 +149,6 @@ fb.service('fhirService', [
      */
     thisService.setCurrentPatient = function(patient) {
       thisService.currentPatient = patient;
-
     };
 
 

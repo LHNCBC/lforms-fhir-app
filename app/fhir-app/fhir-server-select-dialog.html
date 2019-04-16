@@ -1,0 +1,35 @@
+<md-dialog flex="45">
+  <form>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2 ng-bind-html="dialogTitle"></h2>
+      </div>
+    </md-toolbar>
+    <md-dialog-content>
+      <div>
+        <p>{{dialogLabel}}</p>
+
+        <div layout="column" ng-cloak>
+          <md-content layout-padding layout="column">
+            <form>
+              <input type="text" id="fhirServerURL"
+               ng-model="selectedServerInDialog"
+               autocomplete-lhc="fhirServerListOpts"
+               style="background-color: white">
+            </form>
+          </md-content>
+        </div>
+
+      </div>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+      <md-button id="btnOK" aria-label="OK" ng-click="confirmAndCloseDialog()" class="md-primary">
+        OK
+      </md-button>
+      <md-button id="btnCancel" aria-label="Cancel" ng-click="closeDialog()" class="md-primary">
+        Cancel
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>
