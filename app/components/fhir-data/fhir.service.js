@@ -101,8 +101,12 @@ fb.service('fhirService', [
         LForms.Util.setFHIRContext(thisService.nonSmartContext);
         // Retrieve the fhir version
         LForms.Util.getServerFHIRReleaseID(function(releaseID) {
-          thisService.fhirVersion = releaseID;
-          callback(true);
+          if (releaseID !== undefined) {
+            thisService.fhirVersion = releaseID;
+            callback(true);
+          }
+          else
+            callback(false); // error signal
         });
       }
       catch (e) {
@@ -420,8 +424,24 @@ fb.service('fhirService', [
         },
         function error(error) {
           console.log(error);
+          reportError('QuestionnaireResponse', 'create', error);
         }
       );
+    }
+
+
+    /**
+     *  Broadcasts information about a failed operation.  The application should listen for 'OP_FAILED' broadcasts.
+     * @param resourceType the type of the resource involved
+     * @param opName the name of the operation (e.g. "create")
+     * @param errInfo the error structure returned by the FHIR client.
+     */
+    function reportError(resourceType, opName, errInfo) {
+      $rootScope.$broadcast('OP_FAILED',
+        { resType: resourceType,
+          operation: opName,
+          errInfo: errInfo
+        });
     }
 
 
@@ -458,6 +478,7 @@ fb.service('fhirService', [
                 },
                 function error(error) {
                   console.log(error);
+                  reportError('Questionnaire', 'create', error);
                 });
           }
         },
@@ -571,6 +592,7 @@ fb.service('fhirService', [
         .then(function(response) {   // response.data is a searchset bundle
           $rootScope.$broadcast('LF_FHIR_QUESTIONNAIRERESPONSE_LIST', response.data);
         }, function(error) {
+          $rootScope.$broadcast('LF_FHIR_QUESTIONNAIRERESPONSE_LIST', null, error);
           console.log(error);
         });
     };
@@ -616,6 +638,7 @@ fb.service('fhirService', [
         .then(function(response) {   // response.data is a searchset bundle
           $rootScope.$broadcast('LF_FHIR_QUESTIONNAIRE_LIST', response.data);
         }, function(error) {
+          $rootScope.$broadcast('LF_FHIR_QUESTIONNAIRE_LIST', null, error);
           console.log(error);
         });
     };

@@ -55,7 +55,7 @@ angular.module('lformsApp')
        * SMART on FHIR specific settings
        */
       // trying to get a connection to a FHIR server
-      $timeout(function(){ $scope.getSmartReady() }, 1000);
+      $timeout(function(){ $scope.establishFHIRContext() }, 1000);
 
 
       function selectServerAndPatient() {
@@ -77,23 +77,30 @@ angular.module('lformsApp')
        * Note: Here it gets all resources in one request without a search,
        * just to make a simple demo.
        */
-      $scope.getSmartReady = function() {
-        if (!fhirService.getSmartConnection() && !fhirService.smartConnectionInProgress()) {
-          fhirService.requestSmartConnection(function(success) {
-            if (success) {
-              var smart = fhirService.getSmartConnection();
-              smart.patient.read().then(function (pt) {
-                fhirService.setCurrentPatient(pt);
-                fhirService.getAllQRByPatientId(pt.id);
-                fhirService.getAllQ();
-                $scope.$apply();
-              });
-            }
-            else {
-              console.log("Could not establish a SMART connection.");
-              selectServerAndPatient();
-            }
-          });
+      $scope.establishFHIRContext = function() {
+        var fhirServerURL = $location.search()['server'];
+        if (fhirServerURL) {
+          fhirService.setNonSmartServer(fhirServerURL);
+          $scope.showPatientPicker();
+        }
+        else {
+          if (!fhirService.getSmartConnection() && !fhirService.smartConnectionInProgress()) {
+            fhirService.requestSmartConnection(function(success) {
+              if (success) {
+                var smart = fhirService.getSmartConnection();
+                smart.patient.read().then(function (pt) {
+                  fhirService.setCurrentPatient(pt);
+                  fhirService.getAllQRByPatientId(pt.id);
+                  fhirService.getAllQ();
+                  $scope.$apply();
+                });
+              }
+              else {
+                console.log("Could not establish a SMART connection.");
+                selectServerAndPatient();
+              }
+            });
+          }
         }
       };
 
@@ -158,6 +165,8 @@ angular.module('lformsApp')
             $scope.dialogLabel = "Select or Enter the base URL of a FHIR Server";
             $scope.fhirServerListOpts = {listItems: [
               {text: 'https://launch.smarthealthit.org/v/r3/fhir'},
+              {text: 'https://lforms-fhir.nlm.nih.gov/baseDstu3'},
+              {text: 'https://lforms-fhir.nlm.nih.gov/baseR4'},
               {text: 'http://test.fhir.org/r4'}
             ]}
             // close the popup without selecting a patient
@@ -170,12 +179,14 @@ angular.module('lformsApp')
             $scope.confirmAndCloseDialog = function () {
               var serverURL = $scope.selectedServerInDialog && $scope.selectedServerInDialog.text;
               if (serverURL) {
+                $scope.showWaitMsg('Contacting FHIR server.  Please wait...');
                 fhirService.setNonSmartServer(serverURL, function(success) {
+                  $mdDialog.hide();
                   if (success)
                     $scope.showPatientPicker();
                   else {
                     $scope.showErrorMsg('Could not establish communication with the FHIR server at ' +
-                      $scope.selectedServerInDialog.text);
+                      serverURL+'.');
                   }
                 });
               }
@@ -188,25 +199,70 @@ angular.module('lformsApp')
 
 
       /**
+       *  Show an error message when an interaction with the FHIR server fails.
+       */
+      $scope.$on('OP_FAILED', function(event, failData) {
+        $('.spinner').hide();
+        var errInfo = failData.errInfo
+        if (errInfo && errInfo.error && errInfo.error.responseJSON && errInfo.error.responseJSON.issue) {
+          var issues = errInfo.error.responseJSON.issue;
+          // Find the first error
+          var errorMsg = 'Unable to "'+failData.operation+'" '+failData.resType+'.';
+          var foundError = false;
+          for (var i=0, len=issues.length; i<len && !foundError; ++i) {
+            var issue = issues[i];
+            if ((issue.severity == 'error' || issue.severity == 'fatal') &&
+                 issue.details && issue.details.text) {
+              errorMsg = errorMsg+"\n"+issue.details.text;
+              foundError = true;
+            }
+          }
+          console.log(errorMsg);
+          $mdDialog.show(
+            $mdDialog.alert()
+              .parent(angular.element(document.body))
+              .clickOutsideToClose(true)
+              .title('Error')
+              .textContent(errorMsg)
+              .ariaLabel('Error Dialog')
+              .ok('OK')
+          );
+        }
+      });
+
+
+
+
+      /**
        *  Shows a error message.
        * @param msg The message to show.
        */
       $scope.showErrorMsg = function(msg) {
-        $mdDialog.show({
-          scope: $scope,
-          preserveScope: true,
-          templateUrl: 'fhir-app/error-dialog.html',
-          parent: angular.element(document.body),
-          targetEvent: event,
-          controller: function DialogController($scope, $mdDialog) {
-            $scope.dialogTitle = "Error";
-            $scope.dialogLabel = msg;
-            // close the popup without selecting a patient
-            $scope.closeDialog = function () {
-              $mdDialog.hide();
-            };
-          }
-        });
+        $mdDialog.show(
+          $mdDialog.alert()
+            .parent(angular.element(document.body))
+            .clickOutsideToClose(true)
+            .title('Error')
+            .textContent(msg)
+            .ariaLabel('Error Dialog')
+            .ok('OK')
+        );
+      };
+
+      /**
+       *  Shows a "Please Wait" message.
+       * @param msg The message to show.
+       */
+      $scope.showWaitMsg = function(msg) {
+        $mdDialog.show(
+          $mdDialog.alert()
+            .parent(angular.element(document.body))
+            .clickOutsideToClose(true)
+            .title('Please Wait')
+            .textContent(msg)
+            .ariaLabel('Please Wait Dialog')
+            .ok('OK')
+        );
       };
 
 
@@ -218,7 +274,4 @@ angular.module('lformsApp')
         return fhirService.searchPatientByName(searchText);
       };
 
-
     }]);
-
-
