@@ -88,6 +88,7 @@ fb.service('fhirService', [
       try {
         thisService.fhir = FHIR.client({serviceUrl: baseURL}).api
         thisService.nonSmartContext = {
+          baseURL: baseURL,
           getCurrent: function(typeList, callback) {
             var rtn = null;
             if (typeList.indexOf('Patient') >= 0) {
@@ -114,6 +115,7 @@ fb.service('fhirService', [
         throw e;
       }
     };
+
 
 
     /**
@@ -153,6 +155,14 @@ fb.service('fhirService', [
      */
     thisService.setCurrentPatient = function(patient) {
       thisService.currentPatient = patient;
+      if (thisService.nonSmartContext) {
+        // Update the FHIR connection to constrain resources to the patient.
+        // Following
+        // https://github.com/smart-on-fhir/client-js/blob/master/src/client/client.js
+        // for lack of documentation about "patient" in fhir.js.
+        thisService.fhir = FHIR.client({serviceUrl: thisService.nonSmartContext.baseURL,
+          patientId: patient.id}).patient.api
+      }
     };
 
 
