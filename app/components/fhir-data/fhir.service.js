@@ -86,7 +86,7 @@ fb.service('fhirService', [
      */
     thisService.setNonSmartServer = function(baseURL, callback) {
       try {
-        thisService.fhir = FHIR.client({serviceUrl: baseURL}).api
+        thisService.fhir = FHIR.client({serviceUrl: baseURL}).api;
         thisService.nonSmartContext = {
           baseURL: baseURL,
           getCurrent: function(typeList, callback) {

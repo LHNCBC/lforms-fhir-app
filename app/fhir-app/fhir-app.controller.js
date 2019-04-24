@@ -124,7 +124,6 @@ angular.module('lformsApp')
             $scope.dialogLabel = "Choose a Patient";
             $scope.dialogHint = "Search for patients by name";
             // close the popup without selecting a patient
-            var scope = $scope
             $scope.closeDialog = function () {
               $scope.selectedPatientInDialog = null;
               $mdDialog.hide();
@@ -218,19 +217,9 @@ angular.module('lformsApp')
             }
           }
           console.log(errorMsg);
-          $mdDialog.show(
-            $mdDialog.alert()
-              .parent(angular.element(document.body))
-              .clickOutsideToClose(true)
-              .title('Error')
-              .textContent(errorMsg)
-              .ariaLabel('Error Dialog')
-              .ok('OK')
-          );
+          $scope.showErrorMsg(errorMsg);
         }
       });
-
-
 
 
       /**
