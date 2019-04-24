@@ -3,6 +3,12 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.9.0] - 2019-04-24
+### Added
+- If a SMART context is not found, the app now asks the user to enter the base
+  URL of a FHIR server and select a patient.  This allows other FHIR servers to
+  be tested which do not have a SMART interface.
+
 ## [0.8.1] - 2019-04-12
 ### Fixed
 - Missing patient information in the status bar.
