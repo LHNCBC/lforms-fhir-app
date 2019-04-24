@@ -7,8 +7,9 @@
       </div>
     </div>
     <div class="panel-body">
-      <div ng-if="!listSavedQR">Loading QuestionnaireResponses from server...</div>
-      <div ng-if="listSavedQR && listSavedQR.length==0">No saved
+      <div ng-if="listSavedQRError">Unable to retrieve saved QuestionnaireResponses.</div>
+      <div ng-if="!listSavedQRError && !listSavedQR">Loading QuestionnaireResponses from server...</div>
+      <div ng-if="!listSavedQRError && listSavedQR && listSavedQR.length==0">No saved
         QuestionnaireResponse resources were found for this patient.</div>
       <div ng-if="listSavedQR && listSavedQR.length>0" id="qrList" class="list-group">
         <a href="#" class="list-group-item {{isSelected(1, $index)}}" ng-repeat="p in listSavedQR" role="presentation" id="{{p.resId}}" ng-click="showSavedQQR($index, p)">
@@ -31,8 +32,9 @@
       </div>
     </div>
     <div class="panel-body" id="qListContainer">
-      <div ng-if="!listSavedQ">Loading Questionnaires from server...</div>
-      <div ng-if="listSavedQ && listSavedQ.length==0">No saved
+      <div ng-if="listSavedQError">Unable to retrieve saved Questionnaires.</div>
+      <div ng-if="!listSavedQError && !listSavedQ">Loading Questionnaires from server...</div>
+      <div ng-if="!listSavedQError && listSavedQ && listSavedQ.length==0">No saved
         Questionnaire resources were found.  Try uploading one.</div>
       <div ng-if="listSavedQ && listSavedQ.length>0"  id="qList" class="list-group">
         <a href="#" class="list-group-item {{isSelected(2, $index)}}" ng-repeat="p in listSavedQ" role="presentation" id="{{p.resId}}" ng-click="showSavedQuestionnaire($index, p)">

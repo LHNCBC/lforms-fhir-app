@@ -4,6 +4,15 @@ var util = require('./util');
 var po = util.pageObjects;
 var EC = protractor.ExpectedConditions;
 
+/**
+ *  The tests here do not interact with a FHIR server, so we need to dismiss that selection box.
+ */
+function dismissFHIRServerDialog() {
+  var cancelButton = '#btnCancel';
+  browser.wait(EC.elementToBeClickable($(cancelButton)), 5000);
+  $(cancelButton).click();
+  browser.wait(EC.not(EC.presenceOf($(cancelButton))), 5000);
+}
 
 describe('fhir app', function() {
 
@@ -15,6 +24,7 @@ describe('fhir app', function() {
     it('should render a page without any data', function() {
       browser.ignoreSynchronization = false;
       browser.get(mainPageURL);
+      dismissFHIRServerDialog();
       browser.wait(function() {
         return title.isDisplayed();
       }, 5000);
@@ -41,6 +51,7 @@ describe('fhir app', function() {
     it("should load a Questionnaire file", function() {
       browser.ignoreSynchronization = false;
       browser.get(mainPageURL);
+      dismissFHIRServerDialog();
       browser.wait(function() {
         return title.isDisplayed();
       }, 5000);
@@ -72,6 +83,7 @@ describe('fhir app', function() {
       it("should show an error message if the FHIR version is not supported", function() {
         // Edit a working sample file.
         browser.get(mainPageURL);
+        dismissFHIRServerDialog();
         let qFilePath = path.resolve(__dirname, 'data',
           'R4/weight-height-questionnaire.json');
         let fs = require('fs');
@@ -85,6 +97,7 @@ describe('fhir app', function() {
       it("should show a warning message if the FHIR version was guessed", function() {
         // Edit a working sample file.
         browser.get(mainPageURL);
+        dismissFHIRServerDialog();
         let qFilePath = path.resolve(__dirname, 'data',
           'R4/weight-height-questionnaire.json');
         let fs = require('fs');
@@ -109,6 +122,7 @@ describe('fhir app', function() {
   describe('R4 examples', function() {
     it('should have working answer lists', function() {
       browser.get(mainPageURL);
+      dismissFHIRServerDialog();
       util.uploadForm('R4/weight-height-questionnaire.json');
       let bodyPos = element(by.id('/8361-8/1'));
       bodyPos.click();
@@ -125,6 +139,7 @@ describe('fhir app', function() {
         }
 
         browser.get(mainPageURL);
+        dismissFHIRServerDialog();
         let weightNum = element(by.id('/3141-9/1'));
         let weightUnit = element(by.id('unit_/3141-9/1'));
         let heightNum = element(by.id('/8302-2/1'));
@@ -156,6 +171,7 @@ describe('fhir app', function() {
   describe('STU3 examples', function() {
     it('should have working answer lists', function() {
       browser.get(mainPageURL);
+      dismissFHIRServerDialog();
       util.uploadForm('STU3/weight-height-questionnaire.json');
       let bodyPos = element(by.id('/8361-8/1'));
       bodyPos.click();
