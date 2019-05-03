@@ -3,6 +3,15 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.9.1] - 2019-05-03
+### Fixed
+Updated LForms to get several fixes:
+- Fixed an issue with the processing of FHIRPath.
+- Fixed regular expression field validation
+- Fixed an problem with the handling of repsonses to Questionnaire items that do
+  not have codes.
+- Corrected itemControl codes.
+
 ## [0.9.0] - 2019-04-24
 ### Added
 - If a SMART context is not found, the app now asks the user to enter the base

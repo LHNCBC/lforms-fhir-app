@@ -128,18 +128,10 @@ angular.module('lformsApp')
             fhirService.fhirVersion, $scope.formData, {noExtensions: noExtensions,
             subject: fhirService.getCurrentPatient()})
           if (qr) {
-            // patient data
-            var patient = fhirService.getCurrentPatient();
-            if (patient) {
-              qr["subject"] = {
-                "reference": "Patient/" + patient.id,
-                "display": patient.name
-              }
-            }
+            // patient data should already be filled in above
             delete qr.id;
 
             if ($scope.fhirResInfo.questionnaireResId) {
-              // TBD use fhirservice for setting the reference; remove duplicate code
               var qData = {id: $scope.fhirResInfo.questionnaireResId,
                 name: $scope.fhirResInfo.questionnaireName};
               fhirService.createQR(qr, qData, extensionType);
