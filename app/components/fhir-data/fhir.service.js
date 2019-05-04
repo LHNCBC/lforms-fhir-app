@@ -456,6 +456,132 @@ fb.service('fhirService', [
 
 
     /**
+     * Create Questionnaire if it does not exist, and QuestionnaireResponse and
+     * its extracted observations.
+     * Data returned through an angular broadcast event.
+     * @param q the Questionnaire resource
+     * @param qr the QuestionnaireResponse resource
+     * @param obsArray the array of Observations extracted from qr
+     * @param qExists true if the questionnaire is known to exist (in which case
+     * we skip the lookup)
+     */
+    var _collectedResults;
+    var _terminatingError;
+    thisService.createQQRObs = function(q, qr, obsArray, qExists) {
+      _collectedResults = [];
+      _terminatingError = null;
+
+      // Build a FHIR transaction bundle to create these resources.
+      var bundle = {
+        resourceType:"Bundle",
+        type: "transaction",
+        entry: []
+      };
+
+      bundle.entry.push({
+        resource: qr,
+        request: {
+          method: "POST",
+          url: "QuestionnaireResponse"
+        }
+      });
+
+      for (var i=0, len=obsArray.length; i<len; ++i) {
+        bundle.entry.push({
+          resource: obsArray[i],
+          request: {
+            method: "POST",
+            url: "Observation"
+          }
+        });
+      }
+
+      function withQuestionnaire(q) {
+        // Set the questionnaire reference in the response
+        var qr = bundle.entry[0].resource;
+        var qRef = 'Questionnaire/'+q.id;
+        if (thisService.fhirVersion == 'STU3')
+          qr.questionnaire = {reference: qRef};
+        else
+          qr.questionnaire = qRef;
+
+        thisService.fhir.transaction({bundle: bundle}).then(
+          function success(resp) {
+            _collectedResults.push(resp);
+            reportResults();
+          },
+          function error(err) {
+            _terminatingError = {resType: 'Bundle', operation: 'create', errInfo: err};
+            reportResults();
+          }
+        );
+        // thisService.createQR(qr, q, 'SDC'); ... TBD - refactor createQQR
+      }
+      if (qExists)
+        withQuestionnaire(q);
+      else
+        createOrFindAndCall(q, withQuestionnaire);
+    };
+
+
+    /**
+     *  Reports the results of one or more operations (which might have
+     *  terminated in an error.
+     */
+    function reportResults() {
+      $rootScope.$broadcast('OP_RESULTS',
+        {
+          successfulResults: JSON.parse(JSON.stringify(_collectedResults)),
+          error: JSON.parse(JSON.stringify(_terminatingError))
+        }
+      );
+      _collectedResults = [];
+      _terminatingError = null;
+    }
+
+
+    /**
+     *  Checks the server to see if questionnaire q is already there, creates it
+     *  if needed, and then calls function withQuestionnaire.
+     * @param q A questionnaire that needs to exist prior to withQuestionnaire
+     *  being created.
+     * @param withQuestionnaire a function to be called with the questionnaire
+     *  resource from the server.
+     */
+    function createOrFindAndCall(q, withQuestionnaire) {
+      // check if a related Questionnaire exists
+      var queryJson = {identifier: q.identifier[0].system+'|' + q.identifier[0].value};
+      thisService.fhir.search({
+        type: "Questionnaire",
+        query: queryJson,
+        headers: {'Cache-Control': 'no-cache'}
+      }).then(function success(resp) {
+        var bundle = resp.data;
+        var count = (bundle.entry && bundle.entry.length) || 0;
+        // found existing Questionnaires
+        if (count > 0 ) {
+          var oneQuestionnaireResource = bundle.entry[0].resource;
+          withQuestionnaire(oneQuestionnaireResource);
+        }
+        // no Questionnaire found, create a new Questionnaire first
+        else {
+          thisService.fhir.create({resource: q}).then(function success(resp) {
+            withQuestionnaire(resp.data);
+          },
+          function error(error) {
+            _terminatingError = {resType: 'Questionnaire', operation: 'create', errInfo: error};
+            reportResults();
+          });
+        }
+      },
+      function error(error) {
+        _terminatingError = {resType: 'Questionnaire', operation: 'search', errInfo: error};
+        reportResults();
+      });
+    };
+
+
+    /**
      * Create Questionnaire if it does not exist, and QuestionnaireResponse
      * Data returned through an angular broadcast event.
      * @param q the Questionnaire resource
@@ -464,7 +590,9 @@ fb.service('fhirService', [
      */
     thisService.createQQR = function(q, qr, extensionType) {
 
-      var queryJson = {identifier: "http://loinc.org|" + q.identifier[0].value};
+      var queryJson = {identifier: q.identifer[0].system+'|' + q.identifier[0].value};
+      //var queryJson = {identifier: "http://loinc.org|" + q.identifier[0].value};
+
 
       // check if a related Questionnaire exists
       thisService.fhir.search({
@@ -568,16 +696,22 @@ fb.service('fhirService', [
      * @param bundle a FHIR transaction bundel.
      */
     thisService.handleTransactionBundle = function(bundle) {
-      thisService.fhir.transaction({bundle: bundle})
-        .then(
-          function success(response) {
-            console.log('transaction succeeded');
-            console.log(response);
-          },
-          function error() {
-            console.log(response);
-
-          })
+      thisService.fhir.transaction({bundle: bundle}).then(
+        function success(resp) {
+          $rootScope.$broadcast('LF_FHIR_BUNDLE_PROCESSED',
+            { resType: "Bundle",
+              resource: resp.data,
+              resId: resp.data.id,
+              qResId: qID,
+              qName: qData.name,
+              extensionType: extensionType
+            });
+        },
+        function error(error) {
+          console.log(error);
+          reportError('Bundle', 'create', error);
+        }
+      )
     };
 
 

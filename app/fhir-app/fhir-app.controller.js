@@ -161,7 +161,6 @@ angular.module('lformsApp')
           targetEvent: event,
           controller: function DialogController($scope, $mdDialog) {
             $scope.dialogTitle = "FHIR Server Needed";
-            $scope.dialogLabel = "Select or Enter the base URL of a FHIR Server";
             $scope.fhirServerListOpts = {listItems: [
               {text: 'https://launch.smarthealthit.org/v/r3/fhir'},
               {text: 'https://lforms-fhir.nlm.nih.gov/baseDstu3'},
@@ -223,35 +222,72 @@ angular.module('lformsApp')
 
 
       /**
+       *  Reports the results of a transaction.
+       */
+      $scope.$on('OP_RESULTS', function(event, resultData) {
+        $('.spinner').hide();
+        var msg = '';
+        if (resultData.error) {
+          msg += 'Operation failed.<br><pre>' + JSON.stringify(resultData.error, null, 2)+'</pre>';
+        }
+        if (resultData.successfulResults) {
+          msg += 'The following operations succeeded.<br><pre>'+JSON.stringify(resultData.successfulResults, null, 2)+'</pre>';
+        }
+        $scope.showHTMLMsg('Operation Results', msg);
+      });
+
+
+      /**
        *  Shows a error message.
        * @param msg The message to show.
        */
       $scope.showErrorMsg = function(msg) {
+        this.showMsg('Error', msg);
+      };
+
+
+      /**
+       *  Shows a message (text only).
+       * @param title The heading for the message.
+       * @param msg The message to show.
+       */
+      $scope.showMsg = function(title, msg) {
         $mdDialog.show(
           $mdDialog.alert()
             .parent(angular.element(document.body))
             .clickOutsideToClose(true)
-            .title('Error')
+            .title(title)
             .textContent(msg)
-            .ariaLabel('Error Dialog')
+            .ariaLabel(title+' Dialog')
             .ok('OK')
         );
       };
 
+
       /**
-       *  Shows a "Please Wait" message.
-       * @param msg The message to show.
+       *  Shows an HTML message.
+       * @param title The heading for the message.
+       * @param msg The message to show.  Caller should make input is safe.
        */
-      $scope.showWaitMsg = function(msg) {
+      $scope.showHTMLMsg = function(title, msg) {
         $mdDialog.show(
           $mdDialog.alert()
             .parent(angular.element(document.body))
             .clickOutsideToClose(true)
-            .title('Please Wait')
-            .textContent(msg)
-            .ariaLabel('Please Wait Dialog')
+            .title(title)
+            .htmlContent(msg)
+            .ariaLabel(title+' Dialog')
             .ok('OK')
         );
+      };
+
+
+       /**
+       *  Shows a "Please Wait" message.
+       * @param msg The message to show.
+       */
+      $scope.showWaitMsg = function(msg) {
+        this.showMsg('Please Wait', msg);
       };
 
 

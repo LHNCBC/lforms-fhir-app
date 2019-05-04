@@ -418,7 +418,7 @@ angular.module('lformsApp')
           // also update the list to get the updated timestamp and fhir resources.
           var patient = fhirService.getCurrentPatient();
           fhirService.getAllQRByPatientId(patient.id);
-          fhirService.getAllQ();
+          // fhirService.getAllQ(); // should not be necessary
           $scope.formSelected = {
             groupIndex: 1,
             formIndex: 0
