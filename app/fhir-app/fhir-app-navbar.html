@@ -1,6 +1,24 @@
 <div ng-controller="NavBarCtrl">
 
   <div class="panel panel-default">
+    <div class="panel-body">
+      <input type="file" id="inputAnchor" nv-file-select uploader="uploader"
+             class="hide" />
+
+      <div class="btn-group btn-group-justified" role="group">
+        <a id="upload" role="button" type="button"
+         class="btn btn-default btn-sm btn-success" ng-click="loadFromFile()"
+         title="Upload a file."><span class="glyphicon glyphicon-upload"></span><span
+         class="lf-nav-button">Upload</span></a></div>
+      <p>If you do not have a Questionnaire of your own to upload, you can try
+       downloading one of our <a href=
+       "https://raw.githubusercontent.com/lhncbc/lforms-fhir-app/master/e2e-tests/data/R4/weight-height-questionnaire.json"
+       target="_blank" rel="noopener noreferrer" id=sampleQ>samples</a> (saving
+       it to file, and then uploading it here).</p>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
     <div class="panel-heading">
       <div class="panel-title">
         Saved QuestionnaireResponses:
@@ -49,29 +67,6 @@
           <a role="button" type="button" class="btn btn-default btn-sm btn-success " ng-click="showQuestionnairePicker($event)" title="Choose a Questionnaire from the FHIR server."><span class="glyphicon glyphicon-search"></span><span class="lf-nav-button">Search</span></a>
         </div>
       </div>
-    </div>
-  </div>
-
-  <div class="panel panel-default">
-    <!--<div class="panel-heading">-->
-      <!--<div class="panel-title">-->
-        <!--Upload From File:-->
-      <!--</div>-->
-    <!--</div>-->
-    <div class="panel-body">
-      <input type="file" id="inputAnchor" nv-file-select uploader="uploader"
-             class="hide" />
-
-      <div class="btn-group btn-group-justified" role="group">
-        <a id="upload" role="button" type="button"
-         class="btn btn-default btn-sm btn-success" ng-click="loadFromFile()"
-         title="Upload a file."><span class="glyphicon glyphicon-upload"></span><span
-         class="lf-nav-button">Upload</span></a></div>
-      <p>If you do not have a Questionnaire of your own to upload, you can try
-       downloading one of our <a href=
-       "https://raw.githubusercontent.com/lhncbc/lforms-fhir-app/master/e2e-tests/data/R4/weight-height-questionnaire.json"
-       target="_blank" rel="noopener noreferrer" id=sampleQ>samples</a> (saving
-       it to file, and then uploading it here).</p>
     </div>
   </div>
 

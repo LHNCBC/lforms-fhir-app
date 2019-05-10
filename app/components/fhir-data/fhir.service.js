@@ -81,11 +81,12 @@ fb.service('fhirService', [
     /**
      *  Sets up a client for a standard (open) FHIR server.
      * @param baseURL the base URL of the FHIR server.
-     * @param callback A callback function that will be passed a boolean as to
+     * @param commCallback A callback function that will be passed a boolean as to
      *  whether communication with the server was successfully established.
      */
-    thisService.setNonSmartServer = function(baseURL, callback) {
+    thisService.setNonSmartServer = function(baseURL, commCallback) {
       try {
+        thisService.connection = {server: {serviceUrl: baseURL}};
         thisService.fhir = FHIR.client({serviceUrl: baseURL}).api;
         thisService.nonSmartContext = {
           baseURL: baseURL,
@@ -104,14 +105,14 @@ fb.service('fhirService', [
         LForms.Util.getServerFHIRReleaseID(function(releaseID) {
           if (releaseID !== undefined) {
             thisService.fhirVersion = releaseID;
-            callback(true);
+            commCallback(true);
           }
           else
-            callback(false); // error signal
+            commCallback(false); // error signal
         });
       }
       catch (e) {
-        callback(false);
+        commCallback(false);
         throw e;
       }
     };
@@ -549,8 +550,34 @@ fb.service('fhirService', [
      *  resource from the server.
      */
     function createOrFindAndCall(q, withQuestionnaire) {
+      function createQAndCall() {
+        thisService.fhir.create({resource: q}).then(function success(resp) {
+          withQuestionnaire(resp.data);
+        },
+        function error(error) {
+          _terminatingError = {resType: 'Questionnaire', operation: 'create', errInfo: error};
+          reportResults();
+        });
+      }
+
       // check if a related Questionnaire exists
-      var queryJson = {identifier: q.identifier[0].system+'|' + q.identifier[0].value};
+      var queryJson;
+      if (q.url)
+        queryJson = {url: q.url}
+      else if (q.identifier && q.identifier[0])
+        queryJson = {identifier: q.identifier[0].system+'|' + q.identifier[0].value}
+      else if (q.code && q.code[0])
+        queryJson = {code: q.code[0].system+'|' + q.code[0].value};
+      else if (q.name)
+        queryJson = {name: q.name}
+      else if (q.title)
+        queryJson = {title: q.title}
+          // title, name
+      if (!queryJson) {
+        // Can't form a query, so just make a new one
+        createQAndCall();
+      }
+
       thisService.fhir.search({
         type: "Questionnaire",
         query: queryJson,
@@ -565,13 +592,7 @@ fb.service('fhirService', [
         }
         // no Questionnaire found, create a new Questionnaire first
         else {
-          thisService.fhir.create({resource: q}).then(function success(resp) {
-            withQuestionnaire(resp.data);
-          },
-          function error(error) {
-            _terminatingError = {resType: 'Questionnaire', operation: 'create', errInfo: error};
-            reportResults();
-          });
+          createQAndCall();
         }
       },
       function error(error) {
