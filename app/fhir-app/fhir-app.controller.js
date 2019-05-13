@@ -58,6 +58,9 @@ angular.module('lformsApp')
       $timeout(function(){ $scope.establishFHIRContext() }, 1000);
 
 
+      /**
+       *  Opens dialogs for selecting first a FHIR server and then a patient.
+       */
       function selectServerAndPatient() {
         // For now get the server from an URL parameter:
         var fhirServerURL = $location.search()['server'];
@@ -70,11 +73,21 @@ angular.module('lformsApp')
       }
 
 
+      /**
+       *  Establishes communication with the FHIR server at the given URL, and
+       *  calls the given callback with a boolean indicating whether
+       *  communication was successfully established.  If it was successful, a
+       *  patient selection dialog will be opened.
+       * @param serverURL the URL of the FHIR server
+       * @param callback the function to call after the communication attempt.
+       *  It will be passed a boolean to indicate whether the attempt was
+       *  successful.
+       */
       function setServerAndPickPatient(serverURL, callback) {
         $scope.showWaitMsg('Contacting FHIR server.  Please wait...');
         fhirService.setNonSmartServer(serverURL, function(success) {
           if (callback)
-            callback();
+            callback(success);
           if (success)
             $scope.showPatientPicker();
           else {
@@ -170,7 +183,6 @@ angular.module('lformsApp')
           preserveScope: true,
           templateUrl: 'fhir-app/save-results-dialog.html',
           parent: angular.element(document.body),
-          targetEvent: event,
           controller: function DialogController($scope, $mdDialog) {
             $scope.dialogTitle = "Save Results";
             $scope.resultData = resultData;
@@ -221,7 +233,7 @@ angular.module('lformsApp')
             $scope.confirmAndCloseDialog = function () {
               var serverURL = $scope.selectedServerInDialog && $scope.selectedServerInDialog.text;
               if (serverURL)
-                setServerAndPatient(serverURL, function() {$mdDialog.hide()});
+                setServerAndPickPatient(serverURL, function() {$mdDialog.hide()});
               $scope.selectedServerInDialog = null;
               $mdDialog.hide();
             };
