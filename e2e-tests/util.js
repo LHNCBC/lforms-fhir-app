@@ -189,6 +189,27 @@ let util = {
 
 
   /**
+   *  Closes the "save results" dialog.
+   */
+  closeSaveResultsDialog: function() {
+    var okButton = '#btnOK';
+    browser.wait(EC.presenceOf($(okButton)));
+    $(okButton).click();
+    browser.wait(EC.not(EC.presenceOf($(okButton))));
+  },
+
+
+  /**
+   *  Saves the current form as a questionnaire response.
+   */
+  saveAsQR: function() {
+    let saveAs = $('#btn-save-as');
+    saveAs.click();
+    $('#btn-save-sdc-qr').click();
+  },
+
+
+  /**
    *  Returns a function, which when called, will send the given message to the
    *  log.  The purpose is to be used in .then clauses for debugging.
    */

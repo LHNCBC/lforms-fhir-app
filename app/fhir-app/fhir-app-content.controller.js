@@ -203,9 +203,7 @@ angular.module('lformsApp')
                   "display": patient.name
                 }
               }
-              qr.questionnaire = {
-                "reference": "Questionnaire/" + $scope.fhirResInfo.questionnaireResId
-              };
+              fhirService.setQRRefToQ(qr, {id: $scope.fhirResInfo.questionnaireResId});
               qr.id = $scope.fhirResInfo.resId; // id must be same
               fhirService.updateFhirResource("QuestionnaireResponse", qr);
             }
@@ -396,7 +394,7 @@ angular.module('lformsApp')
         /**
          * Update current resource info when a new QuestionnaireResponse is created on the FHIR server
          */
-        $scope.$on('LF_FHIR_RESOURCE_CREATED', function(event, arg) {
+        $scope.$on('LF_FHIR_QR_CREATED', function(event, arg) {
           $scope.fhirResInfo.resId = arg.resId;
           $scope.fhirResInfo.resType = arg.resType;
           if (arg.qResId) {

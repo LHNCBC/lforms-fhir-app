@@ -32,6 +32,7 @@ describe('SMART on FHIR connection', function () {
     let sdcSave = $('#btn-save-sdc-qr');
     sdcSave.click();
     util.waitForSpinnerStopped();
+    util.closeSaveResultsDialog();
     // Confirm that a warning message (about an unknown FHIR version) is not shown.
     expect(EC.not(EC.presenceOf($('.warning'))));
 
@@ -108,6 +109,7 @@ describe('SMART on FHIR connection', function () {
           $('#btn-save-as').click(); // open save as menu
           $('#btn-save-sdc-qr').click(); // save the Q & QR
           util.waitForSpinnerStopped();
+          util.closeSaveResultsDialog();
           // Wait for the saved questionnaire response to be this page.
           let qr = po.firstSavedQR(prefix);
           browser.wait(EC.presenceOf(qr), 2000);
@@ -135,6 +137,7 @@ describe('SMART on FHIR connection', function () {
       $('#btn-save-as').click();
       $('#btn-save-sdc-qr').click();
       util.waitForSpinnerStopped();
+      util.closeSaveResultsDialog();
 
       // Load the first QR
       var firstQR = po.firstSavedQR();
@@ -185,48 +188,6 @@ describe('SMART on FHIR connection', function () {
         browser.wait(EC.textToBePresentInElement(msgBody, '"resourceType": "Questionnaire"'), 50);
       });
     });
-
-    /* The menu options for  Questionnaire and QR without extensions have been
-     * removed.
-    describe('Questionnaire', function() {
-      beforeAll(() => clickShowMenuItem('#show-q'));
-      afterAll(()=>closeResDialog());
-
-      it('should open the dialog', function() {
-        browser.wait(EC.visibilityOf(msgBody));
-      });
-
-      it('should contain a Questionnaire resource', function () {
-        browser.wait(EC.textToBePresentInElement(msgBody, '"resourceType": "Questionnaire"'), 50);
-      });
-
-      it('should not be an SDC questionnaire', function() {
-        browser.wait(EC.not(EC.textToBePresentInElement(msgBody, 'sdc-questionnaire')), 50);
-      });
-    });
-
-    describe('QuestionnaireResponse', function() {
-      beforeAll(() => clickShowMenuItem('#show-qr'));
-      afterAll(()=>closeResDialog());
-
-      it('should open the dialog', function() {
-        browser.wait(EC.visibilityOf(msgBody));
-      });
-
-      it('should contain a QuestionnaireResponse resource', function () {
-        browser.wait(EC.textToBePresentInElement(msgBody, '"resourceType": "QuestionnaireResponse"'), 50);
-      });
-
-      it('should not be an SDC QuestionnaireResponse', function() {
-        browser.wait(EC.not(EC.textToBePresentInElement(msgBody, 'sdc-questionnaire')), 50);
-      });
-
-      it('should contain a subject', function() {
-        browser.wait(EC.textToBePresentInElement(msgBody, '"subject":'), 50);
-        browser.wait(EC.textToBePresentInElement(msgBody, '"reference": "Patient/'), 50);
-      });
-    });
-    */
 
     describe('SDC Questionnaire', function() {
       beforeAll(() => clickShowMenuItem('#show-sdc-q'));

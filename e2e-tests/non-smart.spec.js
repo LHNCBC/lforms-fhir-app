@@ -37,10 +37,10 @@ describe('Non-SMART connection to FHIR server', function() {
     // Wait for name to be auto-filled (pre-population test)
     let nameField = element(by.id('/54126-8/54125-0/1/1'));
     browser.wait(EC.presenceOf(nameField), 2000);
-    browser.wait(EC.textToBePresentInElementValue(nameField, 'Pok'), 2000);
+    browser.wait(EC.textToBePresentInElementValue(nameField, 'Karen'), 2000);
   });
 
- fdescribe('Extracting observations', function() {
+  describe('Extracting observations', function() {
     it('should be able to accept a "server" parameter', function() {
       browser.get(mainPageURL+'?server=https://lforms-fhir.nlm.nih.gov/baseR4');
       pickPatient();
@@ -65,4 +65,46 @@ describe('Non-SMART connection to FHIR server', function() {
       });
     });
   });
+
+
+  describe('Editing saved values', function() {
+    var familyMemberName = '#\\/54114-4\\/54138-3\\/1\\/1';
+
+    it('should show a saved value', function () {
+      // Save a new QuestionnaireResponse
+      util.uploadForm('R4/ussg-fhp.json');
+      browser.wait(EC.presenceOf($(familyMemberName)), 2000);
+      $(familyMemberName).click();
+      $(familyMemberName).sendKeys('zz');
+      util.saveAsQR();
+      util.closeSaveResultsDialog();
+      // Load a blank questionnaire to clear the fields
+      util.pageObjects.firstSavedUSSGQ().click();
+      browser.wait(EC.presenceOf($(familyMemberName)));
+      expect($(familyMemberName).getAttribute('value')).toBe('');
+      // Load the saved QR and check the value
+      util.pageObjects.firstSavedQR().click();
+      browser.wait(EC.presenceOf($(familyMemberName)));
+      expect($(familyMemberName).getAttribute('value')).toBe('zz');
+    });
+
+    it('should show an edited value', function() {
+      // Now edit the saved value in the previous test
+      util.clearField($(familyMemberName));
+      $(familyMemberName).click();
+      $(familyMemberName).sendKeys('aa');
+      $('#btn-save').click();
+      util.waitForSpinnerStopped();
+      // Load a blank questionnaire to clear the fields
+      util.pageObjects.firstSavedUSSGQ().click();
+      browser.wait(EC.presenceOf($(familyMemberName)));
+      expect($(familyMemberName).getAttribute('value')).toBe('');
+      // Load the saved QR and check the value
+      util.pageObjects.firstSavedQR().click();
+      browser.wait(EC.presenceOf($(familyMemberName)));
+      expect($(familyMemberName).getAttribute('value')).toBe('aa');
+      browser.sleep(5000);
+    });
+  });
+
 });
