@@ -189,7 +189,7 @@ angular.module('lformsApp')
             // For some reason, calling JSON.stringify in the template does not
             // work-- nothing is output-- so pass in a separate variable here.
             $scope.resultDataJSON = JSON.stringify(resultData, null, 2);
-            $scope.serverBaseURL = fhirService.getSmartConnection().server.serviceUrl;
+            $scope.serverBaseURL = fhirService.getServerBaseURL();
             // close the popup without selecting a patient
             $scope.closeDialog = function () {
               $scope.selectedPatientInDialog = null;

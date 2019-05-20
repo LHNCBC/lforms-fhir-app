@@ -77,13 +77,12 @@ let util = {
      '&fhir_version_2=r3&iss=&launch_ehr=1&launch_url=http%3A%2F%2Flocalhost%3A'+
      '8000%2Flforms-fhir-app%2Flaunch.html&patient=&prov_skip_auth=1&provider='+
      '&pt_skip_auth=1&public_key=&sb=&sde=&sim_ehr=1&token_lifetime=15&user_pt=');
-    // Select R3
-    // https://stackoverflow.com/a/24259419/360782
-    element(by.cssContainingText('#fhir-version-2 option', 'R3 (STU3)')).click();
+    //browser.get('https://lforms-smart-fhir.nlm.nih.gov/?auth_error=&fhir_version_1=r3'+
+    //  '&fhir_version_2=r4&iss=&launch_ehr=1&launch_url=http&patient=&prov_skip_auth=1'+
+    //  '&provider=&pt_skip_auth=1&public_key=&sb=&sde=&sim_ehr=0&token_lifetime=15&user_pt=');
     let launchURL = element(by.id('launch-url'));
     util.clearField(launchURL);
     this.sendKeys(launchURL, 'http://localhost:8000/lforms-fhir-app/launch.html');
-//    launchURL.sendKeys('http://localhost:8000/lforms-fhir-app/launch.html');
     let launchButton = element(by.id('ehr-launch-url'));
     this.waitForNewWindow(function() {launchButton.click()});
     this.runInNewestWindow(function() {

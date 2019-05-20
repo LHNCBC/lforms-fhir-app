@@ -258,7 +258,7 @@ angular.module('lformsApp')
                 userMessages.error = e;
               }
               if (!userMessages.error) {
-                var newFormData = (new LForms.LFormsData(formData)).getFormData();
+                //var newFormData = (new LForms.LFormsData(formData)).getFormData();
                 var fhirResInfo = {
                   resId: null,
                   resType: null,
@@ -268,7 +268,7 @@ angular.module('lformsApp')
                   questionnaireName: qInfo.questionnaire.name
                 };
                 // set the form data to be displayed
-                selectedFormData.setFormData(new LForms.LFormsData(newFormData), fhirResInfo);
+                selectedFormData.setFormData(new LForms.LFormsData(formData), fhirResInfo);
                 fhirService.setCurrentQuestionnaire(qInfo.questionnaire);
               }
             }, 10);

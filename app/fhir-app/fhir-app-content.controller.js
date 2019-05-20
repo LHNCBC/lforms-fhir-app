@@ -265,6 +265,9 @@ angular.module('lformsApp')
           var q = fhirService.getCurrentQuestionnaire();
           if (q) {
             var fhirString = JSON.stringify(q, null, 2);
+            var serverBaseURL = fhirService.getServerBaseURL();
+            fhirString = fhirString.replace(/"id": "(\d+)"/, '"id": "<a href="'+
+              serverBaseURL+'/Questionnaire/$1">Questionnaire/$1</a>');
             $scope.fhirResourceString = fhirString;
             $scope.fhirResourceTitle = "Questionnaire Resource from FHIR Server";
 
@@ -289,6 +292,8 @@ angular.module('lformsApp')
             var q = LForms.Util.getFormFHIRData('Questionnaire',
               FHIR_VERSION, copyOfFormData, {noExtensions: true});
             var fhirString = JSON.stringify(q, null, 2);
+            fhirString = fhirString.replace(/"id": "(\d+)"/, '"id": "<a href="'+
+              $scope.serverBaseURL+'/Questionnaire/$1">Questionnaire/$1</a>');
             $scope.fhirResourceString = fhirString;
             $scope.fhirResourceTitle = "FHIR Questionnaire Resource";
 

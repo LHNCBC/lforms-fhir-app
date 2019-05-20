@@ -125,11 +125,20 @@ fb.service('fhirService', [
 
 
     /**
-     * Get the smart on fhir connection
+     * Get the smart on fhir connection (or, the non-smart connection if that is
+     * what was used.)
      * @returns the smart on fhir connection or null
      */
     thisService.getSmartConnection = function() {
       return thisService.connection;
+    };
+
+
+    /**
+     *  Returns the base URL of the FHIR server the app is using.
+     */
+    thisService.getServerBaseURL = function() {
+      return thisService.getSmartConnection().server.serviceUrl;
     };
 
 

@@ -25,7 +25,8 @@ describe('Non-SMART connection to FHIR server', function() {
     var urlField = '#fhirServerURL';
     browser.wait(EC.presenceOf($(urlField)), 5000);
     $(urlField).click();
-    util.sendKeys($(urlField), 'https://launch.smarthealthit.org/v/r3/fhir');
+    //util.sendKeys($(urlField), 'https://launch.smarthealthit.org/v/r3/fhir');
+    util.sendKeys($(urlField), 'https://lforms-fhir.nlm.nih.gov/baseR4');
     $(urlField).sendKeys(protractor.Key.TAB);
     $('#btnOK').click();
     // Wait for dialog to close
@@ -67,6 +68,34 @@ describe('Non-SMART connection to FHIR server', function() {
   });
 
 
+  describe('saved QuestionnaireResponses', function() {
+    it('should provide data for observationLinkPeriod from a saved questionnaire', function() {
+      // Continuing from the previous test
+      // Clear the field so we can check it fills in again
+      var weightField = '#\\/29463-7\\/1';
+      util.clearField($(weightField));
+      util.pageObjects.firstSavedQ('Weight').click();
+      let weight = $(weightField); // new copy of element
+      browser.wait(EC.presenceOf(weight), 2000);
+      browser.wait(EC.textToBePresentInElementValue(weight, '50'));
+      expect(weight.getAttribute('value')).toMatch(/^50/);
+    });
+
+
+    it('should have working expressions', function() {
+      // Continue with form loaded in previous tests
+      let height = element(by.id('/8302-2/1'));
+      util.clearField(height);
+      height.sendKeys('30');
+      let weight = element(by.id('/29463-7/1'));
+      util.clearField(weight);
+      weight.sendKeys('20');
+      let bmi = element(by.id('/39156-5/1'));
+      expect(bmi.getAttribute('value')).toBe('34.4');
+    });
+  });
+
+
   describe('Editing saved values', function() {
     var familyMemberName = '#\\/54114-4\\/54138-3\\/1\\/1';
 
@@ -103,7 +132,6 @@ describe('Non-SMART connection to FHIR server', function() {
       util.pageObjects.firstSavedQR().click();
       browser.wait(EC.presenceOf($(familyMemberName)));
       expect($(familyMemberName).getAttribute('value')).toBe('aa');
-      browser.sleep(5000);
     });
   });
 
