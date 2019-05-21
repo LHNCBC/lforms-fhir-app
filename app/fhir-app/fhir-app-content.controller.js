@@ -267,7 +267,7 @@ angular.module('lformsApp')
             var fhirString = JSON.stringify(q, null, 2);
             var serverBaseURL = fhirService.getServerBaseURL();
             fhirString = fhirString.replace(/"id": "(\d+)"/, '"id": "<a href="'+
-              serverBaseURL+'/Questionnaire/$1">Questionnaire/$1</a>');
+              serverBaseURL+'/Questionnaire/$1" target=_blank>Questionnaire/$1</a>');
             $scope.fhirResourceString = fhirString;
             $scope.fhirResourceTitle = "Questionnaire Resource from FHIR Server";
 

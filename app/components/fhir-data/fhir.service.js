@@ -546,7 +546,6 @@ fb.service('fhirService', [
               if (matchData)
                 qrID = matchData[1];
             }
-            console.log("%%% qrID="+qrID); // TBD test by deleting afterward
             $rootScope.$broadcast('LF_FHIR_QR_CREATED', {
               resType: "QuestionnaireResponse",
               resource: qr,
