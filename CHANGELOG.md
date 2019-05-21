@@ -3,6 +3,11 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.10.0] - 2019-05-21
+### Added
+- Questionnaire data extraction for Observation data is now supported via the
+  questionnaire-observationLinkPeriod extension.
+
 ## [0.9.0] - 2019-04-24
 ### Added
 - If a SMART context is not found, the app now asks the user to enter the base
