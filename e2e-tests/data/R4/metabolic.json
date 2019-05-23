@@ -1,0 +1,432 @@
+{
+  "name": "Comprehensive metabolic 1998 panel",
+  "code": [
+    {
+      "system": "http://loinc.org",
+      "code": "24322-0",
+      "display": "Comprehensive metabolic 1998 panel"
+    }
+  ],
+  "title": "Comprehensive metabolic 1998 panel",
+  "resourceType": "Questionnaire",
+  "status": "draft",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire|3.5.0"
+    ]
+  },
+  "item": [
+    {
+      "type": "decimal",
+      "code": [
+        {
+          "system": "http://loinc.org",
+          "code": "2345-7",
+          "display": "Glucose SerPl-mCnc"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "display": "mg/dL"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+          "valueDuration": {
+            "value": "1",
+            "unit": "year",
+            "system": "http://unitsofmeasure.org",
+            "code": "a"
+          }
+        }
+      ],
+      "required": false,
+      "linkId": "/2345-7",
+      "text": "Glucose SerPl-mCnc"
+    },
+    {
+      "type": "decimal",
+      "code": [
+        {
+          "system": "http://loinc.org",
+          "code": "3094-0",
+          "display": "BUN SerPl-mCnc"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "display": "mg/dL"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+          "valueDuration": {
+            "value": "1",
+            "unit": "year",
+            "system": "http://unitsofmeasure.org",
+            "code": "a"
+          }
+        }
+      ],
+      "required": false,
+      "linkId": "/3094-0",
+      "text": "BUN SerPl-mCnc"
+    },
+    {
+      "type": "decimal",
+      "code": [
+        {
+          "system": "http://loinc.org",
+          "code": "2160-0",
+          "display": "Creat SerPl-mCnc"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "display": "mg/dL"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+          "valueDuration": {
+            "value": "1",
+            "unit": "year",
+            "system": "http://unitsofmeasure.org",
+            "code": "a"
+          }
+        }
+      ],
+      "required": false,
+      "linkId": "/2160-0",
+      "text": "Creat SerPl-mCnc"
+    },
+    {
+      "type": "decimal",
+      "code": [
+        {
+          "system": "http://loinc.org",
+          "code": "3097-3",
+          "display": "BUN/Creat SerPl"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "display": "mg/mg{creat}"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+          "valueDuration": {
+            "value": "1",
+            "unit": "year",
+            "system": "http://unitsofmeasure.org",
+            "code": "a"
+          }
+        }
+      ],
+      "required": false,
+      "linkId": "/3097-3",
+      "text": "BUN/Creat SerPl"
+    },
+    {
+      "type": "decimal",
+      "code": [
+        {
+          "system": "http://loinc.org",
+          "code": "17861-6",
+          "display": "Calcium SerPl-mCnc"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "display": "mg/dL"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+          "valueDuration": {
+            "value": "1",
+            "unit": "year",
+            "system": "http://unitsofmeasure.org",
+            "code": "a"
+          }
+        }
+      ],
+      "required": false,
+      "linkId": "/17861-6",
+      "text": "Calcium SerPl-mCnc"
+    },
+    {
+      "type": "decimal",
+      "code": [
+        {
+          "system": "http://loinc.org",
+          "code": "2885-2",
+          "display": "Prot SerPl-mCnc"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory",
+          "valueCodeableConcept": {
+            "text": "Although there is a qualitative difference between total protein in plasma and serum, the QUANTITATIVE difference is small and probably not clinically significant, therefore, system of SER/PLAS is acceptable. The protein concentration that is reported in electrophoresis is the same as that reported routinely.",
+            "coding": [
+              {
+                "display": "Although there is a qualitative difference between total protein in plasma and serum, the QUANTITATIVE difference is small and probably not clinically significant, therefore, system of SER/PLAS is acceptable. The protein concentration that is reported in electrophoresis is the same as that reported routinely."
+              }
+            ]
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+          "valueDuration": {
+            "value": "1",
+            "unit": "year",
+            "system": "http://unitsofmeasure.org",
+            "code": "a"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "display": "g/dL"
+          }
+        }
+      ],
+      "required": false,
+      "linkId": "/2885-2",
+      "text": "Prot SerPl-mCnc"
+    },
+    {
+      "type": "decimal",
+      "code": [
+        {
+          "system": "http://loinc.org",
+          "code": "1751-7",
+          "display": "Albumin SerPl-mCnc"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "display": "g/dL"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+          "valueDuration": {
+            "value": "1",
+            "unit": "year",
+            "system": "http://unitsofmeasure.org",
+            "code": "a"
+          }
+        }
+      ],
+      "required": false,
+      "linkId": "/1751-7",
+      "text": "Albumin SerPl-mCnc"
+    },
+    {
+      "type": "decimal",
+      "code": [
+        {
+          "system": "http://loinc.org",
+          "code": "1975-2",
+          "display": "Bilirub SerPl-mCnc"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory",
+          "valueCodeableConcept": {
+            "text": "Method can be DIRECT SPECTOPHOTOMETRY, WET CHEMISTRY or DRY SLIDE (TBIL)",
+            "coding": [
+              {
+                "display": "Method can be DIRECT SPECTOPHOTOMETRY, WET CHEMISTRY or DRY SLIDE (TBIL)"
+              }
+            ]
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "display": "mg/dL"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+          "valueDuration": {
+            "value": "1",
+            "unit": "year",
+            "system": "http://unitsofmeasure.org",
+            "code": "a"
+          }
+        }
+      ],
+      "required": false,
+      "linkId": "/1975-2",
+      "text": "Bilirub SerPl-mCnc"
+    },
+    {
+      "type": "decimal",
+      "code": [
+        {
+          "system": "http://loinc.org",
+          "code": "6768-6",
+          "display": "ALP SerPl-cCnc"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "display": "U/L"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+          "valueDuration": {
+            "value": "1",
+            "unit": "year",
+            "system": "http://unitsofmeasure.org",
+            "code": "a"
+          }
+        }
+      ],
+      "required": false,
+      "linkId": "/6768-6",
+      "text": "ALP SerPl-cCnc"
+    },
+    {
+      "type": "decimal",
+      "code": [
+        {
+          "system": "http://loinc.org",
+          "code": "1920-8",
+          "display": "AST SerPl-cCnc"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "display": "U/L"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+          "valueDuration": {
+            "value": "1",
+            "unit": "year",
+            "system": "http://unitsofmeasure.org",
+            "code": "a"
+          }
+        }
+      ],
+      "required": false,
+      "linkId": "/1920-8",
+      "text": "AST SerPl-cCnc"
+    },
+    {
+      "type": "decimal",
+      "code": [
+        {
+          "system": "http://loinc.org",
+          "code": "2951-2",
+          "display": "Sodium SerPl-sCnc"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "display": "mmol/L"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+          "valueDuration": {
+            "value": "1",
+            "unit": "year",
+            "system": "http://unitsofmeasure.org",
+            "code": "a"
+          }
+        }
+      ],
+      "required": false,
+      "linkId": "/2951-2",
+      "text": "Sodium SerPl-sCnc"
+    },
+    {
+      "type": "decimal",
+      "code": [
+        {
+          "system": "http://loinc.org",
+          "code": "2823-3",
+          "display": "Potassium SerPl-sCnc"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "display": "mmol/L"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+          "valueDuration": {
+            "value": "1",
+            "unit": "year",
+            "system": "http://unitsofmeasure.org",
+            "code": "a"
+          }
+        }
+      ],
+      "required": false,
+      "linkId": "/2823-3",
+      "text": "Potassium SerPl-sCnc"
+    },
+    {
+      "type": "decimal",
+      "code": [
+        {
+          "system": "http://loinc.org",
+          "code": "2075-0",
+          "display": "Chloride SerPl-sCnc"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "display": "mmol/L"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+          "valueDuration": {
+            "value": "1",
+            "unit": "year",
+            "system": "http://unitsofmeasure.org",
+            "code": "a"
+          }
+        }
+      ],
+      "required": false,
+      "linkId": "/2075-0",
+      "text": "Chloride SerPl-sCnc"
+    }
+  ]
+}
