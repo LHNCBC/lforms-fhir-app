@@ -611,43 +611,49 @@ fb.service('fhirService', [
 
       // check if a related Questionnaire exists
       var queryJson;
-      if (q.url)
-        queryJson = {url: q.url}
-      else if (q.identifier && q.identifier[0])
-        queryJson = {identifier: q.identifier[0].system+'|' + q.identifier[0].value}
-      else if (q.code && q.code[0])
-        queryJson = {code: q.code[0].system+'|' + q.code[0].value};
-      else if (q.name)
-        queryJson = {name: q.name}
-      else if (q.title)
-        queryJson = {title: q.title}
-          // title, name
+      // It was decided that in the current UI, which only allows introduction
+      // of forms via an "upload", that it would be better to always create a
+      // new Questionnaire, to allow for repeated cycles of editing.  So, for
+      // now, I am disbling the search for an existing questionnaire here.
+      if (false) { // disabling (for now) the search for existing Qustionnaire
+        if (q.url)
+          queryJson = {url: q.url}
+        else if (q.identifier && q.identifier[0])
+          queryJson = {identifier: q.identifier[0].system+'|' + q.identifier[0].value}
+        else if (q.code && q.code[0])
+          queryJson = {code: q.code[0].system+'|' + q.code[0].value};
+        else if (q.name)
+          queryJson = {name: q.name}
+        else if (q.title)
+          queryJson = {title: q.title}
+      }
       if (!queryJson) {
         // Can't form a query, so just make a new one
         createQAndCall();
       }
-
-      thisService.fhir.search({
-        type: "Questionnaire",
-        query: queryJson,
-        headers: {'Cache-Control': 'no-cache'}
-      }).then(function success(resp) {
-        var bundle = resp.data;
-        var count = (bundle.entry && bundle.entry.length) || 0;
-        // found existing Questionnaires
-        if (count > 0 ) {
-          var oneQuestionnaireResource = bundle.entry[0].resource;
-          withQuestionnaire(oneQuestionnaireResource);
-        }
-        // no Questionnaire found, create a new Questionnaire first
-        else {
-          createQAndCall();
-        }
-      },
-      function error(error) {
-        _terminatingError = {resType: 'Questionnaire', operation: 'search', errInfo: error};
-        reportResults();
-      });
+      else {
+        thisService.fhir.search({
+          type: "Questionnaire",
+          query: queryJson,
+          headers: {'Cache-Control': 'no-cache'}
+        }).then(function success(resp) {
+          var bundle = resp.data;
+          var count = (bundle.entry && bundle.entry.length) || 0;
+          // found existing Questionnaires
+          if (count > 0 ) {
+            var oneQuestionnaireResource = bundle.entry[0].resource;
+            withQuestionnaire(oneQuestionnaireResource);
+          }
+          // no Questionnaire found, create a new Questionnaire first
+          else {
+            createQAndCall();
+          }
+        },
+        function error(error) {
+          _terminatingError = {resType: 'Questionnaire', operation: 'search', errInfo: error};
+          reportResults();
+        });
+      }
     };
 
 
@@ -681,6 +687,7 @@ fb.service('fhirService', [
         },
         function error(response) {
           console.log(response);
+          reportError(resType, 'update', response);
         });
     };
 
@@ -701,6 +708,7 @@ fb.service('fhirService', [
         },
         function error(response) {
           console.log(response);
+          reportError(resType, 'delete', response);
         });
 
     };
