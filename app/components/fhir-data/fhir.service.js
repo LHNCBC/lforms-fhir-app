@@ -776,7 +776,7 @@ fb.service('fhirService', [
           subject: 'Patient/' + pId,
           _include: 'QuestionnaireResponse:questionnaire',
           _sort: '-_lastUpdated',
-          _count: 10
+          _count: 5
         },
         headers: {
           'Cache-Control': 'no-cache'
