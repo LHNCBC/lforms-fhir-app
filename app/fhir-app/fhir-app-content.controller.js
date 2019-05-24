@@ -446,7 +446,7 @@ angular.module('lformsApp')
           $scope.formData = formData;
 
           // clean up the initial message
-          if ($scope.initialLoad)
+          if ($scope.initialLoad && formData)
             $scope.initialLoad = false;
           $('.spinner').hide();
         });
