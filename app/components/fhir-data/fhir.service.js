@@ -698,44 +698,51 @@ fb.service('fhirService', [
      * @param resId FHIR resource ID
      */
     thisService.deleteQRespAndObs = function(resId) {
-      thisService.fhir.search({
-        type: 'Observation',
-        query: {
-          'derived-from': 'QuestionnaireResponse/'+resId,
-        },
-        headers: {
-          'Cache-Control': 'no-cache'
-        }
-      }).then(function(response) {   // response.data is a searchset bundle
-        var bundle = response.data;
-        var entries = bundle.entry;
-        if (entries && entries.length > 0) {
-          var pendingDeletions = 0;
-          var errorReported = false;
-          for (var i=0, len=entries.length; i<len; ++i) {
-            var obsId = entries[i].resource.id;
-            ++pendingDeletions;
-            thisService.fhir.delete({type: 'Observation', id: obsId}).then(
-              function success(response) {
-               --pendingDeletions;
-               if (pendingDeletions === 0)
-                  thisService.deleteFhirResource('QuestionnaireResponse', resId);
-              }, function error(response) {
-                if (!errorReported) { // just report the first
-                  errorReported = true;
-                  console.log(response);
-                  reportError('QuestionnaireResponse', 'delete', response);
-                }
-              }
-            );
+      if (thisService.fhirVersion === 'STU3') {
+        // STU3 does not have the derivedFrom field in Observation which links
+        // them to QuestionnaireResponse.
+        thisService.deleteFhirResource('QuestionnaireResponse', resId);
+      }
+      else {
+        thisService.fhir.search({
+          type: 'Observation',
+          query: {
+            'derived-from': 'QuestionnaireResponse/'+resId,
+          },
+          headers: {
+            'Cache-Control': 'no-cache'
           }
-        }
-        else // no observations to delete
-          thisService.deleteFhirResource('QuestionnaireResponse', resId);
-      }, function(error) {
-        console.log(error);
-        reportError('QuestionnaireResponse', 'delete', response);
-      });
+        }).then(function(response) {   // response.data is a searchset bundle
+          var bundle = response.data;
+          var entries = bundle.entry;
+          if (entries && entries.length > 0) {
+            var pendingDeletions = 0;
+            var errorReported = false;
+            for (var i=0, len=entries.length; i<len; ++i) {
+              var obsId = entries[i].resource.id;
+              ++pendingDeletions;
+              thisService.fhir.delete({type: 'Observation', id: obsId}).then(
+                function success(response) {
+                 --pendingDeletions;
+                 if (pendingDeletions === 0)
+                    thisService.deleteFhirResource('QuestionnaireResponse', resId);
+                }, function error(response) {
+                  if (!errorReported) { // just report the first
+                    errorReported = true;
+                    console.log(response);
+                    reportError('QuestionnaireResponse', 'delete', response);
+                  }
+                }
+              );
+            }
+          }
+          else // no observations to delete
+            thisService.deleteFhirResource('QuestionnaireResponse', resId);
+        }, function(error) {
+          console.log(error);
+          reportError('QuestionnaireResponse', 'delete', error);
+        });
+      }
     };
 
 
