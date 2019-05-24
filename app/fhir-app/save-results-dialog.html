@@ -1,4 +1,4 @@
-<md-dialog flex="45">
+<md-dialog flex="45" ng-controller="FhirAppContentCtrl">
   <form>
     <md-toolbar>
       <div class="md-toolbar-tools">
@@ -20,12 +20,16 @@
             href="{{serverBaseURL}}/{{result.data.resourceType}}/{{result.data.id}}"
             target=_blank>{{result.data.resourceType}}/{{result.data.id}}</li>
         </ul>
-        <a href="#" onclick="$('#details').toggle(); return false"> Details</a>
+        <a href="#" onclick="$('#details').toggle(); $('#copyBtn').toggle(); return false"> Details</a>
         <pre id="details" style="display: none">{{resultDataJSON}}</pre>
       </div>
     </md-dialog-content>
 
     <md-dialog-actions layout="row">
+      <md-button id="copyBtn" aria-label="Copy to clipboard" style="display: none"
+      ng-click="copyToClipboard('details')" class="md-primary">
+        Copy to Clipboard
+      </md-button>
       <md-button id="btnOK" aria-label="OK" ng-click="closeDialog()" class="md-primary">
         OK
       </md-button>
