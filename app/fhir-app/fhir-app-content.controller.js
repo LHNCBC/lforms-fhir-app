@@ -74,7 +74,8 @@ angular.module('lformsApp')
         $scope.deleteFromFhir = function() {
           $('.spinner').show();
           if ($scope.fhirResInfo.resId) {
-            fhirService.deleteFhirResource($scope.fhirResInfo.resType, $scope.fhirResInfo.resId);
+           // fhirService.deleteFhirResource($scope.fhirResInfo.resType, $scope.fhirResInfo.resId);
+            fhirService.deleteQRespAndObs($scope.fhirResInfo.resId);
           }
         };
 

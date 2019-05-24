@@ -693,13 +693,59 @@ fb.service('fhirService', [
 
 
     /**
-     * Delete an FHIR resource
+     * Delete a QuestionnaireResponse and its associated Observations (if any).
      * Status returned through an angular broadcast event.
+     * @param resId FHIR resource ID
+     */
+    thisService.deleteQRespAndObs = function(resId) {
+      thisService.fhir.search({
+        type: 'Observation',
+        query: {
+          'derived-from': 'QuestionnaireResponse/'+resId,
+        },
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      }).then(function(response) {   // response.data is a searchset bundle
+        var bundle = response.data;
+        var entries = bundle.entry;
+        if (entries && entries.length > 0) {
+          var pendingDeletions = 0;
+          var errorReported = false;
+          for (var i=0, len=entries.length; i<len; ++i) {
+            var obsId = entries[i].resource.id;
+            ++pendingDeletions;
+            thisService.fhir.delete({type: 'Observation', id: obsId}).then(
+              function success(response) {
+               --pendingDeletions;
+               if (pendingDeletions === 0)
+                  thisService.deleteFhirResource('QuestionnaireResponse', resId);
+              }, function error(response) {
+                if (!errorReported) { // just report the first
+                  errorReported = true;
+                  console.log(response);
+                  reportError('QuestionnaireResponse', 'delete', response);
+                }
+              }
+            );
+          }
+        }
+        else // no observations to delete
+          thisService.deleteFhirResource('QuestionnaireResponse', resId);
+      }, function(error) {
+        console.log(error);
+        reportError('QuestionnaireResponse', 'delete', response);
+      });
+    };
+
+
+    /**
+     *  Deletes an FHIR resource, and reports the result.
+     *  Status returned through an angular broadcast event.
      * @param resType FHIR resource type
      * @param resId FHIR resource ID
      */
     thisService.deleteFhirResource = function(resType, resId) {
-
       thisService.fhir.delete({type: resType, id: resId})
         .then(function success(response) {
           // response.data === "OK"
@@ -710,7 +756,6 @@ fb.service('fhirService', [
           console.log(response);
           reportError(resType, 'delete', response);
         });
-
     };
 
 
