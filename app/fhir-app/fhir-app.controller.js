@@ -255,9 +255,10 @@ angular.module('lformsApp')
           var foundError = false;
           for (var i=0, len=issues.length; i<len && !foundError; ++i) {
             var issue = issues[i];
-            if ((issue.severity == 'error' || issue.severity == 'fatal') &&
-                 issue.details && issue.details.text) {
-              errorMsg = errorMsg+"\n"+issue.details.text;
+            if (issue.severity == 'error' || issue.severity == 'fatal') {
+              var explanation = issue.details && issue.details.text || issue.diagnostics;
+              if (explanation)
+                errorMsg = explanation;
               foundError = true;
             }
           }
