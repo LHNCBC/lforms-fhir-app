@@ -131,6 +131,10 @@
   margin: 1em;
 }
 
+.panel-title {
+  font-weight: bold;
+}
+
 /* Spinner from http://tobiasahlin.com/spinkit/ */
 .spinner {
   position: fixed;
