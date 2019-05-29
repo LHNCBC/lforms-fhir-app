@@ -3,7 +3,7 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
-## [0.10.0] - 2019-05-21
+## [0.11.0] - 2019-05-21 (0.10.0 skipped)
 ### Added
 - Questionnaire data extraction for Observation data is now supported via the
   questionnaire-observationLinkPeriod extension.
