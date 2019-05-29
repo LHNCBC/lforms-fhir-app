@@ -74,7 +74,8 @@ angular.module('lformsApp')
         $scope.deleteFromFhir = function() {
           $('.spinner').show();
           if ($scope.fhirResInfo.resId) {
-            fhirService.deleteFhirResource($scope.fhirResInfo.resType, $scope.fhirResInfo.resId);
+           // fhirService.deleteFhirResource($scope.fhirResInfo.resType, $scope.fhirResInfo.resId);
+            fhirService.deleteQRespAndObs($scope.fhirResInfo.resId);
           }
         };
 
@@ -97,6 +98,33 @@ angular.module('lformsApp')
           // else if (resType === "DR") {
           //   $scope.saveDRToFhir();
           // }
+        };
+
+
+        /**
+         *  Saves the data as a new copy of an SDC QuestionnaireResponse and
+         *  extracted Observations.
+         */
+        $scope.saveAsQRExtracted = function() {
+          $('.spinner').show();
+          var resArray = LForms.Util.getFormFHIRData('QuestionnaireResponse',
+            fhirService.fhirVersion, $scope.formData, {extract: true,
+            subject: fhirService.getCurrentPatient()});
+
+          var qExists;
+          if ($scope.fhirResInfo.questionnaireResId) {
+            var qData = {id: $scope.fhirResInfo.questionnaireResId,
+              name: $scope.fhirResInfo.questionnaireName};
+            qExists = true; // it is on the server already
+          }
+          else {
+            var copyOfFormData = $scope.valueCleanUp($scope.formData);
+            var qData = LForms.Util.getFormFHIRData('Questionnaire',
+              fhirService.fhirVersion, copyOfFormData)
+            qExists = false;
+          }
+          var qr = resArray.shift();
+          fhirService.createQQRObs(qData, qr, resArray, qExists);
         };
 
 
@@ -176,9 +204,7 @@ angular.module('lformsApp')
                   "display": patient.name
                 }
               }
-              qr.questionnaire = {
-                "reference": "Questionnaire/" + $scope.fhirResInfo.questionnaireResId
-              };
+              fhirService.setQRRefToQ(qr, {id: $scope.fhirResInfo.questionnaireResId});
               qr.id = $scope.fhirResInfo.resId; // id must be same
               fhirService.updateFhirResource("QuestionnaireResponse", qr);
             }
@@ -240,6 +266,9 @@ angular.module('lformsApp')
           var q = fhirService.getCurrentQuestionnaire();
           if (q) {
             var fhirString = JSON.stringify(q, null, 2);
+            var serverBaseURL = fhirService.getServerBaseURL();
+            fhirString = fhirString.replace(/"id": "([^\s"]+)"/, '"id": "<a href="'+
+              serverBaseURL+'/Questionnaire/$1" target=_blank>$1</a>');
             $scope.fhirResourceString = fhirString;
             $scope.fhirResourceTitle = "Questionnaire Resource from FHIR Server";
 
@@ -264,6 +293,8 @@ angular.module('lformsApp')
             var q = LForms.Util.getFormFHIRData('Questionnaire',
               FHIR_VERSION, copyOfFormData, {noExtensions: true});
             var fhirString = JSON.stringify(q, null, 2);
+            fhirString = fhirString.replace(/"id": "(\d+)"/, '"id": "<a href="'+
+              $scope.serverBaseURL+'/Questionnaire/$1">Questionnaire/$1</a>');
             $scope.fhirResourceString = fhirString;
             $scope.fhirResourceTitle = "FHIR Questionnaire Resource";
 
@@ -369,7 +400,7 @@ angular.module('lformsApp')
         /**
          * Update current resource info when a new QuestionnaireResponse is created on the FHIR server
          */
-        $scope.$on('LF_FHIR_RESOURCE_CREATED', function(event, arg) {
+        $scope.$on('LF_FHIR_QR_CREATED', function(event, arg) {
           $scope.fhirResInfo.resId = arg.resId;
           $scope.fhirResInfo.resType = arg.resType;
           if (arg.qResId) {
@@ -415,7 +446,7 @@ angular.module('lformsApp')
           $scope.formData = formData;
 
           // clean up the initial message
-          if ($scope.initialLoad)
+          if ($scope.initialLoad && formData)
             $scope.initialLoad = false;
           $('.spinner').hide();
         });

@@ -59,7 +59,7 @@
           "valueDuration": {
             "value": "1",
             "unit": "year",
-            "system": "http://ucum.org",
+            "system": "http://unitsofmeasure.org",
             "code": "a"
           }
         }
@@ -141,7 +141,7 @@
           "valueDuration": {
             "value": "1",
             "unit": "year",
-            "system": "http://ucum.org",
+            "system": "http://unitsofmeasure.org",
             "code": "a"
           }
         }

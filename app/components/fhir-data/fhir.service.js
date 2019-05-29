@@ -18,6 +18,11 @@ fb.service('fhirService', [
     // Current Questionnaire resource
     thisService.currentQuestionnaire = null;
 
+    // Holds results of a chain of operations
+    var _collectedResults = [];
+    // Holds the error result that halted a chain of operations
+    var _terminatingError = null;
+
     /**
      *  Requests a SMART on FHIR connection.  Once a connection request is in
      *  progress, further requests are ignored until a connection is
@@ -81,11 +86,12 @@ fb.service('fhirService', [
     /**
      *  Sets up a client for a standard (open) FHIR server.
      * @param baseURL the base URL of the FHIR server.
-     * @param callback A callback function that will be passed a boolean as to
+     * @param commCallback A callback function that will be passed a boolean as to
      *  whether communication with the server was successfully established.
      */
-    thisService.setNonSmartServer = function(baseURL, callback) {
+    thisService.setNonSmartServer = function(baseURL, commCallback) {
       try {
+        thisService.connection = {server: {serviceUrl: baseURL}};
         thisService.fhir = FHIR.client({serviceUrl: baseURL}).api;
         thisService.nonSmartContext = {
           baseURL: baseURL,
@@ -104,14 +110,14 @@ fb.service('fhirService', [
         LForms.Util.getServerFHIRReleaseID(function(releaseID) {
           if (releaseID !== undefined) {
             thisService.fhirVersion = releaseID;
-            callback(true);
+            commCallback(true);
           }
           else
-            callback(false); // error signal
+            commCallback(false); // error signal
         });
       }
       catch (e) {
-        callback(false);
+        commCallback(false);
         throw e;
       }
     };
@@ -119,11 +125,20 @@ fb.service('fhirService', [
 
 
     /**
-     * Get the smart on fhir connection
+     * Get the smart on fhir connection (or, the non-smart connection if that is
+     * what was used.)
      * @returns the smart on fhir connection or null
      */
     thisService.getSmartConnection = function() {
       return thisService.connection;
+    };
+
+
+    /**
+     *  Returns the base URL of the FHIR server the app is using.
+     */
+    thisService.getServerBaseURL = function() {
+      return thisService.getSmartConnection().server.serviceUrl;
     };
 
 
@@ -407,34 +422,49 @@ fb.service('fhirService', [
 
 
     /**
-     *  Creates a QuestionnairResponse.
-     * @param qrData the QuestionnaireResponse to be created.
-     * @param qData the Questionnaire resource, or at least the ID and name
-     *  fields.
-     * @param extenstionType optional, for Questionnaire/QuestionnaireResponse it could be "SDC"
+     *   Sets the reference to a questionnaire in a QuesitonnaireResponse.
+     *  @param qrData the QuestionnaireResponse needing the Questionnaire
+     *  reference.
+     *  @param qData the Questionnaire (or at least the ID field).
      */
-    thisService.createQR = function (qrData, qData, extensionType) {
+    thisService.setQRRefToQ = function(qrData, qData) {
       var qID = qData.id;
       if (thisService.fhirVersion === 'STU3')
         qrData.questionnaire = {"reference": "Questionnaire/" + qID};
       else
         qrData.questionnaire = "Questionnaire/" + qID
 
+    }
+
+
+    /**
+     *  Creates a QuestionnairResponse.
+     * @param qrData the QuestionnaireResponse to be created.
+     * @param qData the Questionnaire resource, or at least the ID and name
+     *  fields.
+     */
+    thisService.createQR = function (qrData, qData) {
+      // Set the questionnaire reference in the response
+      thisService.setQRRefToQ(qrData, qData);
+
       // create QuestionnaireResponse
       thisService.fhir.create({resource: qrData}).then(
         function success(resp) {
-          $rootScope.$broadcast('LF_FHIR_RESOURCE_CREATED',
+          $rootScope.$broadcast('LF_FHIR_QR_CREATED',
             { resType: "QuestionnaireResponse",
               resource: resp.data,
               resId: resp.data.id,
-              qResId: qID,
+              qResId: qData.id,
               qName: qData.name,
-              extensionType: extensionType
+              extensionType: 'SDC'
             });
+          _collectedResults.push(resp);
+          reportResults();
         },
         function error(error) {
           console.log(error);
-          reportError('QuestionnaireResponse', 'create', error);
+          _terminatingError = error;
+          reportResults();
         }
       );
     }
@@ -456,6 +486,178 @@ fb.service('fhirService', [
 
 
     /**
+     * Create Questionnaire if it does not exist, and QuestionnaireResponse and
+     * its extracted observations.
+     * Data returned through an angular broadcast event.
+     * @param q the Questionnaire resource
+     * @param qr the QuestionnaireResponse resource
+     * @param obsArray the array of Observations extracted from qr
+     * @param qExists true if the questionnaire is known to exist (in which case
+     * we skip the lookup)
+     */
+    thisService.createQQRObs = function(q, qr, obsArray, qExists) {
+      _terminatingError = null;
+
+      // Build a FHIR transaction bundle to create these resources.
+      var bundle = {
+        resourceType:"Bundle",
+        type: "transaction",
+        entry: []
+      };
+
+      bundle.entry.push({
+        resource: qr,
+        request: {
+          method: "POST",
+          url: "QuestionnaireResponse"
+        }
+      });
+
+      for (var i=0, len=obsArray.length; i<len; ++i) {
+        bundle.entry.push({
+          resource: obsArray[i],
+          request: {
+            method: "POST",
+            url: "Observation"
+          }
+        });
+      }
+
+      function withQuestionnaire(q) {
+        // Set the questionnaire reference in the response
+        var qr = bundle.entry[0].resource;
+        var qRef = 'Questionnaire/'+q.id;
+        if (thisService.fhirVersion == 'STU3')
+          qr.questionnaire = {reference: qRef};
+        else
+          qr.questionnaire = qRef;
+
+        thisService.fhir.transaction({bundle: bundle}).then(
+          function success(resp) {
+            _collectedResults.push(resp);
+            reportResults();
+            // Look through the bundle for the QuestionnaireResource ID
+            var entries = resp.data.entry;
+            var qrID = null;
+            for (var i=0, len=entries.length; i<len && !qrID; ++i) {
+              var entry = entries[i];
+              var matchData = entry.response && entry.response.location
+                && entry.response.location.match(/^QuestionnaireResponse\/(\d+)/);
+              if (matchData)
+                qrID = matchData[1];
+            }
+            $rootScope.$broadcast('LF_FHIR_QR_CREATED', {
+              resType: "QuestionnaireResponse",
+              resource: qr,
+              resId: qrID,
+              qResId: q.id,
+              qName: q.name,
+              extensionType: 'SDC'
+            });
+          },
+          function error(err) {
+            _terminatingError = {resType: 'Bundle', operation: 'create', errInfo: err};
+            reportResults();
+          }
+        );
+      }
+      if (qExists)
+        withQuestionnaire(q);
+      else
+        createOrFindAndCall(q, withQuestionnaire);
+    };
+
+
+    /**
+     *  Reports the results of one or more operations (which might have
+     *  terminated in an error.
+     */
+    function reportResults() {
+      $rootScope.$broadcast('OP_RESULTS',
+        {
+          successfulResults: JSON.parse(JSON.stringify(_collectedResults)),
+          error: JSON.parse(JSON.stringify(_terminatingError))
+        }
+      );
+      _collectedResults = [];
+      _terminatingError = null;
+    }
+
+
+    /**
+     *  Checks the server to see if questionnaire q is already there, creates it
+     *  if needed, and then calls function withQuestionnaire.
+     * @param q A questionnaire that needs to exist prior to withQuestionnaire
+     *  being created.
+     * @param withQuestionnaire a function to be called with the questionnaire
+     *  resource from the server.
+     */
+    function createOrFindAndCall(q, withQuestionnaire) {
+      function createQAndCall() {
+        thisService.fhir.create({resource: q}).then(function success(resp) {
+          $rootScope.$broadcast('LF_FHIR_Q_CREATED',
+            { resType: "Questionnaire",
+              resource: resp.data,
+              resId: resp.data.id,
+              extensionType: 'SDC'
+            });
+          withQuestionnaire(resp.data);
+        },
+        function error(error) {
+          _terminatingError = {resType: 'Questionnaire', operation: 'create', errInfo: error};
+          reportResults();
+        });
+      }
+
+      // check if a related Questionnaire exists
+      var queryJson;
+      // It was decided that in the current UI, which only allows introduction
+      // of forms via an "upload", that it would be better to always create a
+      // new Questionnaire, to allow for repeated cycles of editing.  So, for
+      // now, I am disbling the search for an existing questionnaire here.
+      if (false) { // disabling (for now) the search for existing Qustionnaire
+        if (q.url)
+          queryJson = {url: q.url}
+        else if (q.identifier && q.identifier[0])
+          queryJson = {identifier: q.identifier[0].system+'|' + q.identifier[0].value}
+        else if (q.code && q.code[0])
+          queryJson = {code: q.code[0].system+'|' + q.code[0].value};
+        else if (q.name)
+          queryJson = {name: q.name}
+        else if (q.title)
+          queryJson = {title: q.title}
+      }
+      if (!queryJson) {
+        // Can't form a query, so just make a new one
+        createQAndCall();
+      }
+      else {
+        thisService.fhir.search({
+          type: "Questionnaire",
+          query: queryJson,
+          headers: {'Cache-Control': 'no-cache'}
+        }).then(function success(resp) {
+          var bundle = resp.data;
+          var count = (bundle.entry && bundle.entry.length) || 0;
+          // found existing Questionnaires
+          if (count > 0 ) {
+            var oneQuestionnaireResource = bundle.entry[0].resource;
+            withQuestionnaire(oneQuestionnaireResource);
+          }
+          // no Questionnaire found, create a new Questionnaire first
+          else {
+            createQAndCall();
+          }
+        },
+        function error(error) {
+          _terminatingError = {resType: 'Questionnaire', operation: 'search', errInfo: error};
+          reportResults();
+        });
+      }
+    };
+
+
+    /**
      * Create Questionnaire if it does not exist, and QuestionnaireResponse
      * Data returned through an angular broadcast event.
      * @param q the Questionnaire resource
@@ -463,38 +665,11 @@ fb.service('fhirService', [
      * @param extenstionType optional, for Questionnaire/QuestionnaireResponse it could be "SDC"
      */
     thisService.createQQR = function(q, qr, extensionType) {
+      function withQuestionnaire(q) {
+        thisService.createQR(qr, q);
+      }
 
-      var queryJson = {identifier: "http://loinc.org|" + q.identifier[0].value};
-
-      // check if a related Questionnaire exists
-      thisService.fhir.search({
-        type: "Questionnaire",
-        query: queryJson,
-        headers: {'Cache-Control': 'no-cache'}
-      })
-        .then(function success(resp){
-          var bundle = resp.data;
-          var count = (bundle.entry && bundle.entry.length) || 0;
-          // found existing Questionnaires
-          if (count > 0 ) {
-            var oneQuestionnaireResource = bundle.entry[0].resource;
-            thisService.createQR(qr, oneQuestionnaireResource, extensionType);
-          }
-          // no Questionnaire found, create a new Questionnaire first
-          else {
-            thisService.fhir.create({resource: q})
-              .then(function success(resp) {
-                  thisService.createQR(qr, resp.data, extensionType);
-                },
-                function error(error) {
-                  console.log(error);
-                  reportError('Questionnaire', 'create', error);
-                });
-          }
-        },
-        function error(error) {
-          console.log(error);
-        });
+      createOrFindAndCall(q, withQuestionnaire);
     };
 
 
@@ -512,18 +687,72 @@ fb.service('fhirService', [
         },
         function error(response) {
           console.log(response);
+          reportError(resType, 'update', response);
         });
     };
 
 
     /**
-     * Delete an FHIR resource
+     * Delete a QuestionnaireResponse and its associated Observations (if any).
      * Status returned through an angular broadcast event.
+     * @param resId FHIR resource ID
+     */
+    thisService.deleteQRespAndObs = function(resId) {
+      if (thisService.fhirVersion === 'STU3') {
+        // STU3 does not have the derivedFrom field in Observation which links
+        // them to QuestionnaireResponse.
+        thisService.deleteFhirResource('QuestionnaireResponse', resId);
+      }
+      else {
+        thisService.fhir.search({
+          type: 'Observation',
+          query: {
+            'derived-from': 'QuestionnaireResponse/'+resId,
+          },
+          headers: {
+            'Cache-Control': 'no-cache'
+          }
+        }).then(function(response) {   // response.data is a searchset bundle
+          var bundle = response.data;
+          var entries = bundle.entry;
+          if (entries && entries.length > 0) {
+            var pendingDeletions = 0;
+            var errorReported = false;
+            for (var i=0, len=entries.length; i<len; ++i) {
+              var obsId = entries[i].resource.id;
+              ++pendingDeletions;
+              thisService.fhir.delete({type: 'Observation', id: obsId}).then(
+                function success(response) {
+                 --pendingDeletions;
+                 if (pendingDeletions === 0)
+                    thisService.deleteFhirResource('QuestionnaireResponse', resId);
+                }, function error(response) {
+                  if (!errorReported) { // just report the first
+                    errorReported = true;
+                    console.log(response);
+                    reportError('QuestionnaireResponse', 'delete', response);
+                  }
+                }
+              );
+            }
+          }
+          else // no observations to delete
+            thisService.deleteFhirResource('QuestionnaireResponse', resId);
+        }, function(error) {
+          console.log(error);
+          reportError('QuestionnaireResponse', 'delete', error);
+        });
+      }
+    };
+
+
+    /**
+     *  Deletes an FHIR resource, and reports the result.
+     *  Status returned through an angular broadcast event.
      * @param resType FHIR resource type
      * @param resId FHIR resource ID
      */
     thisService.deleteFhirResource = function(resType, resId) {
-
       thisService.fhir.delete({type: resType, id: resId})
         .then(function success(response) {
           // response.data === "OK"
@@ -532,8 +761,8 @@ fb.service('fhirService', [
         },
         function error(response) {
           console.log(response);
+          reportError(resType, 'delete', response);
         });
-
     };
 
 
@@ -568,16 +797,22 @@ fb.service('fhirService', [
      * @param bundle a FHIR transaction bundel.
      */
     thisService.handleTransactionBundle = function(bundle) {
-      thisService.fhir.transaction({bundle: bundle})
-        .then(
-          function success(response) {
-            console.log('transaction succeeded');
-            console.log(response);
-          },
-          function error() {
-            console.log(response);
-
-          })
+      thisService.fhir.transaction({bundle: bundle}).then(
+        function success(resp) {
+          $rootScope.$broadcast('LF_FHIR_BUNDLE_PROCESSED',
+            { resType: "Bundle",
+              resource: resp.data,
+              resId: resp.data.id,
+              qResId: qID,
+              qName: qData.name,
+              extensionType: extensionType
+            });
+        },
+        function error(error) {
+          console.log(error);
+          reportError('Bundle', 'create', error);
+        }
+      )
     };
 
 
@@ -593,7 +828,7 @@ fb.service('fhirService', [
           subject: 'Patient/' + pId,
           _include: 'QuestionnaireResponse:questionnaire',
           _sort: '-_lastUpdated',
-          _count: 10
+          _count: 5
         },
         headers: {
           'Cache-Control': 'no-cache'

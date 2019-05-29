@@ -58,16 +58,43 @@ angular.module('lformsApp')
       $timeout(function(){ $scope.establishFHIRContext() }, 1000);
 
 
+      /**
+       *  Opens dialogs for selecting first a FHIR server and then a patient.
+       */
       function selectServerAndPatient() {
         // For now get the server from an URL parameter:
         var fhirServerURL = $location.search()['server'];
         if (fhirServerURL) {
-          fhirService.setNonSmartServer(fhirServerURL);
-          $scope.showPatientPicker();
+          setServerAndPickPatient(fhirServerURL);
         }
         else {
           $scope.showFHIRServerPicker();
         }
+      }
+
+
+      /**
+       *  Establishes communication with the FHIR server at the given URL, and
+       *  calls the given callback with a boolean indicating whether
+       *  communication was successfully established.  If it was successful, a
+       *  patient selection dialog will be opened.
+       * @param serverURL the URL of the FHIR server
+       * @param callback the function to call after the communication attempt.
+       *  It will be passed a boolean to indicate whether the attempt was
+       *  successful.
+       */
+      function setServerAndPickPatient(serverURL, callback) {
+        $scope.showWaitMsg('Contacting FHIR server.  Please wait...');
+        fhirService.setNonSmartServer(serverURL, function(success) {
+          if (callback)
+            callback(success);
+          if (success)
+            $scope.showPatientPicker();
+          else {
+            $scope.showErrorMsg('Could not establish communication with the FHIR server at ' +
+              serverURL+'.');
+          }
+        });
       }
 
 
@@ -80,8 +107,7 @@ angular.module('lformsApp')
       $scope.establishFHIRContext = function() {
         var fhirServerURL = $location.search()['server'];
         if (fhirServerURL) {
-          fhirService.setNonSmartServer(fhirServerURL);
-          $scope.showPatientPicker();
+          setServerAndPickPatient(fhirServerURL);
         }
         else {
           if (!fhirService.getSmartConnection() && !fhirService.smartConnectionInProgress()) {
@@ -146,6 +172,35 @@ angular.module('lformsApp')
 
 
       /**
+       *  Shows a window to summarize the results of the attempt to save (and
+       *  maybe extract).
+       *
+       * @param event the click event
+       */
+      $scope.showSaveResults = function(resultData) {
+        $mdDialog.show({
+          scope: $scope,
+          preserveScope: true,
+          templateUrl: 'fhir-app/save-results-dialog.html',
+          parent: angular.element(document.body),
+          controller: function DialogController($scope, $mdDialog) {
+            $scope.dialogTitle = "Save Results";
+            $scope.resultData = resultData;
+            // For some reason, calling JSON.stringify in the template does not
+            // work-- nothing is output-- so pass in a separate variable here.
+            $scope.resultDataJSON = JSON.stringify(resultData, null, 2);
+            $scope.serverBaseURL = fhirService.getServerBaseURL();
+            // close the popup without selecting a patient
+            $scope.closeDialog = function () {
+              $scope.selectedPatientInDialog = null;
+              $mdDialog.hide();
+            };
+          }
+        });
+      };
+
+
+      /**
        *  Shows a popup window to let user use a select or enter a FHIR server
        *  to use.
        *
@@ -161,12 +216,12 @@ angular.module('lformsApp')
           targetEvent: event,
           controller: function DialogController($scope, $mdDialog) {
             $scope.dialogTitle = "FHIR Server Needed";
-            $scope.dialogLabel = "Select or Enter the base URL of a FHIR Server";
             $scope.fhirServerListOpts = {listItems: [
+              // Note:  Options must be https, because the public server is https
               {text: 'https://launch.smarthealthit.org/v/r3/fhir'},
               {text: 'https://lforms-fhir.nlm.nih.gov/baseDstu3'},
-              {text: 'https://lforms-fhir.nlm.nih.gov/baseR4'},
-              {text: 'http://test.fhir.org/r4'}
+              {text: 'https://lforms-fhir.nlm.nih.gov/baseR4'}
+              // {text: 'http://test.fhir.org/r4'} // Grahame's https server requires OAuth
             ]}
             // close the popup without selecting a patient
             $scope.closeDialog = function () {
@@ -177,18 +232,8 @@ angular.module('lformsApp')
             // close the popup and select a patient
             $scope.confirmAndCloseDialog = function () {
               var serverURL = $scope.selectedServerInDialog && $scope.selectedServerInDialog.text;
-              if (serverURL) {
-                $scope.showWaitMsg('Contacting FHIR server.  Please wait...');
-                fhirService.setNonSmartServer(serverURL, function(success) {
-                  $mdDialog.hide();
-                  if (success)
-                    $scope.showPatientPicker();
-                  else {
-                    $scope.showErrorMsg('Could not establish communication with the FHIR server at ' +
-                      serverURL+'.');
-                  }
-                });
-              }
+              if (serverURL)
+                setServerAndPickPatient(serverURL, function() {$mdDialog.hide()});
               $scope.selectedServerInDialog = null;
               $mdDialog.hide();
             };
@@ -210,9 +255,10 @@ angular.module('lformsApp')
           var foundError = false;
           for (var i=0, len=issues.length; i<len && !foundError; ++i) {
             var issue = issues[i];
-            if ((issue.severity == 'error' || issue.severity == 'fatal') &&
-                 issue.details && issue.details.text) {
-              errorMsg = errorMsg+"\n"+issue.details.text;
+            if (issue.severity == 'error' || issue.severity == 'fatal') {
+              var explanation = issue.details && issue.details.text || issue.diagnostics;
+              if (explanation)
+                errorMsg = explanation;
               foundError = true;
             }
           }
@@ -223,35 +269,47 @@ angular.module('lformsApp')
 
 
       /**
+       *  Reports the results of a transaction.
+       */
+      $scope.$on('OP_RESULTS', function(event, resultData) {
+        $('.spinner').hide();
+        $scope.showSaveResults(resultData);
+      });
+
+
+      /**
        *  Shows a error message.
        * @param msg The message to show.
        */
       $scope.showErrorMsg = function(msg) {
+        this.showMsg('Error', msg);
+      };
+
+
+      /**
+       *  Shows a message (text only).
+       * @param title The heading for the message.
+       * @param msg The message to show.
+       */
+      $scope.showMsg = function(title, msg) {
         $mdDialog.show(
           $mdDialog.alert()
             .parent(angular.element(document.body))
             .clickOutsideToClose(true)
-            .title('Error')
+            .title(title)
             .textContent(msg)
-            .ariaLabel('Error Dialog')
+            .ariaLabel(title+' Dialog')
             .ok('OK')
         );
       };
+
 
       /**
        *  Shows a "Please Wait" message.
        * @param msg The message to show.
        */
       $scope.showWaitMsg = function(msg) {
-        $mdDialog.show(
-          $mdDialog.alert()
-            .parent(angular.element(document.body))
-            .clickOutsideToClose(true)
-            .title('Please Wait')
-            .textContent(msg)
-            .ariaLabel('Please Wait Dialog')
-            .ok('OK')
-        );
+        this.showMsg('Please Wait', msg);
       };
 
 

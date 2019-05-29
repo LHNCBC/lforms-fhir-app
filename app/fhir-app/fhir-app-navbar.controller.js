@@ -199,7 +199,11 @@ angular.module('lformsApp')
             try {
               var formData = LForms.Util.convertFHIRQuestionnaireToLForms(
                  qrInfo.questionnaire, fhirVersion);
-              var newFormData = (new LForms.LFormsData(formData)).getFormData();
+              //var newFormData = (new LForms.LFormsData(formData)).getFormData();
+              // TBD -- getFormData() results in _ variables (including FHIR
+              // extensions) being thrown away.  Not sure yet if it is needed
+              // for something else.
+              var newFormData = (new LForms.LFormsData(formData));
               mergedFormData = LForms.Util.mergeFHIRDataIntoLForms(
                 'QuestionnaireResponse', qrInfo.questionnaireresponse, newFormData,
                 fhirVersion);
@@ -254,7 +258,7 @@ angular.module('lformsApp')
                 userMessages.error = e;
               }
               if (!userMessages.error) {
-                var newFormData = (new LForms.LFormsData(formData)).getFormData();
+                //var newFormData = (new LForms.LFormsData(formData)).getFormData();
                 var fhirResInfo = {
                   resId: null,
                   resType: null,
@@ -264,7 +268,7 @@ angular.module('lformsApp')
                   questionnaireName: qInfo.questionnaire.name
                 };
                 // set the form data to be displayed
-                selectedFormData.setFormData(new LForms.LFormsData(newFormData), fhirResInfo);
+                selectedFormData.setFormData(new LForms.LFormsData(formData), fhirResInfo);
                 fhirService.setCurrentQuestionnaire(qInfo.questionnaire);
               }
             }, 10);
@@ -397,16 +401,33 @@ angular.module('lformsApp')
 
 
         /**
-         * Update the QuestionnaireResponse list when a QuestionnaireResponse has been created on an FHIR server
+         *  Update the Questionnnaire list when a Questionnaire has been created
+         *  on an FHIR server
          */
-        $scope.$on('LF_FHIR_RESOURCE_CREATED', function(event, arg) {
-          var patient = fhirService.getCurrentPatient();
-          fhirService.getAllQRByPatientId(patient.id);
+        $scope.$on('LF_FHIR_Q_CREATED', function(event, arg) {
           fhirService.getAllQ();
           $scope.formSelected = {
-            groupIndex: 1,
+            groupIndex: 2,
             formIndex: 0
           };
+          $('.spinner').hide();
+        });
+
+
+        /**
+         *  Update the QuestionnaireResponse and Questionnnaire lists when a
+         *  QuestionnaireResponse has been created on an FHIR server
+         */
+        $scope.$on('OP_RESULTS', function(event, arg) {
+          if (arg && arg.successfulResults) {
+            var patient = fhirService.getCurrentPatient();
+            fhirService.getAllQRByPatientId(patient.id);
+            fhirService.getAllQ();
+            $scope.formSelected = {
+              groupIndex: 1,
+              formIndex: 0
+            };
+          }
           $('.spinner').hide();
         });
 
@@ -418,7 +439,7 @@ angular.module('lformsApp')
           // also update the list to get the updated timestamp and fhir resources.
           var patient = fhirService.getCurrentPatient();
           fhirService.getAllQRByPatientId(patient.id);
-          fhirService.getAllQ();
+          // fhirService.getAllQ(); // should not be necessary
           $scope.formSelected = {
             groupIndex: 1,
             formIndex: 0

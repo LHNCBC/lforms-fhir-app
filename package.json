@@ -1,10 +1,10 @@
 {
   "name": "lforms-fhir-app",
-  "version": "0.9.1",
+  "version": "0.11.0",
   "description": "A SMART on FHIR app for lforms",
   "repository": "https://github.com/lhncbc/lforms-fhir-app",
   "devDependencies": {
-    "bower": "^1.8.4",
+    "bower": "^1.8.8",
     "grunt": "^1.0.4",
     "grunt-angular-templates": "^1.1.0",
     "grunt-autoprefixer": "^3.0.4",
