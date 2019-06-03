@@ -3,6 +3,7 @@
   "status": "draft",
   "date": "2018-11-05T16:54:56-05:00",
   "version": "2.56",
+  "id": "17612",
   "meta": {
     "profile": [
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire|3.5.0"
@@ -300,6 +301,15 @@
                 "system": "http://unitsofmeasure.org",
                 "code": "[in_i]"
               }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+              "valueDuration": {
+                "value": "1",
+                "unit": "year",
+                "system": "http://unitsofmeasure.org",
+                "code": "a"
+              }
             }
           ],
           "required": false,
@@ -321,6 +331,15 @@
               "valueCoding": {
                 "system": "http://unitsofmeasure.org",
                 "code": "kg"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+              "valueDuration": {
+                "value": "1",
+                "unit": "year",
+                "system": "http://unitsofmeasure.org",
+                "code": "a"
               }
             }
           ],
