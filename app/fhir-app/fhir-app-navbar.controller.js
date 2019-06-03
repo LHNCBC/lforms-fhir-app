@@ -301,7 +301,7 @@ angular.module('lformsApp')
         $scope.$on('LF_FHIR_QUESTIONNAIRERESPONSE_LIST', function(event, arg, error) {
           $scope.listSavedQR = [];
           $scope.listSavedQRError = error;
-          if (!error && arg && arg.total > 0) {  // searchset bundle
+          if (arg && arg.resourceType=="Bundle" && arg.type=="searchset") {  // searchset bundle
             for (var i=0, iLen=arg.entry.length; i< iLen; i++) {
               var qr = arg.entry[i].resource;
               if (qr.resourceType === "QuestionnaireResponse") {
@@ -362,7 +362,7 @@ angular.module('lformsApp')
         $scope.$on('LF_FHIR_QUESTIONNAIRE_LIST', function(event, arg, error) {
           $scope.listSavedQ = [];
           $scope.listSavedQError = error;
-          if (arg && arg.total > 0) {  // searchset bundle
+          if (arg && arg.resourceType=="Bundle" && arg.type=="searchset") {  // searchset bundle
             for (var i=0, iLen=arg.entry.length; i< iLen; i++) {
               var q = arg.entry[i].resource;
               var updated;
