@@ -58,7 +58,7 @@ describe('SMART on FHIR connection', function () {
     // Confirm that a warning message (about an unknown FHIR version) is not shown.
     expect(EC.not(EC.presenceOf($('.warning'))));
 
-    util.deleteCurrentQR(); // clean up
+    util.deleteCurrentQuestionnaire(); // Clean up uploaded form
   });
 
 
@@ -149,7 +149,7 @@ describe('SMART on FHIR connection', function () {
     });
 
     afterAll(function() {
-      util.deleteCurrentQR(); // clean up
+      util.deleteCurrentQuestionnaire(); // Clean up uploaded form
     });
 
     /**

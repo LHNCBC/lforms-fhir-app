@@ -92,6 +92,7 @@ describe('Non-SMART connection to FHIR server', function() {
       weight.sendKeys('20');
       let bmi = element(by.id('/39156-5/1'));
       expect(bmi.getAttribute('value')).toBe('34.4');
+      util.deleteCurrentQuestionnaire(); // Clean up uploaded form
     });
   });
 
@@ -132,6 +133,7 @@ describe('Non-SMART connection to FHIR server', function() {
       util.pageObjects.firstSavedQR().click();
       browser.wait(EC.presenceOf($(familyMemberName)));
       expect($(familyMemberName).getAttribute('value')).toBe('aa');
+      util.deleteCurrentQuestionnaire(); // Clean up uploaded form
     });
   });
 

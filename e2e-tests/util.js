@@ -128,6 +128,27 @@ let util = {
 
 
   /**
+   *  Deletes the current Questionnaire, its QuestionnaireResponses, and their
+   *  extracted Observations (if not STU3).  The purpose it to clean up forms
+   *  that were uploaded during a test.  This assumes that there is a current
+   *  questionnaire, i.e. that either a Questionnaire or saved QuestionnaireResponse
+   *  is showing.
+   */
+  deleteCurrentQuestionnaire: function() {
+    let deleteBtn = $('#deleteQBtn');
+    // Make the button visible
+    browser.executeScript('arguments[0].style.display=""', deleteBtn.getWebElement());
+    deleteBtn.click();
+    let confirmButton = $('button.md-confirm-button');
+    browser.wait(EC.elementToBeClickable(confirmButton));
+    confirmButton.click();
+    browser.wait(EC.textToBePresentInElement($('.md-title'), "Deletion Completed"));
+    element(by.buttonText('OK')).click();
+    browser.wait(EC.not(EC.textToBePresentInElement($('.md-title'), "Deletion Completed")));
+  },
+
+
+  /**
    *  Temporary files removed by cleanUpTmpFiles.  These should be objects
    *  return by the "tmp" package.
    */

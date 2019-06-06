@@ -66,6 +66,13 @@
         <div class="btn-group btn-group-justified" role="group">
           <a role="button" type="button" class="btn btn-default btn-sm btn-success " ng-click="showQuestionnairePicker($event)" title="Choose a Questionnaire from the FHIR server."><span class="glyphicon glyphicon-search"></span><span class="lf-nav-button">Search</span></a>
         </div>
+        <div style="display: none" ng-if="formSelected.groupIndex" id="deleteQBtn" class="btn-group btn-group-justified" role="group">
+          <a role="button" type="button" class="btn btn-default btn-sm
+           btn-danger" ng-click="deleteQuestionnaire($event)" title="Deletes
+           a Questionnaire and associated QuestionnaireResponses and
+           Observations"><span class="glyphicon glyphicon-warning-sign"></span><span
+           class="lf-nav-button">Delete Questionnaire and Its Responses</span></a>
+        </div>
       </div>
     </div>
   </div>
