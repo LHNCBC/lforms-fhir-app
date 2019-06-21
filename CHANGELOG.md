@@ -3,6 +3,17 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.11.3] - 2019-06-21
+### Fixed
+- Prepopulation is now disabled for saved QuestionnaireResponses (so that saved
+  data is not replaced with "prepopulation" data.
+
+## [0.11.2] - 2019-06-07
+### Fixed
+- Added a means for the test code to delete Questionnaires that were uploaded
+  for testing, so as not to clutter the Questionnaire list with duplicate
+  entries.
+
 ## [0.11.2] - 2019-06-07
 ### Fixed
 - Added a means for the test code to delete Questionnaires that were uploaded
