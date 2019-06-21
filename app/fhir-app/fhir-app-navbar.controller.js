@@ -292,6 +292,14 @@ angular.module('lformsApp')
           return ret;
         };
 
+        /**
+         *  Returns a display name for a Questionnaire resource.
+         * @param q the Questionnaire resource
+         */
+        function getQName(q) {
+          return q.title || q.name || (q.code && q.code.length && q.code[0].display);
+        }
+
         // The format for showing the update date/time strings.
         var dateTimeFormat = "MM/dd/yyyy HH:mm:ss";
 
@@ -301,7 +309,8 @@ angular.module('lformsApp')
         $scope.$on('LF_FHIR_QUESTIONNAIRERESPONSE_LIST', function(event, arg, error) {
           $scope.listSavedQR = [];
           $scope.listSavedQRError = error;
-          if (arg && arg.resourceType=="Bundle" && arg.type=="searchset") {  // searchset bundle
+          if (arg && arg.resourceType=="Bundle" && arg.type=="searchset" &&
+              arg.entry) {  // searchset bundle
             for (var i=0, iLen=arg.entry.length; i< iLen; i++) {
               var qr = arg.entry[i].resource;
               if (qr.resourceType === "QuestionnaireResponse") {
@@ -323,7 +332,7 @@ angular.module('lformsApp')
 
                 // if the questionnaire resource is included/found in the searchset
                 if (q) {
-                  qName = q.name;
+                  qName = getQName(q);
                   var sdcPattern =
                     new RegExp('http://hl7.org/fhir/u./sdc/StructureDefinition/sdc-questionnaire\\|(\\d+\.?\\d+)');
                   var extension = null;
@@ -362,7 +371,8 @@ angular.module('lformsApp')
         $scope.$on('LF_FHIR_QUESTIONNAIRE_LIST', function(event, arg, error) {
           $scope.listSavedQ = [];
           $scope.listSavedQError = error;
-          if (arg && arg.resourceType=="Bundle" && arg.type=="searchset") {  // searchset bundle
+          if (arg && arg.resourceType=="Bundle" && arg.type=="searchset" &&
+              arg.entry) {  // searchset bundle
             for (var i=0, iLen=arg.entry.length; i< iLen; i++) {
               var q = arg.entry[i].resource;
               var updated;
@@ -374,7 +384,7 @@ angular.module('lformsApp')
               }
               $scope.listSavedQ.push({
                 resId: q.id,
-                resName: q.name,
+                resName: getQName(q),
                 updatedAt: updated,
                 resType: "Questionnaire",
                 questionnaire: q,
@@ -448,8 +458,9 @@ angular.module('lformsApp')
         });
 
 
-        //Questionnaire
+        // Questionnaire selected from the questionnaire dialog
         $scope.selectedQuestionnaire = null;
+
         /**
          * Show a popup window to let user use a search field to choose a Questionnaire from HAPI FHIR server
          * @param event the click event
@@ -488,6 +499,28 @@ angular.module('lformsApp')
 
 
         /**
+         *  Shows a confirmation dialog before deleting the current
+         *  Questionnaire and its associated responses and observations.
+         *  (Perhaps this should not be a part of the user interface normally,
+         *  but it is useful for testing.)
+         */
+        $scope.deleteQuestionnaire = function(event) {
+          var confirmDialog = $mdDialog.confirm().title('Warning').
+            textContent('This will delete the selected Questionnaire, all ' +
+             'its saved QuestionnaireResponses, '+
+             'and all Observations extracted from those QuestionnaireResponses.').
+            ok('Delete').cancel('Cancel').theme('warn');
+          $mdDialog.show(confirmDialog).then(function() {
+            fhirService.deleteQAndQRespAndObs(fhirService.currentQuestionnaire.id).then(function() {
+              var resultDialog = $mdDialog.alert().title('Deletion Completed').
+                textContent('The questionnaire and its assosiated resources were deleted successfully.').
+                ok('OK');
+              $mdDialog.show(resultDialog);
+            });
+          });
+        }
+
+        /**
          * Check if the newly selected Questionnaire is different that the current Questionnaire
          * @param current the current Questionnaire
          * @param newlySelected the newly selected Questionnaire
@@ -505,7 +538,5 @@ angular.module('lformsApp')
         $scope.searchQuestionnaireByName = function(searchText) {
           return fhirService.searchQuestionnaireByName(searchText);
         };
-
-
       }
   ]);

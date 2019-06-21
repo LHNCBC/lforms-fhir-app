@@ -3,6 +3,12 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.11.2] - 2019-06-07
+### Fixed
+- Added a means for the test code to delete Questionnaires that were uploaded
+  for testing, so as not to clutter the Questionnaire list with duplicate
+  entries.
+
 ## [0.11.1] - 2019-06-03
 ### Fixed
 - Questionnaire list was not appearing for servers with lots of Questionnaires.

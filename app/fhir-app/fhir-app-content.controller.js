@@ -419,11 +419,12 @@ angular.module('lformsApp')
 
 
         /**
-         * Remove the displayed form when a QuestionnaireResponse (hence the form data) is deleted
+         * Remove the displayed form when a Questionnaire or QuestionnaireResponse (hence the form data) is deleted
          */
         $scope.$on('LF_FHIR_RESOURCE_DELETED', function(event, arg) {
           // clean up the form
           selectedFormData.setFormData(null);
+          fhirResInfo = {};
           $scope.initialLoad = true;
           $scope.$apply();
           $('.spinner').hide();
