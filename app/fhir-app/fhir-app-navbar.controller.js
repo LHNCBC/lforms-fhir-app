@@ -113,8 +113,24 @@ angular.module('lformsApp')
                 catch (e) {
                   $timeout(function() {userMessages.error = e});
                 }
-                if (questionnaire)
-                  $timeout(function() {selectedFormData.setFormData(new LForms.LFormsData(questionnaire))});
+                if (questionnaire) {
+                  $timeout(function() {
+                    $('.spinner').show();
+                    var lfData = new LForms.LFormsData(questionnaire);
+                    if (LForms.fhirContext) {
+                      lfData.loadFHIRResources(true).then(function() {
+                        $('.spinner').hide();
+                        $scope.$apply(function() {
+                          selectedFormData.setFormData(lfData);
+                          fhirService.setCurrentQuestionnaire(null);
+                          $scope.formSelected = null;
+                        });
+                      });
+                    }
+                    else
+                      selectedFormData.setFormData(lfData);
+                  });
+                }
               }
               // in the internal LForms format
               else {
@@ -222,9 +238,17 @@ angular.module('lformsApp')
                 questionnaireResId : qrInfo.questionnaire.id,
                 questionnaireName : qrInfo.questionnaire.name
               };
-              // set the form data to be displayed
-              selectedFormData.setFormData(new LForms.LFormsData(mergedFormData), fhirResInfo);
-              fhirService.setCurrentQuestionnaire(qrInfo.questionnaire);
+              // Load FHIR resources, but don't prepoluate
+              mergedFormData = new LForms.LFormsData(mergedFormData);
+              $('.spinner').show();
+              mergedFormData.loadFHIRResources(false).then(function() {
+                $('.spinner').hide();
+                $scope.$apply(function() {
+                  // set the form data to be displayed
+                  selectedFormData.setFormData(mergedFormData, fhirResInfo);
+                  fhirService.setCurrentQuestionnaire(qrInfo.questionnaire);
+                });
+              });
             }
           }
         };
@@ -268,8 +292,15 @@ angular.module('lformsApp')
                   questionnaireName: qInfo.questionnaire.name
                 };
                 // set the form data to be displayed
-                selectedFormData.setFormData(new LForms.LFormsData(formData), fhirResInfo);
-                fhirService.setCurrentQuestionnaire(qInfo.questionnaire);
+                var newFormData = new LForms.LFormsData(formData);
+                $('.spinner').show();
+                newFormData.loadFHIRResources(true).then(function() {
+                  $('.spinner').hide();
+                  $scope.$apply(function() {
+                    selectedFormData.setFormData(newFormData, fhirResInfo);
+                    fhirService.setCurrentQuestionnaire(qInfo.questionnaire);
+                  });
+                });
               }
             }, 10);
           }

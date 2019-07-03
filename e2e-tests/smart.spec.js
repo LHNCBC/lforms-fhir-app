@@ -52,8 +52,8 @@ describe('SMART on FHIR connection', function () {
     // Now open up the saved QuestionnaireResponse and confirm we can see the
     // saved value.
     $('#qrList a:first-child').click();
-    // height = element(by.id('/54126-8/8302-2/1/1')); // new on page
     browser.wait(EC.presenceOf(element(by.id('/54126-8/8302-2/1/1'))), 2000);
+    height = element(by.id('/54126-8/8302-2/1/1')); // new on page
     expect(height.getAttribute('value')).toBe('70');
     // Confirm that a warning message (about an unknown FHIR version) is not shown.
     expect(EC.not(EC.presenceOf($('.warning'))));
