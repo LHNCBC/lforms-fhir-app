@@ -13,17 +13,17 @@ describe('SMART on FHIR connection', function () {
   it('should show patient information', function() {
     var name = $('#ptName');
     browser.wait(EC.presenceOf(name), 5000);
-    browser.wait(EC.textToBePresentInElement(name, 'Pok'), 2000);
+    browser.wait(EC.textToBePresentInElement(name, 'Aaron'), 2000);
   });
 
 
-  it ('should display a saved form', function () {
+  fit ('should display a saved form', function () {
     // Upload, edit, and save a form.
     util.uploadForm('R4/ussg-fhp.json');
     // Wait for name to be auto-filled (pre-population test)
     let name = element(by.id('/54126-8/54125-0/1/1'));
     browser.wait(EC.presenceOf(name), 2000);
-    browser.wait(EC.textToBePresentInElementValue(name, 'Pok'), 2000);
+    browser.wait(EC.textToBePresentInElementValue(name, 'Aaron'), 2000);
     // Enter a height value
     let height = element(by.id('/54126-8/8302-2/1/1'));
     height.sendKeys('70');
@@ -66,10 +66,14 @@ describe('SMART on FHIR connection', function () {
     util.uploadForm('R4/weight-height-questionnaire.json');
     let height = element(by.id('/8302-2/1'));
     browser.wait(EC.presenceOf(height), 2000);
-    browser.wait(EC.textToBePresentInElementValue(height, '64'), 2000);
-    expect(height.getAttribute('value')).toMatch(/^64\./);
+    browser.wait(EC.textToBePresentInElementValue(height, '77'), 2000);
+    expect(height.getAttribute('value')).toMatch(/^77\./);
   });
 
+
+  it('should provide the ability to search a ValueSet', function() {
+    util.uploadForm('R4/ussg-fhp.json');
+  });
 
   describe('Saved QuestionnaireResponses', function() {
     afterAll(function() {

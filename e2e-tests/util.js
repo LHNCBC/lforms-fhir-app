@@ -73,10 +73,13 @@ let util = {
    */
   launchSmartAppInSandbox: function () {
     util.setAngularSite(false);
+    browser.get('https://lforms-smart-fhir.nlm.nih.gov/?auth_error=&fhir_version_1=r4&fhir_version_2=r4&iss=&launch_ehr=1&launch_url=http%3A%2F%2F130.14.113.19%3A8000%2Flforms-fhir-app%2Flaunch.html&patient=&prov_skip_auth=1&provider=&pt_skip_auth=1&public_key=&sb=&sde=&sim_ehr=0&token_lifetime=15');
+/*
     browser.get('https://launch.smarthealthit.org/?auth_error=&fhir_version_1=r2'+
      '&fhir_version_2=r3&iss=&launch_ehr=1&launch_url=http%3A%2F%2Flocalhost%3A'+
      '8000%2Flforms-fhir-app%2Flaunch.html&patient=&prov_skip_auth=1&provider='+
      '&pt_skip_auth=1&public_key=&sb=&sde=&sim_ehr=0&token_lifetime=15&user_pt=');
+     */
     let launchURL = element(by.id('launch-url'));
     util.clearField(launchURL);
     this.sendKeys(launchURL, 'http://localhost:8000/lforms-fhir-app/launch.html');
@@ -90,7 +93,8 @@ let util = {
       //let iframe = $('#frame');
       //browser.wait(EC.presenceOf(iframe), 2000);
       //browser.switchTo().frame(iframe.getWebElement());
-      let patient = element(by.id('patient-eb3271e1-ae1b-4644-9332-41e32c829486'));
+      let patient = element(by.id('patient-smart-9995679'));
+      //let patient = element(by.id('patient-eb3271e1-ae1b-4644-9332-41e32c829486'));
       browser.wait(EC.presenceOf(patient), 2000);
       patient.click();
       // Wait for the server resources to finish loading.
