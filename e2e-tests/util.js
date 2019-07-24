@@ -1,6 +1,8 @@
 // Helper functions for the tests.
 var EC = protractor.ExpectedConditions;
 
+var autoCompBasePage = require("../app/bower_components/autocomplete-lhc/test/protractor/basePage").BasePage;
+
 let util = {
   /**
    * By default, protractor expects it to be angular application. This is used
@@ -300,6 +302,9 @@ let util = {
      */
     answerList: $('#searchResults')
 
-  }
+  },
+
+  autoCompHelpers: new autoCompBasePage()
+
 }
 module.exports = util;
