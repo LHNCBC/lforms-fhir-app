@@ -3,6 +3,14 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.11.4] - 2019-07-24
+### Added
+- Updated LForms to include support for autocompletion with ValueSets, and added
+  a test.
+### Changed
+- The SMART connection tests now hit our own FHIR server instead of the app
+  gallery sandbox.
+
 ## [0.11.3] - 2019-06-21
 ### Fixed
 - Prepopulation is now disabled for saved QuestionnaireResponses (so that saved
