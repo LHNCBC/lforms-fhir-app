@@ -26,6 +26,8 @@ describe('SMART on FHIR connection', function () {
     browser.wait(EC.textToBePresentInElementValue(name, 'Aaron'), 2000);
     // Enter a height value
     let height = element(by.id('/54126-8/8302-2/1/1'));
+    browser.wait(EC.presenceOf(height), 2000);
+    util.clearField(height);
     height.sendKeys('70');
     let saveAs = $('#btn-save-as');
     saveAs.click();
