@@ -13,7 +13,7 @@ describe('SMART on FHIR connection', function () {
   it('should show patient information', function() {
     var name = $('#ptName');
     browser.wait(EC.presenceOf(name), 5000);
-    browser.wait(EC.textToBePresentInElement(name, 'Pok'), 2000);
+    browser.wait(EC.textToBePresentInElement(name, 'Aaron'), 2000);
   });
 
 
@@ -23,9 +23,11 @@ describe('SMART on FHIR connection', function () {
     // Wait for name to be auto-filled (pre-population test)
     let name = element(by.id('/54126-8/54125-0/1/1'));
     browser.wait(EC.presenceOf(name), 2000);
-    browser.wait(EC.textToBePresentInElementValue(name, 'Pok'), 2000);
+    browser.wait(EC.textToBePresentInElementValue(name, 'Aaron'), 2000);
     // Enter a height value
     let height = element(by.id('/54126-8/8302-2/1/1'));
+    browser.wait(EC.presenceOf(height), 2000);
+    util.clearField(height);
     height.sendKeys('70');
     let saveAs = $('#btn-save-as');
     saveAs.click();
@@ -54,6 +56,7 @@ describe('SMART on FHIR connection', function () {
     $('#qrList a:first-child').click();
     browser.wait(EC.presenceOf(element(by.id('/54126-8/8302-2/1/1'))), 2000);
     height = element(by.id('/54126-8/8302-2/1/1')); // new on page
+    browser.wait(EC.textToBePresentInElementValue(height, '70'), 2000);
     expect(height.getAttribute('value')).toBe('70');
     // Confirm that a warning message (about an unknown FHIR version) is not shown.
     expect(EC.not(EC.presenceOf($('.warning'))));
@@ -66,10 +69,34 @@ describe('SMART on FHIR connection', function () {
     util.uploadForm('R4/weight-height-questionnaire.json');
     let height = element(by.id('/8302-2/1'));
     browser.wait(EC.presenceOf(height), 2000);
-    browser.wait(EC.textToBePresentInElementValue(height, '64'), 2000);
-    expect(height.getAttribute('value')).toMatch(/^64\./);
+    browser.wait(EC.textToBePresentInElementValue(height, '77'), 2000);
+    expect(height.getAttribute('value')).toMatch(/^77\./);
   });
 
+
+  describe('ValueSet search', function() {
+    beforeAll(function() {
+      util.uploadForm('R4/ussg-fhp.json');
+    });
+
+    it ('should work via the FHIR client', function() {
+      var ethnicityID = '/54126-8/54133-4/1/1';
+      var ethnicity = element(by.id(ethnicityID));
+      ethnicity.sendKeys('ar');
+      util.autoCompHelpers.waitForSearchResults();
+      util.autoCompHelpers.firstSearchRes.click();
+      expect(util.autoCompHelpers.getSelectedItems(ethnicityID)).toEqual(['Argentinean']);
+    });
+
+    it('should work via a terminology server', function() {
+      var diseasesID = '/54126-8/54137-5/54140-9/1/1/1';
+      var diseaseHistory = element(by.id(diseasesID));
+      diseaseHistory.sendKeys('ar');
+      util.autoCompHelpers.waitForSearchResults();
+      util.autoCompHelpers.firstSearchRes.click();
+      expect(diseaseHistory.getAttribute('value')).toEqual('Arm pain');
+    });
+  });
 
   describe('Saved QuestionnaireResponses', function() {
     afterAll(function() {

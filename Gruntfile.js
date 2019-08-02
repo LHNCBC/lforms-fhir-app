@@ -202,9 +202,11 @@ module.exports = function (grunt) {
             // Only font and image files are needed from the bower_components
             // directories -- except that we also need fhirpath.min.js.
             // Also, for jquery themes, only pick out the redmond theme.
-            return src.match(/fhirpath.min.js/) || !src.match(/bower_components/) ||
-              (src.match(/\.(eot|svg|ttf|woff|png|jpg|gif)/) &&
-              (!src.match('jquery-ui/themes') || src.match('redmond')))
+            return src.match(/fhirpath.min.js/) || !src.match(/node_modules/) &&
+             !src.match(/bower_components.*bower_components/) &&
+             (!src.match(/bower_components/) ||
+              src.match(/\.(eot|svg|ttf|woff|png|jpg|gif)/) &&
+              (!src.match('jquery-ui/themes') || src.match('redmond')));
             // When bower components are linked from development versions,
             // filter out the linked components' bower_components,
             // node_modules, and .git directories
@@ -213,7 +215,7 @@ module.exports = function (grunt) {
           src: [
             '*.{ico,png,txt}',
             '.htaccess',
-            'bower_components/**/*',
+            'bower_components/**/**',
             'assets/images/{,*/}*.{jpg,gif}',
             'assets/fonts/**/*',
             'launch.html',
