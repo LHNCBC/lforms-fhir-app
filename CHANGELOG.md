@@ -9,6 +9,9 @@ This project follows [Semantic Versioning](http://semver.org/).
 ### Added
 - A checkbox for controlling whether the date & time are shown for saved
   Questionnaires.
+### Changed
+- Moved search button to the top of the Questionnaire list to make it easier to
+  find.
 
 ## [0.11.4] - 2019-07-24
 ### Added
