@@ -139,6 +139,11 @@
   width: 100%;
 }
 
+.showDate {
+  font-size: 80%;
+  text-align: right;
+}
+
 /* Spinner from http://tobiasahlin.com/spinkit/ */
 .spinner {
   position: fixed;

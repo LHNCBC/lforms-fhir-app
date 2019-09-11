@@ -328,7 +328,14 @@ angular.module('lformsApp')
          * @param q the Questionnaire resource
          */
         function getQName(q) {
-          return q.title || q.name || (q.code && q.code.length && q.code[0].display);
+          var title = q.title || q.name || (q.code && q.code.length && q.code[0].display);
+          // For LOINC only, add the code to title
+          if (q.code && q.code.length) {
+            var firstCode = q.code[0];
+            if (firstCode.system == "http://loinc.org")
+              title += ' ['+firstCode.code+']';
+          }
+          return title;
         }
 
         // The format for showing the update date/time strings.

@@ -139,7 +139,8 @@ describe('Non-SMART connection to FHIR server', function() {
 
 
   describe('Next & previous buttons in Questionnaire list', function() {
-    var firstQNameCSS = '#qList .list-group-item:first-child .form-name';
+    var firstQNameCSS = '#qList .list-group-item:nth-child(2) .form-name';
+
     it('should initially have a next button and a disabled previous button', function() {
       expect($('#prevQPage').getAttribute('disabled')).toBe('true');
       expect($('#nextQPage').getAttribute('disabled')).not.toBe('true');
@@ -147,6 +148,7 @@ describe('Non-SMART connection to FHIR server', function() {
 
     it('should have a working next button on the first page', function() {
       // Get the name of the first questionnaire in the list.
+      browser.wait(EC.presenceOf($(firstQNameCSS)), 20000);
       $(firstQNameCSS).getText().then(function(origText) {
         $('#nextQPage').click();
         // Wait for the text of the first item to be different
@@ -154,7 +156,7 @@ describe('Non-SMART connection to FHIR server', function() {
           return $(firstQNameCSS).getText().then(function(newText) {
             return origText != newText;
           }, function fail() {return false}); // "fail" handles stale element references
-        });
+        }, 2000);
       });
     });
 
@@ -167,7 +169,7 @@ describe('Non-SMART connection to FHIR server', function() {
           return $(firstQNameCSS).getText().then(function(newText) {
             return origText != newText;
           }, function fail() {return false}); // "fail" handles stale element references
-        });
+        }, 2000);
       });
     });
 
