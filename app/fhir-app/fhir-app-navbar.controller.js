@@ -335,6 +335,8 @@ angular.module('lformsApp')
             if (firstCode.system == "http://loinc.org")
               title += ' ['+firstCode.code+']';
           }
+          if (!title)
+            title = 'Untitled, #'+q.id;
           return title;
         }
 
