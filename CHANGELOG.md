@@ -3,6 +3,13 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.12.0] - 2019-09-11
+### Fixed
+- Fixed the "previous" page link in the side bar.
+### Added
+- A checkbox for controlling whether the date & time are shown for saved
+  Questionnaires.
+
 ## [0.11.4] - 2019-07-24
 ### Added
 - Updated LForms to include support for autocompletion with ValueSets, and added

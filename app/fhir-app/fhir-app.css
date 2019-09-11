@@ -135,6 +135,10 @@
   font-weight: bold;
 }
 
+.panel-title table {
+  width: 100%;
+}
+
 /* Spinner from http://tobiasahlin.com/spinkit/ */
 .spinner {
   position: fixed;
