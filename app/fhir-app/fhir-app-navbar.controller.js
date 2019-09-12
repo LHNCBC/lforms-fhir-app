@@ -332,8 +332,11 @@ angular.module('lformsApp')
           // For LOINC only, add the code to title
           if (q.code && q.code.length) {
             var firstCode = q.code[0];
-            if (firstCode.system == "http://loinc.org")
+            if (firstCode.system == "http://loinc.org" && firstCode.code) {
+              if (!title)
+                title = '';
               title += ' ['+firstCode.code+']';
+            }
           }
           if (!title)
             title = 'Untitled, #'+q.id;
