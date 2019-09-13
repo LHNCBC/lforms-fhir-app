@@ -258,6 +258,7 @@ fb.service('fhirService', [
         fn = thisService.fhir.nextPage;
       }
       else if (relation === 'previous') {
+        relation = 'prev'; // fhir-client.js does not handle "previous"
         fn = thisService.fhir.prevPage;
       }
 
