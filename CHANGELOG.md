@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.12.1] - 2019-09-29
+### Fixed
+- Updated LForms to 18.0.1 to obtain various fixes.
+
 ## [0.12.0] - 2019-09-11
 ### Fixed
 - Fixed the "previous" page link in the side bar.
