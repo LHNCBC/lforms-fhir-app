@@ -172,7 +172,7 @@
           "valueExpression": {
             "description": "BMI calculation",
             "language" : "text/fhirpath",
-            "expression": "((%weight/%height/%height*10 +0.5) div 1)/10"
+            "expression": "(%weight/(%height.power(2))).round(1)"
           }
         }
       ],
