@@ -1,0 +1,294 @@
+{
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire|2.7"
+    ]
+  },
+  "title": "Hard Coronary Heart Disease (10-year risk)",
+  "name": "framingham HCHD",
+  "status": "draft",
+  "resourceType": "Questionnaire",
+  "item": [
+    {
+      "type": "choice",
+      "code": [
+        {
+          "code": "Modified_46098-0",
+          "display": "Gender",
+          "system": "Custom"
+        },
+        {
+          "code": "46098-0",
+          "display": "Gender",
+          "system": "http://loinc.org"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
+          "valueInteger": 1
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ],
+            "text": "Drop down"
+          }
+        }
+      ],
+      "required": true,
+      "linkId": "/46098-0",
+      "text": "Gender",
+      "answerOption": [
+        {
+          "valueCoding": {
+            "code": "LA2-8",
+            "display": "Male"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "LA3-6",
+            "display": "Female"
+          }
+        }
+      ]
+    },
+    {
+      "type": "string",
+      "code": [
+        {
+          "code": "age_requirement_notice",
+          "display": "Sorry, but the formulas are only valid for ages in the range 30 to 79.",
+          "system": "Custom"
+        }
+      ],
+      "required": false,
+      "linkId": "/age_requirement_notice",
+      "text": "Sorry, but the formulas are only valid for ages in the range 30 to 79."
+    },
+    {
+      "type": "decimal",
+      "code": [
+        {
+          "code": "Modified_21112-8",
+          "display": "Birth date",
+          "system": "Custom"
+        },
+        {
+          "code": "21112-8",
+          "display": "Birth date",
+          "system": "http://loinc.org"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
+          "valueInteger": 1
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "display": "{mm/dd/yyyy}"
+          }
+        }
+      ],
+      "required": true,
+      "linkId": "/21112-8",
+      "text": "Birth date"
+    },
+    {
+      "type": "choice",
+      "code": [
+        {
+          "code": "smokes",
+          "display": "Do you smoke?",
+          "system": "Custom"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
+          "valueInteger": 1
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "radio-button",
+                "display": "Radio Button"
+              }
+            ],
+            "text": "Radio Button"
+          }
+        }
+      ],
+      "required": true,
+      "linkId": "/undefined",
+      "text": "Do you smoke?",
+      "answerOption": [
+        {
+          "valueCoding": {
+            "code": "Y",
+            "display": "Yes"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "N",
+            "display": "No"
+          }
+        }
+      ]
+    },
+    {
+      "type": "decimal",
+      "code": [
+        {
+          "code": "8480-6",
+          "display": "Systolic blood pressure",
+          "system": "http://loinc.org"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
+          "valueInteger": 1
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "display": "mm[Hg]"
+          }
+        }
+      ],
+      "required": true,
+      "linkId": "/8480-6",
+      "text": "Systolic blood pressure"
+    },
+    {
+      "type": "decimal",
+      "code": [
+        {
+          "code": "2093-3",
+          "display": "Cholesterol [Mass/Vol]",
+          "system": "http://loinc.org"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
+          "valueInteger": 1
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "display": "mg/dL"
+          }
+        }
+      ],
+      "required": true,
+      "linkId": "/2093-3",
+      "text": "Cholesterol [Mass/Vol]"
+    },
+    {
+      "type": "decimal",
+      "code": [
+        {
+          "code": "2085-9",
+          "display": "Cholesterol in HDL [Mass/Vol]",
+          "system": "http://loinc.org"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
+          "valueInteger": 1
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "display": "mg/dL"
+          }
+        }
+      ],
+      "required": true,
+      "linkId": "/2085-9",
+      "text": "Cholesterol in HDL [Mass/Vol]"
+    },
+    {
+      "type": "choice",
+      "code": [
+        {
+          "code": "antihypertensive",
+          "display": "Are you taking medication for high blood pressure?",
+          "system": "Custom"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
+          "valueInteger": 1
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "radio-button",
+                "display": "Radio Button"
+              }
+            ],
+            "text": "Radio Button"
+          }
+        }
+      ],
+      "required": true,
+      "linkId": "/antihypertensive",
+      "text": "Are you taking medication for high blood pressure?",
+      "answerOption": [
+        {
+          "valueCoding": {
+            "code": "Y",
+            "display": "Yes"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "N",
+            "display": "No"
+          }
+        }
+      ]
+    },
+    {
+      "type": "string",
+      "code": [
+        {
+          "code": "all_answers_required_notice",
+          "display": "All answers are required before the risk probability can be computed.",
+          "system": "Custom"
+        }
+      ],
+      "required": false,
+      "linkId": "/all_answers_required_notice",
+      "text": "All answers are required before the risk probability can be computed."
+    },
+    {
+      "type": "decimal",
+      "code": null,
+      "required": false,
+      "linkId": "/undefined",
+      "text": "10-year HCHD Risk Probabilily"
+    }
+  ]
+}
