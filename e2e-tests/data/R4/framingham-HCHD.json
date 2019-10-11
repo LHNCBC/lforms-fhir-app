@@ -10,6 +10,39 @@
   "resourceType": "Questionnaire",
   "item": [
     {
+      "type": "decimal",
+      "code": [
+        {
+          "code": "age"
+        }
+      ],
+      "required": true,
+      "linkId": "/age",
+      "text": "Age (in years)"
+    },
+    {
+      "type": "string",
+      "code": [
+        {
+          "code": "age_requirement_notice"
+        }
+      ],
+      "required": false,
+      "linkId": "/age_requirement_notice",
+      "text": "Sorry, but the formulas are only valid for ages in the range 30 to 79.",
+      "enableWhen": [{
+        "question": "/age",
+        "operator": "<",
+        "answerDecimal": 30
+      },
+      {
+        "question": "/age",
+        "operator": ">",
+        "answerDecimal": 79
+      }],
+      "enableBehavior": "any"
+    },
+    {
       "type": "choice",
       "code": [
         {
@@ -59,49 +92,6 @@
           }
         }
       ]
-    },
-    {
-      "type": "string",
-      "code": [
-        {
-          "code": "age_requirement_notice",
-          "display": "Sorry, but the formulas are only valid for ages in the range 30 to 79.",
-          "system": "Custom"
-        }
-      ],
-      "required": false,
-      "linkId": "/age_requirement_notice",
-      "text": "Sorry, but the formulas are only valid for ages in the range 30 to 79."
-    },
-    {
-      "type": "decimal",
-      "code": [
-        {
-          "code": "Modified_21112-8",
-          "display": "Birth date",
-          "system": "Custom"
-        },
-        {
-          "code": "21112-8",
-          "display": "Birth date",
-          "system": "http://loinc.org"
-        }
-      ],
-      "extension": [
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
-          "valueInteger": 1
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
-          "valueCoding": {
-            "display": "{mm/dd/yyyy}"
-          }
-        }
-      ],
-      "required": true,
-      "linkId": "/21112-8",
-      "text": "Birth date"
     },
     {
       "type": "choice",
