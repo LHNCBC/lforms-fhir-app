@@ -8,6 +8,91 @@
   "name": "framingham HCHD",
   "status": "draft",
   "resourceType": "Questionnaire",
+  "extension": [{
+    "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+    "valueExpression" : {
+      "name": "age",
+      "language": "text/fhirpath",
+      "expression": "item.where(linkId='/age').answer.valueDecimal"
+    }
+  }, {
+    "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+    "valueExpression" : {
+      "name": "gender",
+      "language": "text/fhirpath",
+      "expression": "item.where(linkId='/46098-0').answer.valueCoding.display"
+    }
+  }, {
+    "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+    "valueExpression" : {
+      "name": "smokes_code",
+      "language": "text/fhirpath",
+      "expression": "item.where(linkId='/smokes').answer.valueCoding.code"
+    }
+  }, {
+    "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+    "valueExpression" : {
+      "name": "smokes",
+      "language": "text/fhirpath",
+      "expression": "iif(%smokes_code.exists(), iif(%smokes_code = 'Y', 1, 0), {})"
+    }
+  }, {
+    "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+    "valueExpression" : {
+      "name": "systolic",
+      "language": "text/fhirpath",
+      "expression": "item.where(linkId='/8480-6').answer.valueDecimal"
+    }
+  }, {
+    "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+    "valueExpression" : {
+      "name": "tChol",
+      "language": "text/fhirpath",
+      "expression": "item.where(linkId='/2093-3').answer.valueDecimal"
+    }
+  }, {
+    "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+    "valueExpression" : {
+      "name": "hdl",
+      "language": "text/fhirpath",
+      "expression": "item.where(linkId='/2085-9').answer.valueDecimal"
+    }
+  }, {
+    "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+    "valueExpression" : {
+      "name": "antihypert_code",
+      "language": "text/fhirpath",
+      "expression": "item.where(linkId='/antihypertensive').answer.valueCoding.code"
+    }
+  }, {
+    "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+    "valueExpression" : {
+      "name": "antihypert",
+      "language": "text/fhirpath",
+      "expression": "iif(%antihypert_code.exists(), iif(%antihypert_code = 'Y', 1, 0), {})"
+    }
+  }, {
+    "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+    "valueExpression" : {
+      "name": "all_questions_answered",
+      "language": "text/fhirpath",
+      "expression": "%age.exists() and %gender.exists() and %smokes.exists() and %systolic.exists() and %tChol.exists() and %hdl.exists() and %antihypert.exists()"
+    }
+  }, {
+    "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+    "valueExpression" : {
+      "name": "female_over_78",
+      "language": "text/fhirpath",
+      "expression": "iif(%all_questions_answered, iif(%gender = 'Female', iif(%age>78, 1 - (0.98767).power((31.764001 * (%age.ln() - 3.9213204) + 22.465206 * (%tChol.ln() - 5.3628984) - 1.187731 * (%hdl.ln() - 4.0146369) + 2.552905 * (%systolic.ln() - 4.8376494) + 0.420251 * (%antihypert - 0.142802) + 13.07543 * (%smokes - 0.3236202) - 5.060998 * (%age.ln() * %tChol.ln() - 21.0557746) - 2.996945 * (78.ln() * %smokes - 1.2519882)).exp()),{}), {}), {})"
+    }
+  }, {
+    "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+    "valueExpression" : {
+      "name": "female_under_79",
+      "language": "text/fhirpath",
+      "expression": "iif(%all_questions_answered, iif(%gender = 'Female', iif(%age<=78, 1 - (0.98767).power((31.764001 * (%age.ln() - 3.9213204) + 22.465206 * (%tChol.ln() - 5.3628984) - 1.187731  * (%hdl.ln() - 4.0146369) + 2.552905  * (%systolic.ln() - 4.8376494) + 0.420251  * (%antihypert - 0.142802) + 13.07543  * (%smokes - 0.3236202) - 5.060998  * (%age.ln() * %tChol.ln() - 21.0557746) - 2.996945  * (%age.ln() * %smokes  - 1.2519882)).exp()),{}), {}), {})"
+    }
+  }],
   "item": [
     {
       "type": "decimal",
@@ -122,7 +207,7 @@
         }
       ],
       "required": true,
-      "linkId": "/undefined",
+      "linkId": "/smokes",
       "text": "Do you smoke?",
       "answerOption": [
         {
@@ -277,8 +362,16 @@
       "type": "decimal",
       "code": null,
       "required": false,
-      "linkId": "/undefined",
-      "text": "10-year HCHD Risk Probabilily"
+      "linkId": "risk",
+      "text": "10-year HCHD Risk Probabilily",
+      "extension": [{
+        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-calculatedExpression",
+        "valueExpression": {
+          "description": "BMI calculation",
+          "language" : "text/fhirpath",
+          "expression": "%female_over_78 | %female_under_79"
+        }
+      }]
     }
   ]
 }
