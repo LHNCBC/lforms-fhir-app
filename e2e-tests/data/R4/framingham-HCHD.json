@@ -69,7 +69,7 @@
     "valueExpression" : {
       "name": "antihypert",
       "language": "text/fhirpath",
-      "expression": "iif(%antihypert_code.exists(), iif(%antihypert_code = 'Y', 1, 0), {})"
+      "expression": "iif(%antihypert_code.exists(), iif(%systolic >= 120, iif(%antihypert_code = 'Y', 1, 0), 0), {})"
     }
   }, {
     "url" : "http://hl7.org/fhir/StructureDefinition/variable",
