@@ -83,14 +83,35 @@
     "valueExpression" : {
       "name": "female_over_78",
       "language": "text/fhirpath",
-      "expression": "iif(%all_questions_answered, iif(%gender = 'Female', iif(%age>78, 1 - (0.98767).power((31.764001 * (%age.ln() - 3.9213204) + 22.465206 * (%tChol.ln() - 5.3628984) - 1.187731 * (%hdl.ln() - 4.0146369) + 2.552905 * (%systolic.ln() - 4.8376494) + 0.420251 * (%antihypert - 0.142802) + 13.07543 * (%smokes - 0.3236202) - 5.060998 * (%age.ln() * %tChol.ln() - 21.0557746) - 2.996945 * (78.ln() * %smokes - 1.2519882)).exp()),{}), {}), {})"
+      "expression": "iif(%all_questions_answered, iif(%gender = 'Female', iif(%age>78, 1 - (0.98767).power((31.764001 * (%age.ln() - 3.9213204) + 22.465206 * (%tChol.ln() - 5.3628984) - 1.187731 * (%hdl.ln() - 4.0146369) + 2.552905 * (%systolic.ln() - 4.8376494) + 0.420251 * (%antihypert - 0.142802) + 13.07543 * (%smokes - 0.3236202) - 5.060998 * (%age.ln() * %tChol.ln() - 21.0557746) - 2.996945 * (78.ln() * %smokes - 1.2519882)).exp()), {}), {}), {})"
     }
   }, {
     "url" : "http://hl7.org/fhir/StructureDefinition/variable",
     "valueExpression" : {
-      "name": "female_under_79",
+      "name": "female_not_over_78",
       "language": "text/fhirpath",
-      "expression": "iif(%all_questions_answered, iif(%gender = 'Female', iif(%age<=78, 1 - (0.98767).power((31.764001 * (%age.ln() - 3.9213204) + 22.465206 * (%tChol.ln() - 5.3628984) - 1.187731  * (%hdl.ln() - 4.0146369) + 2.552905  * (%systolic.ln() - 4.8376494) + 0.420251  * (%antihypert - 0.142802) + 13.07543  * (%smokes - 0.3236202) - 5.060998  * (%age.ln() * %tChol.ln() - 21.0557746) - 2.996945  * (%age.ln() * %smokes  - 1.2519882)).exp()),{}), {}), {})"
+      "expression": "iif(%all_questions_answered, iif(%gender = 'Female', iif(%age<=78, 1 - (0.98767).power((31.764001 * (%age.ln() - 3.9213204) + 22.465206 * (%tChol.ln() - 5.3628984) - 1.187731  * (%hdl.ln() - 4.0146369) + 2.552905  * (%systolic.ln() - 4.8376494) + 0.420251  * (%antihypert - 0.142802) + 13.07543  * (%smokes - 0.3236202) - 5.060998  * (%age.ln() * %tChol.ln() - 21.0557746) - 2.996945  * (%age.ln() * %smokes  - 1.2519882)).exp()), {}), {}), {})"
+    }
+  }, {
+    "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+    "valueExpression" : {
+      "name": "male_over_70",
+      "language": "text/fhirpath",
+      "expression": "iif(%all_questions_answered, iif(%gender = 'Male', iif(%age>70, 1 - (0.9402).power((52.00961  * (%age.ln() - 3.8926095) + 20.014077 * (%tChol.ln() - 5.3441475) - 0.905964  * (%hdl.ln() - 3.7731132) + 1.305784  * (%systolic.ln() - 4.8618212) + 0.241549  * (%antihypert - 0.1180474) + 12.096316 * (%smokes - 0.335602) - 4.605038  * (%age.ln() * %tChol.ln() - 20.8111562) - 2.84367   * (70.ln() * %smokes  - 1.2890301) - 2.93323   * (%age.ln() * %age.ln() - 15.2144965)).exp()), {}), {}), {})"
+    }
+  }, {
+    "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+    "valueExpression" : {
+      "name": "male_not_over_70",
+      "language": "text/fhirpath",
+      "expression": "iif(%all_questions_answered, iif(%gender = 'Male', iif(%age<=70, 1 - (0.9402).power((52.00961  * (%age.ln() - 3.8926095) + 20.014077 * (%tChol.ln() - 5.3441475) - 0.905964  * (%hdl.ln() - 3.7731132) + 1.305784  * (%systolic.ln() - 4.8618212) + 0.241549  * (%antihypert - 0.1180474) + 12.096316 * (%smokes - 0.335602) - 4.605038  * (%age.ln() * %tChol.ln() - 20.8111562) - 2.84367   * (%age.ln() * %smokes  - 1.2890301) - 2.93323   * (%age.ln() * %age.ln() - 15.2144965)).exp()), {}), {}), {})"
+    }
+  }, {
+    "url" : "http://hl7.org/fhir/StructureDefinition/variable",
+    "valueExpression" : {
+      "name": "risk",
+      "language" : "text/fhirpath",
+      "expression": "%female_over_78 | %female_not_over_78 | %male_over_70 | %male_not_over_70"
     }
   }],
   "item": [
@@ -106,7 +127,7 @@
       "text": "Age (in years)"
     },
     {
-      "type": "string",
+      "type": "display",
       "code": [
         {
           "code": "age_requirement_notice"
@@ -346,7 +367,7 @@
       ]
     },
     {
-      "type": "string",
+      "type": "display",
       "code": [
         {
           "code": "all_answers_required_notice",
@@ -362,14 +383,32 @@
       "type": "decimal",
       "code": null,
       "required": false,
-      "linkId": "risk",
+      "linkId": "riskDecimal",
+      "text": "10-year HCHD Risk Probabilily as a decimal (0 to 1)",
+      "extension": [{
+        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-calculatedExpression",
+        "valueExpression": {
+          "description": "HCHD risk as decimal",
+          "language" : "text/fhirpath",
+          "expression": "%risk"
+        }
+      }, {
+        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden",
+        "valueBoolean": true
+      }]
+    },
+    {
+      "type": "string",
+      "code": null,
+      "required": false,
+      "linkId": "riskPercentage",
       "text": "10-year HCHD Risk Probabilily",
       "extension": [{
         "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-calculatedExpression",
         "valueExpression": {
-          "description": "BMI calculation",
+          "description": "HCHD risk as percentage",
           "language" : "text/fhirpath",
-          "expression": "%female_over_78 | %female_under_79"
+          "expression": "iif(%risk.exists(), (%risk * 100).round(2).toString() & '%', {})"
         }
       }]
     }
