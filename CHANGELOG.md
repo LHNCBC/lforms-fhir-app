@@ -3,6 +3,11 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.13.0] - 2019-10-24
+### Added
+- Updated LForms to 18.3.0 to obtain new features and fixes.
+- Added a sample form that computes the Framingham HCHD risk.
+
 ## [0.12.1] - 2019-09-29
 ### Fixed
 - Updated LForms to 18.0.1 to obtain various fixes.
