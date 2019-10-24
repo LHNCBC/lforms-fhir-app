@@ -39,7 +39,7 @@
     "build": "grunt build",
     "start": "echo 'Website starting at http://localhost:8000/lforms-fhir-app'; http-server -p 8000 -c-1 .",
     "start-dist": "http-server -p 8000 -c-1 dist",
-    "update-webdriver": "webdriver-manager update --versions.standalone 3.141.59 # skip broken 4.0.0-alpha version",
+    "update-webdriver": "webdriver-manager update --versions.chrome 77.0.3865.40 --versions.standalone 3.141.59 # skip broken 4.0.0-alpha version",
     "test": "protractor e2e-tests/protractor.conf.js"
   }
 }

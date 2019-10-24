@@ -2,6 +2,7 @@
 var EC = protractor.ExpectedConditions;
 
 var autoCompBasePage = require("../app/bower_components/autocomplete-lhc/test/protractor/basePage").BasePage;
+var autoCompHelpers = new autoCompBasePage();
 
 let util = {
   /**
@@ -20,12 +21,7 @@ let util = {
    *  Erases the value in the given field.  Leaves the focus in the field
    *  afterward.
    */
-  clearField: function(field) {
-    field.click();
-    field.sendKeys(protractor.Key.CONTROL, 'a'); // select all
-    field.sendKeys(protractor.Key.BACK_SPACE); // clear the field
-  },
-
+  clearField: autoCompHelpers.clearField,
 
   /**
    *  A replacement for sendKeys that only sends events for the final character
@@ -301,7 +297,6 @@ let util = {
 
   },
 
-  autoCompHelpers: new autoCompBasePage()
-
+  autoCompHelpers: autoCompHelpers
 }
 module.exports = util;
