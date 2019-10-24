@@ -5,27 +5,17 @@ var util = require('./util');
 var po = util.pageObjects;
 var EC = protractor.ExpectedConditions;
 
-/**
- *  The tests here do not interact with a FHIR server, so we need to dismiss that selection box.
- */
-function dismissFHIRServerDialog() {
-  var cancelButton = '#btnCancel';
-  browser.wait(EC.elementToBeClickable($(cancelButton)), 5000);
-  $(cancelButton).click();
-  browser.wait(EC.not(EC.presenceOf($(cancelButton))), 5000);
-}
-
 describe('fhir app', function() {
 
   var title = element(by.id('siteName'));
-  let mainPageURL = '/lforms-fhir-app/';
+  let mainPageURL = util.mainPageURL;
 
   describe('Main View', function() {
 
     it('should render a page without any data', function() {
       browser.ignoreSynchronization = false;
       browser.get(mainPageURL);
-      dismissFHIRServerDialog();
+      util.dismissFHIRServerDialog();
       browser.wait(function() {
         return title.isDisplayed();
       }, 5000);
@@ -52,7 +42,7 @@ describe('fhir app', function() {
     it("should load a Questionnaire file", function() {
       browser.ignoreSynchronization = false;
       browser.get(mainPageURL);
-      dismissFHIRServerDialog();
+      util.dismissFHIRServerDialog();
       browser.wait(function() {
         return title.isDisplayed();
       }, 5000);
@@ -84,7 +74,7 @@ describe('fhir app', function() {
       it("should show an error message if the FHIR version is not supported", function() {
         // Edit a working sample file.
         browser.get(mainPageURL);
-        dismissFHIRServerDialog();
+        util.dismissFHIRServerDialog();
         let qFilePath = path.resolve(__dirname, 'data',
           'R4/weight-height-questionnaire.json');
         let fs = require('fs');
@@ -98,7 +88,7 @@ describe('fhir app', function() {
       it("should show a warning message if the FHIR version was guessed", function() {
         // Edit a working sample file.
         browser.get(mainPageURL);
-        dismissFHIRServerDialog();
+        util.dismissFHIRServerDialog();
         let qFilePath = path.resolve(__dirname, 'data',
           'R4/weight-height-questionnaire.json');
         let fs = require('fs');
@@ -123,7 +113,7 @@ describe('fhir app', function() {
   describe('R4 examples', function() {
     it('should have working answer lists', function() {
       browser.get(mainPageURL);
-      dismissFHIRServerDialog();
+      util.dismissFHIRServerDialog();
       util.uploadForm('R4/weight-height-questionnaire.json');
       let bodyPos = element(by.id('/8361-8/1'));
       bodyPos.click();
@@ -140,7 +130,7 @@ describe('fhir app', function() {
         }
 
         browser.get(mainPageURL);
-        dismissFHIRServerDialog();
+        util.dismissFHIRServerDialog();
         let weightNum = element(by.id('/3141-9/1'));
         let weightUnit = element(by.id('unit_/3141-9/1'));
         let heightNum = element(by.id('/8302-2/1'));
@@ -167,196 +157,13 @@ describe('fhir app', function() {
         expect(bmi.getAttribute('value')).toBe('2.8');
       });
     });
-
-    describe('Framingham HCHD risk form', function() {
-      // These tests compare the output of the form with the output of a perl
-      // script written by Mehmet Kayaalp, who diligently tested his script
-      // against an online tool that no longer exists.
-      // The purpose here is it be able to test changes to our form without
-      // having to re-run the perl script.
-
-      beforeAll(() => {
-        browser.get(mainPageURL);
-        dismissFHIRServerDialog();
-        element(by.css('body')).allowAnimations(false);
-        util.uploadForm('R4/framingham-HCHD.json');
-      });
-
-      /**
-       *  Returns true if the given value is not null or undefined or the empty
-       *  string.
-       */
-      function hasValue(val) {
-        return val !== '' && val !== null && val !== undefined;
-      }
-
-      /**
-       *  Sets the given field to the given value, or clears it if no value is
-       *  provided.
-       */
-      function setOrClear(field, val) {
-        field.click();
-        if (hasValue(val)) {
-          util.sendKeys(field, ''+val);
-        }
-        else
-          util.clearField(field);
-      }
-
-      var lastAge, lastGender, lastSmokes, lastSystolic, lastTChol, lastHDL, lastAntihypert
-
-      /**
-       *  Clears the framingham form and populates it with the given values,
-       *  which should be strings or numbers, or in the case of "smokes" and "antihypert",
-       *  booleans.
-       */
-      function populateForm(age, gender, smokes, systolic, tChol, hdl, antihypert) {
-        // Setting field values is relatively slow.  Only set the ones we think
-        // changed.
-        if (age != lastAge) {
-          setOrClear($('#\\/age\\/1'), age);
-          lastAge = age;
-        }
-        if (gender != lastGender) {
-          let genderField = $('#\\/Modified_46098-0\\/1');
-          if (hasValue(gender)) {
-            util.autoCompHelpers.autocompPickFirst(genderField, gender);
-          }
-          else
-            util.clearField(genderField);
-          lastGender = gender;
-        }
-        if (smokes != lastSmokes) {
-          if (hasValue(smokes)) {
-            if (smokes)
-              $('#\\/smokes\\/1Y').click();
-            else
-              $('#\\/smokes\\/1N').click();
-          }
-          lastSmokes = smokes;
-        }
-        if (systolic != lastSystolic) {
-          setOrClear($('#\\/8480-6\\/1'), systolic);
-          lastSystolic = systolic;
-        }
-        if (tChol != lastTChol) {
-          setOrClear($('#\\/2093-3\\/1'), tChol);
-          lastTChol = tChol;
-        }
-        if (hdl != lastHDL) {
-          setOrClear($('#\\/2085-9\\/1'), hdl);
-          lastHDL = hdl;
-        }
-        if (antihypert != lastAntihypert) {
-          if (hasValue(antihypert)) {
-            if (antihypert)
-              $('#\\/antihypertensive\\/1Y').click();
-            else
-              $('#\\/antihypertensive\\/1N').click();
-          }
-          lastAntihypert = antihypert;
-        }
-      }
-
-      /**
-       *  Asserts that the computed risk value is equal to the given value.
-       */
-      function assertRisk(expectedRisk) {
-        var risk = browser.executeScript('return $("#\\\\/age\\\\/1").scope().lfData.itemList[9].value');
-        // The perl output contained 15 digits after the decimal.  JavaScript
-        // provides a few more, so we need to round.
-        // Also, there was a difference found in the 15th place, so we will
-        // round both values to the 13th place.  (Rounding to the 14th place
-        // still sometimes results in a difference, if one value has a 5 and the
-        // other a 4 in the 15th place).
-        risk.then(function(val) {
-          let precFactor = 10**13;
-          val = Math.round(val*precFactor)/precFactor;
-          expectedRisk = Math.round(expectedRisk*precFactor)/precFactor;
-          expect(val).toEqual(expectedRisk);
-        });
-
-      }
-
-      it('should show age message when age is out of range', function() {
-        let ageReqNotice = $('#label-\\/age_requirement_notice\\/1');
-        // Initially, it should not be visible
-        expect(ageReqNotice.isPresent()).toBe(false);
-        populateForm(29); // too young for form
-        expect(ageReqNotice.isPresent()).toBe(true);
-        populateForm(30); // youngest age
-        expect(ageReqNotice.isPresent()).toBe(false);
-        populateForm(79); // oldest age
-        expect(ageReqNotice.isPresent()).toBe(false);
-        populateForm(80); // too old for form
-        expect(ageReqNotice.isPresent()).toBe(true);
-      });
-
-      // There are actually four equations, based on age and gender.  Each
-      // equation is tested below in a separate 'it'.
-      it('should produce correct results for Female > 78', function() {
-        // While here, also check that the "all answers required" message is showing
-        var allReqNotice = $('#label-\\/all_answers_required_notice\\/1');
-        expect(allReqNotice.isPresent()).toBe(true);
-
-        populateForm(79, 'Female', true, 190, 150, 35, true);
-        assertRisk(0.356375192717629);
-        populateForm(79, 'Female', false, 190, 150, 35, true);
-        assertRisk(0.35112386950111);
-        populateForm(79, 'Female', true, 170, 150, 35, true);
-        assertRisk(0.282308646422709);
-        populateForm(79, 'Female', true, 190, 110, 35, true);
-        assertRisk(0.326410530670775);
-        populateForm(79, 'Female', true, 190, 150, 25, true);
-        assertRisk(0.481657486836198);
-        populateForm(79, 'Female', true, 190, 150, 35, false);
-        assertRisk(0.251323279420655);
-
-        // Special case: systolic BP < 120; forces antihypertensive value to
-        // false.  (Applies across these four cases, so I am just testing it
-        // here once.)
-        populateForm(79, 'Female', true, 100, 150, 35, true);
-        assertRisk(0.0546747653467465);
-        populateForm(79, 'Female', true, 100, 150, 35, false);
-        assertRisk(0.0546747653467465); // same value
-      }, 60000);
-
-      it('should produce correct results for Female <= 78', function() {
-        populateForm(59, 'Female', true, 190, 150, 35, true);
-        assertRisk(0.145148635979579);
-        populateForm(59, 'Female', false, 190, 150, 35, true);
-        assertRisk(0.0645034888512626);
-        populateForm(59, 'Female', true, 170, 150, 35, true);
-        assertRisk(0.11135790743962);
-        populateForm(59, 'Female', true, 190, 110, 35, true);
-        assertRisk(0.0850975091080599);
-        populateForm(59, 'Female', true, 190, 150, 25, true);
-        assertRisk(0.208539122665616);
-        populateForm(59, 'Female', true, 190, 150, 35, false);
-        assertRisk(0.0978885972845346);
-      }, 60000);
-
-      it('should produce correct results for Male > 70', function() {
-        populateForm(79, 'Male', true, 190, 150, 35, true);
-        assertRisk(0.45956062065269);
-        populateForm(79, 'Male', false, 190, 150, 35, true);
-        assertRisk(0.454587337325116);
-        populateForm(79, 'Male', true, 170, 150, 35, true);
-        assertRisk(0.412679866560373);
-        populateForm(79, 'Male', true, 190, 110, 35, true);
-        assertRisk(0.470708408836874);
-        populateForm(79, 'Male', true, 190, 150, 25, true);
-        assertRisk(0.5659908538172);
-        populateForm(79, 'Male', true, 190, 150, 35, false);
-        assertRisk(0.383267655192785);
-      }, 60000);
-    });
   });
+
 
   describe('STU3 examples', function() {
     it('should have working answer lists', function() {
       browser.get(mainPageURL);
-      dismissFHIRServerDialog();
+      util.dismissFHIRServerDialog();
       util.uploadForm('STU3/weight-height-questionnaire.json');
       let bodyPos = element(by.id('/8361-8/1'));
       bodyPos.click();

@@ -6,6 +6,11 @@ var autoCompHelpers = new autoCompBasePage();
 
 let util = {
   /**
+   *  The main page of the app.
+   */
+  mainPageURL: '/lforms-fhir-app/',
+
+  /**
    * By default, protractor expects it to be angular application. This is used
    * to switch between angular and non angular sites.
    *
@@ -245,6 +250,17 @@ let util = {
     browser.wait(EC.presenceOf(deleteBtn), 4000);
     deleteBtn.click();
     util.waitForSpinnerStopped();
+  },
+
+
+  /**
+   *  The tests here do not interact with a FHIR server, so we need to dismiss that selection box.
+   */
+  dismissFHIRServerDialog: function() {
+    var cancelButton = '#btnCancel';
+    browser.wait(EC.elementToBeClickable($(cancelButton)), 5000);
+    $(cancelButton).click();
+    browser.wait(EC.not(EC.presenceOf($(cancelButton))), 5000);
   },
 
 
