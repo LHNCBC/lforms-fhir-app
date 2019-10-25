@@ -6,7 +6,7 @@
   "devDependencies": {
     "bower": "^1.8.8",
     "grunt": "^1.0.4",
-    "grunt-angular-templates": "^1.1.0",
+    "grunt-angular-templates": "^1.2.0",
     "grunt-autoprefixer": "^3.0.4",
     "grunt-cli": "^1.3.1",
     "grunt-contrib-clean": "^2.0.0",
@@ -28,7 +28,6 @@
     "karma-firefox-launcher": "^1.1.0",
     "karma-jasmine": "^1.1.2",
     "karma-junit-reporter": "^1.2.0",
-    "protractor": "^5.4.2",
     "time-grunt": "^1.4.0",
     "tmp": "0.0.33"
   },
@@ -39,7 +38,10 @@
     "build": "grunt build",
     "start": "echo 'Website starting at http://localhost:8000/lforms-fhir-app'; http-server -p 8000 -c-1 .",
     "start-dist": "http-server -p 8000 -c-1 dist",
-    "update-webdriver": "webdriver-manager update --versions.chrome 77.0.3865.40 --versions.standalone 3.141.59 # skip broken 4.0.0-alpha version",
+    "update-webdriver": "webdriver-manager update --versions.standalone 3.141.59 # skip broken 4.0.0-alpha version",
     "test": "protractor e2e-tests/protractor.conf.js"
+  },
+  "dependencies": {
+    "protractor": "^5.4.2"
   }
 }

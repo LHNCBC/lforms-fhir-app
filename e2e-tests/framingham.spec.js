@@ -52,7 +52,7 @@ describe('Framingham HCHD risk form', function() {
       lastAge = age;
     }
     if (gender != lastGender) {
-      let genderField = $('#\\/Modified_46098-0\\/1');
+      let genderField = $('#\\/46098-0\\/1');
       if (hasValue(gender)) {
         util.autoCompHelpers.autocompPickFirst(genderField, gender);
       }

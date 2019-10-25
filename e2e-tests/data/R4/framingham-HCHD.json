@@ -158,11 +158,6 @@
       "type": "choice",
       "code": [
         {
-          "code": "Modified_46098-0",
-          "display": "Gender",
-          "system": "Custom"
-        },
-        {
           "code": "46098-0",
           "display": "Gender",
           "system": "http://loinc.org"
