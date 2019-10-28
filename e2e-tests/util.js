@@ -2,8 +2,14 @@
 var EC = protractor.ExpectedConditions;
 
 var autoCompBasePage = require("../app/bower_components/autocomplete-lhc/test/protractor/basePage").BasePage;
+var autoCompHelpers = new autoCompBasePage();
 
 let util = {
+  /**
+   *  The main page of the app.
+   */
+  mainPageURL: '/lforms-fhir-app/',
+
   /**
    * By default, protractor expects it to be angular application. This is used
    * to switch between angular and non angular sites.
@@ -20,12 +26,7 @@ let util = {
    *  Erases the value in the given field.  Leaves the focus in the field
    *  afterward.
    */
-  clearField: function(field) {
-    field.click();
-    field.sendKeys(protractor.Key.CONTROL, 'a'); // select all
-    field.sendKeys(protractor.Key.BACK_SPACE); // clear the field
-  },
-
+  clearField: autoCompHelpers.clearField,
 
   /**
    *  A replacement for sendKeys that only sends events for the final character
@@ -252,6 +253,17 @@ let util = {
   },
 
 
+  /**
+   *  The tests here do not interact with a FHIR server, so we need to dismiss that selection box.
+   */
+  dismissFHIRServerDialog: function() {
+    var cancelButton = '#btnCancel';
+    browser.wait(EC.elementToBeClickable($(cancelButton)), 5000);
+    $(cancelButton).click();
+    browser.wait(EC.not(EC.presenceOf($(cancelButton))), 5000);
+  },
+
+
   pageObjects: {
     /**
      *  Returns an element finder for the link to show the first saved
@@ -301,7 +313,6 @@ let util = {
 
   },
 
-  autoCompHelpers: new autoCompBasePage()
-
+  autoCompHelpers: autoCompHelpers
 }
 module.exports = util;
