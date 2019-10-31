@@ -1185,8 +1185,10 @@
                 {
                   "question": "/54114-4/54139-1",
                   "answerCoding": {
+                    "system": "http://loinc.org",
                     "code": "LA33-6"
-                  }
+                  },
+                  "operator": "="
                 }
               ]
             },
@@ -1216,8 +1218,10 @@
                 {
                   "question": "/54114-4/54139-1",
                   "answerCoding": {
+                    "system": "http://loinc.org",
                     "code": "LA33-6"
-                  }
+                  },
+                  "operator": "="
                 }
               ]
             },
@@ -1252,8 +1256,10 @@
                 {
                   "question": "/54114-4/54139-1",
                   "answerCoding": {
+                    "system": "http://loinc.org",
                     "code": "LA32-8"
-                  }
+                  },
+                  "operator": "="
                 }
               ],
               "answerOption": [
@@ -1780,8 +1786,10 @@
                 {
                   "question": "/54114-4/54139-1",
                   "answerCoding": {
+                    "system": "http://loinc.org",
                     "code": "LA32-8"
-                  }
+                  },
+                  "operator": "="
                 }
               ],
               "answerOption": [

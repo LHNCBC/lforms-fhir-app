@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.13.1] - 2019-10-31
+### Fixed
+- Fixed the missing operator and code system for enableWhen entries in ussg-fhp.json
+
 ## [0.13.0] - 2019-10-24
 ### Added
 - Updated LForms to 18.3.0 to obtain new features and fixes.
