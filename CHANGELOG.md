@@ -3,6 +3,11 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.13.2] - 2019-12-03
+### Fixed
+- Fixed a missing quotation mark on the "id" field of the JSON Questionnaire
+  output in the dialog that shows the questionnaire from the server.
+
 ## [0.13.1] - 2019-10-31
 ### Fixed
 - Fixed the missing operator and code system for enableWhen entries in ussg-fhp.json
