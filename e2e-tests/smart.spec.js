@@ -4,7 +4,7 @@ let po = util.pageObjects;
 var EC = protractor.ExpectedConditions;
 
 
-fdescribe('SMART on FHIR connection', function () {
+describe('SMART on FHIR connection', function () {
   beforeAll(function() {
     util.launchSmartAppInSandbox();
   });
