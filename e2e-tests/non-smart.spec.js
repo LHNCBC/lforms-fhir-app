@@ -18,7 +18,7 @@ function pickPatient()  {
   browser.wait(EC.textToBePresentInElement(name, 'Karen'), 2000);
 }
 
-fdescribe('Non-SMART connection to FHIR server', function() {
+describe('Non-SMART connection to FHIR server', function() {
   let mainPageURL = '/lforms-fhir-app/';
   it('should be able to select a FHIR server and a patient', function() {
     browser.get(mainPageURL);
