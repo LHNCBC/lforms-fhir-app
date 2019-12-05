@@ -3,6 +3,11 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.14.0] - 2019-12-05
+### Added
+- Added a configuration file for FHIR servers
+- Added a featured Questionnaire section for configured FHIR servers
+
 ## [0.13.2] - 2019-12-03
 ### Fixed
 - Fixed a missing quotation mark on the "id" field of the JSON Questionnaire

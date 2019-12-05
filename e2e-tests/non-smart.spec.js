@@ -18,7 +18,7 @@ function pickPatient()  {
   browser.wait(EC.textToBePresentInElement(name, 'Karen'), 2000);
 }
 
-describe('Non-SMART connection to FHIR server', function() {
+fdescribe('Non-SMART connection to FHIR server', function() {
   let mainPageURL = '/lforms-fhir-app/';
   it('should be able to select a FHIR server and a patient', function() {
     browser.get(mainPageURL);
@@ -174,4 +174,35 @@ describe('Non-SMART connection to FHIR server', function() {
     });
 
   });
+
+  describe('Featured Questionnaires', function() {
+    it('should display a list of featured questionnaires when the https://lforms-fhir.nlm.nih.gov/baseR4 server is selected', function() {
+      browser.get(mainPageURL);
+      var urlField = '#fhirServerURL';
+      browser.wait(EC.presenceOf($(urlField)), 5000);
+      $(urlField).click();
+      util.sendKeys($(urlField), 'https://lforms-fhir.nlm.nih.gov/baseR4');
+      $(urlField).sendKeys(protractor.Key.TAB);
+      $('#btnOK').click();
+      // Wait for dialog to close
+      browser.wait(EC.not(EC.presenceOf($('#btnOk'))), 5000);
+      // Wait for patient picker to open
+      pickPatient();
+
+      let featuredTab = element(by.id('fqList'));
+      browser.wait(EC.presenceOf(featuredTab), 2000);
+
+    });
+
+    it('should display one of the questionnaires', function() {
+      // Continue with form loaded in previous tests
+      let firstFeaturedQ = element(by.id('54127-6'));
+      browser.wait(EC.presenceOf(firstFeaturedQ), 2000);
+
+      firstFeaturedQ.click();
+      let name = element(by.id('/54126-8/54125-0/1/1'));
+      browser.wait(EC.presenceOf(name), 2000);
+    });
+  });
+
 });

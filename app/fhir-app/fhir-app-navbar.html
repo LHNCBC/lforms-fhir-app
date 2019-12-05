@@ -43,6 +43,22 @@
     </div>
   </div>
 
+  <div ng-if="listFeaturedQ" class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">
+        Featured Questionnaires:
+      </div>
+    </div>
+    <div class="panel-body">
+      <div ng-if="listFeaturedQ && listFeaturedQ.length>0" id="fqList" class="list-group">
+        <a href="#" class="list-group-item {{isSelected(0, $index)}}" ng-repeat="p in listFeaturedQ" role="presentation" id="{{p.id}}" ng-click="showFeaturedQ($index, p)">
+          <p class="form-name">{{p.name}}</p>
+          <p class="res-type" ng-if="p.id">[{{p.id}}]</p>
+        </a>
+      </div>
+    </div>
+  </div>
+
   <div class="panel panel-default">
     <div class="panel-heading">
       <div class="panel-title">

@@ -452,5 +452,61 @@ angular.module('lformsApp')
           $('.spinner').hide();
         });
 
+
+        /**
+         * Display a Questionnaire
+         * by listening on a broadcast event
+         */
+        $scope.$on('LF_FHIR_RESOURCE', function (event, arg) {
+          if (arg.resType === 'Questionnaire') {
+            let q = arg.resource;
+            // merge the QuestionnaireResponse into the form
+            var fhirVersion = fhirService.fhirVersion;
+            var formData;
+            try {
+              formData = LForms.Util.convertFHIRQuestionnaireToLForms(
+                  q, fhirVersion);
+              //var newFormData = (new LForms.LFormsData(formData)).getFormData();
+              // TBD -- getFormData() results in _ variables (including FHIR
+              // extensions) being thrown away.  Not sure yet if it is needed
+              // for something else.
+              formData = (new LForms.LFormsData(formData));
+            }
+            catch (e) {
+              console.error(e);
+              userMessages.error = 'Sorry.  Could not process that '+
+                  'Questionnaire.  See the console for details.'
+            }
+            if (formData) {
+              var fhirResInfo = {
+                resId : q.id,
+                resType : 'Questionnaire',
+                resTypeDisplay : 'Questionnaire (SDC)',
+                extensionType : 'SDC',
+                questionnaireResId : q.id,
+                questionnaireName : q.name
+              };
+              $('.spinner').show();
+              formData.loadFHIRResources(false).then(function() {
+                $('.spinner').hide();
+                $scope.$apply(function() {
+                  // set the form data to be displayed
+                  selectedFormData.setFormData(formData, fhirResInfo);
+                  fhirService.setCurrentQuestionnaire(q);
+                });
+              });
+              // no form header
+              formData.templateOptions.showFormHeader = false;
+            }
+          }
+          $scope.fhirResInfo = selectedFormData.getFhirResInfo();
+          $scope.formData = formData;
+
+          // clean up the initial message
+          if ($scope.initialLoad && formData)
+            $scope.initialLoad = false;
+          $('.spinner').hide();
+        });
+
       }
 ]);
