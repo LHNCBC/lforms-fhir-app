@@ -479,9 +479,9 @@ angular.module('lformsApp')
             }
             if (formData) {
               var fhirResInfo = {
-                resId : q.id,
-                resType : 'Questionnaire',
-                resTypeDisplay : 'Questionnaire (SDC)',
+                resId : null,
+                resType : 'QuestionnaireResponse',
+                resTypeDisplay : 'QuestionnaireResponse (SDC)',
                 extensionType : 'SDC',
                 questionnaireResId : q.id,
                 questionnaireName : q.name
