@@ -39,9 +39,12 @@ describe('SMART on FHIR connection', function () {
     expect(EC.not(EC.presenceOf($('.warning'))));
 
     // Wait for the first saved questionnaire to be this form.
+    // open the saved q section
+    element(by.css("#heading-three a")).click();
     let firstQ = po.firstSavedUSSGQ();
     browser.wait(EC.textToBePresentInElement(firstQ, 'Surgeon'), 2000);
     // Open the form and wait for it to render
+    browser.wait(EC.elementToBeClickable(po.firstSavedUSSGQ()))
     po.firstSavedUSSGQ().click(); // sometimes firstQ is "stale"
     util.waitForSpinnerStopped();
     // Confirm that the edited field value is no longer there.
@@ -53,6 +56,8 @@ describe('SMART on FHIR connection', function () {
 
     // Now open up the saved QuestionnaireResponse and confirm we can see the
     // saved value.
+    // open the saved qr section
+    element(by.css("#heading-one a")).click();
     $('#qrList a:first-child').click();
     browser.wait(EC.presenceOf(element(by.id('/54126-8/8302-2/1/1'))), 2000);
     height = element(by.id('/54126-8/8302-2/1/1')); // new on page
@@ -60,7 +65,8 @@ describe('SMART on FHIR connection', function () {
     expect(height.getAttribute('value')).toBe('70');
     // Confirm that a warning message (about an unknown FHIR version) is not shown.
     expect(EC.not(EC.presenceOf($('.warning'))));
-
+    // open the saved q section
+    element(by.css("#heading-three a")).click();
     util.deleteCurrentQuestionnaire(); // Clean up uploaded form
   });
 
@@ -136,6 +142,8 @@ describe('SMART on FHIR connection', function () {
           $('#btn-save-sdc-qr').click(); // save the Q & QR
           util.waitForSpinnerStopped();
           util.closeSaveResultsDialog();
+          /// open the saved qr section
+          element(by.css("#heading-one a")).click();
           // Wait for the saved questionnaire response to be this page.
           let qr = po.firstSavedQR(prefix);
           browser.wait(EC.presenceOf(qr), 2000);
@@ -164,7 +172,8 @@ describe('SMART on FHIR connection', function () {
       $('#btn-save-sdc-qr').click();
       util.waitForSpinnerStopped();
       util.closeSaveResultsDialog();
-
+      /// open the saved qr section
+      element(by.css("#heading-one a")).click();
       // Load the first QR
       var firstQR = po.firstSavedQR();
       browser.wait(EC.textToBePresentInElement(firstQR, 'Surgeon'), 2000);
@@ -175,6 +184,8 @@ describe('SMART on FHIR connection', function () {
     });
 
     afterAll(function() {
+      /// open the saved q section
+      element(by.css("#heading-three a.collapsed")).click();
       util.deleteCurrentQuestionnaire(); // Clean up uploaded form
     });
 

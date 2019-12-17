@@ -17,19 +17,19 @@ angular.module('lformsApp')
           featuredQuestionnaires: [
             {
               name: 'US Surgeon General family health portrait',
-              id: '54127-6'
+              id: '54127-6-x'
             },
             {
               name: 'Weight & Height tracking panel',
-              id: '55418-8'
+              id: '55418-8-x'
             },
             {
               name: 'Comprehensive metabolic 1998 panel',
-              id: '24322-0'
+              id: '24322-0-x'
             },
             {
               name: 'PHQ-9 quick depression assessment panel',
-              id: '44249-1'
+              id: '44249-1-x'
             },
             {
               name: 'Hard Coronary Heart Disease (10-year risk)',
@@ -45,7 +45,7 @@ angular.module('lformsApp')
             },
             {
               name: 'Glasgow coma scale',
-              id: '35088-4'
+              id: '35088-4-x'
             },
             {
               name: 'AHC HRSN Screening',

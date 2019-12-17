@@ -352,6 +352,34 @@ angular.module('lformsApp')
           return ret;
         };
 
+
+        /**
+         * Check if the section should be expanded initially based the data retrieved from the selected FHIR server.
+         * @param listIndex list/section index
+         * @returns {string} a CSS class for the section body element
+         */
+        $scope.isSectionExpanded = function(listIndex) {
+          if ($scope.listFeaturedQ) {
+            return listIndex === 0 ? 'in' : '';
+          }
+          else if ($scope.listSavedQR && $scope.listSavedQR.length > 0 ) {
+            return listIndex === 1 ? 'in' : '';
+          }
+          else if ($scope.listSavedQ && $scope.listSavedQ.length > 0) {
+            return listIndex === 2 ? 'in' : '';
+          }
+        };
+
+        /**
+         * Get the CSS class for the section title depending on whether the section is initially collapsed
+         * @param listIndex list/section index
+         * @returns {string} a CSS class for the section title element
+         */
+        $scope.getSectionTitleClass = function(listIndex) {
+          return $scope.isSectionExpanded(listIndex) === 'in' ? '' : 'collapsed';
+        };
+
+
         /**
          *  Returns a display name for a Questionnaire resource.
          * @param q the Questionnaire resource

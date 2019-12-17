@@ -77,8 +77,7 @@ let util = {
   launchSmartAppInSandbox: function () {
     util.setAngularSite(false);
     browser.get('https://lforms-smart-fhir.nlm.nih.gov/?auth_error=&fhir_version_1=r4'+
-      '&fhir_version_2=r4&iss=&launch_ehr=1&launch_url='+
-      'http%3A%2F%2F130.14.113.19%3A8000%2Flforms-fhir-app%2Flaunch.html&'+
+      '&fhir_version_2=r4&iss=&launch_ehr=1&'+
       'patient=&prov_skip_auth=1&provider=&pt_skip_auth=1&public_key=&sb=&sde=&'+
       'sim_ehr=0&token_lifetime=15');
     let launchURL = element(by.id('launch-url'));
@@ -99,9 +98,9 @@ let util = {
       patient.click();
       // Wait for the server resources to finish loading.
       var EC = protractor.ExpectedConditions;
-      browser.wait(EC.presenceOf($('#qListContainer')), 2000);
+      browser.wait(EC.presenceOf($('#collapse-three')), 2000);
       // Wait for the Loading message to go away
-      browser.wait(EC.not(EC.textToBePresentInElement($('#qListContainer'),
+      browser.wait(EC.not(EC.textToBePresentInElement($('#collapse-three'),
         "Loading")));
     });
   },
@@ -142,6 +141,7 @@ let util = {
     let deleteBtn = $('#deleteQBtn');
     // Make the button visible
     browser.executeScript('arguments[0].style.display=""', deleteBtn.getWebElement());
+    browser.wait(EC.elementToBeClickable(deleteBtn));
     deleteBtn.click();
     let confirmButton = $('button.md-confirm-button');
     browser.wait(EC.elementToBeClickable(confirmButton));

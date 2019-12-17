@@ -8,7 +8,7 @@ angular.module('lformsApp', [
   'ngAnimate',
   'ngMaterial',
   'lformsWidget',
-  'angularFileUpload',
+  'angularFileUpload'
 ])
     .config(['$ariaProvider', function ($ariaProvider) {
       $ariaProvider.config({

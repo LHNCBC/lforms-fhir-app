@@ -85,7 +85,7 @@ fb.service('fhirService', [
 
     /**
      *  Sets up a client for a standard (open) FHIR server.
-     * @param fhirServer configuration the FHIR server.
+     * @param fhirServer the configuration of the FHIR server.
      * @param commCallback A callback function that will be passed a boolean as to
      *  whether communication with the server was successfully established.
      */
@@ -341,7 +341,7 @@ fb.service('fhirService', [
       // md-autocomplete directive requires a promise to be returned
       return thisService.fhir.search({
         type: "Questionnaire",
-        query: {name: searchText},
+        query: {title: searchText},
         headers: {'Cache-Control': 'no-cache'}
       })
         .then(function(response) {
