@@ -4,7 +4,8 @@ fb.service('fhirService', [
   '$q',
   '$http',
   '$window',
-  function($rootScope, $q, $http, $window) {
+  'fhirServerConfig',
+  function($rootScope, $q, $http, $window, fhirServerConfig) {
     var thisService = this;
 
     // Currently selected patient
@@ -80,6 +81,16 @@ fb.service('fhirService', [
       LForms.Util.getServerFHIRReleaseID(function(releaseID) {
         thisService.fhirVersion = releaseID;
       });
+
+      // Check local configuration if there is matching one
+      var serviceUrl = thisService.getSmartConnection().server.serviceUrl;
+      var matchedServer = fhirServerConfig.listFhirServers.find(function(config) {
+        return config.smartServiceUrl === serviceUrl;
+      });
+      if (matchedServer) {
+        $rootScope.$broadcast('LF_FHIR_SERVER_SELECTED', {fhirConfig: matchedServer});
+      }
+
     };
 
 
@@ -114,7 +125,17 @@ fb.service('fhirService', [
           else
             commCallback(false); // error signal
         });
-        $rootScope.$broadcast('LF_FHIR_SERVER_SELECTED', {fhirServer: fhirServer});
+
+        // Check local configuration if there is matching one
+        var matchedServer = fhirServerConfig.listFhirServers.find(function(config) {
+          return config.url === fhirServer.url;
+        });
+        if (matchedServer) {
+          $rootScope.$broadcast('LF_FHIR_SERVER_SELECTED', {fhirConfig: matchedServer});
+        }
+        else {
+          $rootScope.$broadcast('LF_FHIR_SERVER_SELECTED', {fhirConfig: fhirServer});
+        }
       }
       catch (e) {
         commCallback(false);
@@ -134,9 +155,9 @@ fb.service('fhirService', [
 
 
     /**
-     *  Returns the base URL of the FHIR server the app is using.
+     *  Returns the service URL of the FHIR server the app is using.
      */
-    thisService.getServerBaseURL = function() {
+    thisService.getServerServiceURL = function() {
       return thisService.getSmartConnection().server.serviceUrl;
     };
 

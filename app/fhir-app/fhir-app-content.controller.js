@@ -266,7 +266,7 @@ angular.module('lformsApp')
           var q = fhirService.getCurrentQuestionnaire();
           if (q) {
             var fhirString = JSON.stringify(q, null, 2);
-            var serverBaseURL = fhirService.getServerBaseURL();
+            var serverBaseURL = fhirService.getServerServiceURL();
             fhirString = fhirString.replace(/"id": "([^\s"]+)"/, '"id": "<a href="'+
               serverBaseURL+'/Questionnaire/$1" target=_blank>$1</a>"');
             $scope.fhirResourceString = fhirString;
@@ -459,7 +459,7 @@ angular.module('lformsApp')
          */
         $scope.$on('LF_FHIR_RESOURCE', function (event, arg) {
           if (arg.resType === 'Questionnaire') {
-            let q = arg.resource;
+            var q = arg.resource;
             // merge the QuestionnaireResponse into the form
             var fhirVersion = fhirService.fhirVersion;
             var formData;

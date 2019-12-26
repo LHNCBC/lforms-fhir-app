@@ -193,50 +193,73 @@ describe('Non-SMART connection to FHIR server', function() {
   });
 
   describe('Featured Questionnaires', function() {
-    it('should display a list of featured questionnaires when https://lforms-fhir.nlm.nih.gov/baseR4 is selected', function() {
-      browser.get(mainPageURL);
-      var urlField = '#fhirServerURL';
-      browser.wait(EC.presenceOf($(urlField)), 5000);
-      $(urlField).click();
-      util.sendKeys($(urlField), 'https://lforms-fhir.nlm.nih.gov/baseR4');
-      $(urlField).sendKeys(protractor.Key.TAB);
-      $('#btnOK').click();
-      // Wait for dialog to close
-      browser.wait(EC.not(EC.presenceOf($('#btnOk'))), 5000);
-      // Wait for patient picker to open
-      pickPatient();
 
-      let featuredTab = element(by.id('fqList'));
-      browser.wait(EC.presenceOf(featuredTab), 2000);
+    describe('Non-SMART', function() {
+      it('should display a list of featured questionnaires when https://lforms-fhir.nlm.nih.gov/baseR4 is selected', function() {
+        browser.get(mainPageURL);
+        var urlField = '#fhirServerURL';
+        browser.wait(EC.presenceOf($(urlField)), 5000);
+        $(urlField).click();
+        util.sendKeys($(urlField), 'https://lforms-fhir.nlm.nih.gov/baseR4');
+        $(urlField).sendKeys(protractor.Key.TAB);
+        $('#btnOK').click();
+        // Wait for dialog to close
+        browser.wait(EC.not(EC.presenceOf($('#btnOk'))), 5000);
+        // Wait for patient picker to open
+        pickPatient();
 
-    });
+        let featuredTab = element(by.id('fqList'));
+        browser.wait(EC.presenceOf(featuredTab), 2000);
 
-    it('should display one of the questionnaires', function() {
-      // Continue with form loaded in previous tests
-      let firstFeaturedQ = element(by.id('54127-6-x'));
-      browser.wait(EC.presenceOf(firstFeaturedQ), 2000);
+      });
 
-      firstFeaturedQ.click();
-      let name = element(by.id('/54126-8/54125-0/1/1'));
-      browser.sleep(2000)
-      browser.wait(EC.presenceOf(name), 2000);
-    });
+      it('should display one of the questionnaires', function() {
+        // Continue with form loaded in previous tests
+        let firstFeaturedQ = element(by.id('54127-6-x'));
+        browser.wait(EC.presenceOf(firstFeaturedQ), 2000);
 
-    it('should not display a list of featured questionnaires when https://lforms-fhir.nlm.nih.gov/baseDstu3 is selected', function() {
-      browser.get(mainPageURL);
-      var urlField = '#fhirServerURL';
-      browser.wait(EC.presenceOf($(urlField)), 5000);
-      $(urlField).click();
-      util.sendKeys($(urlField), 'https://lforms-fhir.nlm.nih.gov/baseDstu3');
-      $(urlField).sendKeys(protractor.Key.TAB);
-      $('#btnOK').click();
-      // Wait for dialog to close
-      browser.wait(EC.not(EC.presenceOf($('#btnOk'))), 5000);
-      // Wait for patient picker to open
-      pickPatient();
+        firstFeaturedQ.click();
+        let name = element(by.id('/54126-8/54125-0/1/1'));
+        browser.sleep(2000)
+        browser.wait(EC.presenceOf(name), 2000);
+      });
 
-      let featuredTab = element(by.id('fqList'));
-      browser.wait(EC.not(EC.presenceOf(featuredTab)), 5000);
+      it('should not display a list of featured questionnaires when https://lforms-fhir.nlm.nih.gov/baseDstu3 is selected', function() {
+        browser.get(mainPageURL);
+        var urlField = '#fhirServerURL';
+        browser.wait(EC.presenceOf($(urlField)), 5000);
+        $(urlField).click();
+        util.sendKeys($(urlField), 'https://lforms-fhir.nlm.nih.gov/baseDstu3');
+        $(urlField).sendKeys(protractor.Key.TAB);
+        $('#btnOK').click();
+        // Wait for dialog to close
+        browser.wait(EC.not(EC.presenceOf($('#btnOk'))), 5000);
+        // Wait for patient picker to open
+        pickPatient();
+
+        let featuredTab = element(by.id('fqList'));
+        browser.wait(EC.not(EC.presenceOf(featuredTab)), 5000);
+
+      });
+
+      it('should be able to accept a "server" parameter', function() {
+        browser.get(mainPageURL+'?server=https://lforms-fhir.nlm.nih.gov/baseR4');
+        pickPatient();
+      });
+
+      it('should display a list of featured questionnaires when https://lforms-fhir.nlm.nih.gov/baseR4 is provided through the "server" parameter', function() {
+        browser.get(mainPageURL+'?server=https://lforms-fhir.nlm.nih.gov/baseR4');
+        pickPatient();
+        let featuredTab = element(by.id('fqList'));
+        browser.wait(EC.presenceOf(featuredTab), 2000);
+      });
+
+      it('should NOT display a list of featured questionnaires when https://lforms-fhir.nlm.nih.gov/baseDstu3 is provided through the "server" parameter', function() {
+        browser.get(mainPageURL+'?server=https://lforms-fhir.nlm.nih.gov/baseDstu3');
+        pickPatient();
+        let featuredTab = element(by.id('fqList'));
+        browser.wait(EC.not(EC.presenceOf(featuredTab)), 5000);
+      });
 
     });
 

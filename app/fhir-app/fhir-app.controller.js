@@ -189,7 +189,7 @@ angular.module('lformsApp')
             // For some reason, calling JSON.stringify in the template does not
             // work-- nothing is output-- so pass in a separate variable here.
             $scope.resultDataJSON = JSON.stringify(resultData, null, 2);
-            $scope.serverBaseURL = fhirService.getServerBaseURL();
+            $scope.serverBaseURL = fhirService.getServerServiceURL();
             // close the popup without selecting a patient
             $scope.closeDialog = function () {
               $scope.selectedPatientInDialog = null;
@@ -216,7 +216,7 @@ angular.module('lformsApp')
           targetEvent: event,
           controller: function DialogController($scope, $mdDialog) {
             $scope.dialogTitle = "FHIR Server Needed";
-            let fhirServers = [];
+            var fhirServers = [];
             fhirServerConfig.listFhirServers.map(function(fhirServer) {
               fhirServers.push({text: fhirServer.url, serverConfig: fhirServer});
             });

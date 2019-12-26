@@ -73,11 +73,16 @@ let util = {
 
   /**
    *  Opens up the SMART app in the SMART on FHIR developer sandbox.
+   * @param fhirVersion the FHIR server version to be picked in SMART env.
+   * It could be either 'r4' or 'r3'. The default value is 'r4'.
    */
-  launchSmartAppInSandbox: function () {
+  launchSmartAppInSandbox: function (fhirVersion) {
+    if (!fhirVersion)
+      fhirVersion = 'r4';
+
     util.setAngularSite(false);
-    browser.get('https://lforms-smart-fhir.nlm.nih.gov/?auth_error=&fhir_version_1=r4'+
-      '&fhir_version_2=r4&iss=&launch_ehr=1&'+
+    browser.get('https://lforms-smart-fhir.nlm.nih.gov/?auth_error=&fhir_version_1='+ fhirVersion +
+      '&fhir_version_2='+ fhirVersion + '&iss=&launch_ehr=1&'+
       'patient=&prov_skip_auth=1&provider=&pt_skip_auth=1&public_key=&sb=&sde=&'+
       'sim_ehr=0&token_lifetime=15');
     let launchURL = element(by.id('launch-url'));
@@ -104,6 +109,7 @@ let util = {
         "Loading")));
     });
   },
+
 
   /**
    *  The input element for uploading files.

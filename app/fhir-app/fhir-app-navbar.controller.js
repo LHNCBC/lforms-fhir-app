@@ -354,21 +354,30 @@ angular.module('lformsApp')
 
 
         /**
-         * Check if the section should be expanded initially based the data retrieved from the selected FHIR server.
+         * Get the initial CSS class for the section panel Check based on the data retrieved
+         * from the selected FHIR server.
+         * 'in' means the section panel is expanded.
          * @param listIndex list/section index
          * @returns {string} a CSS class for the section body element
          */
-        $scope.isSectionExpanded = function(listIndex) {
+        $scope.getSectionPanelClass = function(listIndex) {
+          // if there is a list of featured questionnaires
           if ($scope.listFeaturedQ) {
             return listIndex === 0 ? 'in' : '';
           }
+          // if there is a list of save questionnaire responses
           else if ($scope.listSavedQR && $scope.listSavedQR.length > 0 ) {
             return listIndex === 1 ? 'in' : '';
           }
+          // if there is a list of available questionnaires
           else if ($scope.listSavedQ && $scope.listSavedQ.length > 0) {
             return listIndex === 2 ? 'in' : '';
           }
+          else {
+            return '';
+          }
         };
+
 
         /**
          * Get the CSS class for the section title depending on whether the section is initially collapsed
@@ -376,7 +385,7 @@ angular.module('lformsApp')
          * @returns {string} a CSS class for the section title element
          */
         $scope.getSectionTitleClass = function(listIndex) {
-          return $scope.isSectionExpanded(listIndex) === 'in' ? '' : 'collapsed';
+          return $scope.getSectionPanelClass(listIndex) === 'in' ? '' : 'collapsed';
         };
 
 
@@ -563,7 +572,7 @@ angular.module('lformsApp')
          */
         $scope.$on('LF_FHIR_SERVER_SELECTED', function(event, arg) {
 
-          $scope.listFeaturedQ = arg.fhirServer.featuredQuestionnaires;
+          $scope.listFeaturedQ = arg.fhirConfig.featuredQuestionnaires;
           $('.spinner').hide();
         });
 

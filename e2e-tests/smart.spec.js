@@ -3,6 +3,24 @@ let util = require('./util');
 let po = util.pageObjects;
 var EC = protractor.ExpectedConditions;
 
+describe('Featured Questionnaires', function() {
+  it('should display a list of featured questionnaires when R4 server is used', function() {
+    util.launchSmartAppInSandbox();
+
+    let featuredTab = element(by.id('fqList'));
+    browser.wait(EC.presenceOf(featuredTab), 2000);
+
+  });
+
+  it('should NOT display a list of featured questionnaires when R3 server is used', function() {
+    util.launchSmartAppInSandbox('r3');
+
+    let featuredTab = element(by.id('fqList'));
+    browser.wait(EC.not(EC.presenceOf(featuredTab)), 5000);
+
+  });
+
+});
 
 describe('SMART on FHIR connection', function () {
   beforeAll(function() {

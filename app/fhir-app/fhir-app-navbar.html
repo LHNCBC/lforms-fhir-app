@@ -29,7 +29,7 @@
           </a>
         </div>
       </div>
-      <div class="panel-collapse collapse {{isSectionExpanded(1)}}" id="collapse-one" role="tabpanel"
+      <div class="panel-collapse collapse {{getSectionPanelClass(1)}}" id="collapse-one" role="tabpanel"
            aria-labelledby="heading-one">
         <div ng-if="listSavedQRError">Unable to retrieve saved QuestionnaireResponses.</div>
         <div ng-if="!listSavedQRError && !listSavedQR">Loading QuestionnaireResponses from server...</div>
@@ -58,11 +58,11 @@
           </a>
         </div>
       </div>
-      <div class="panel-collapse collapse {{isSectionExpanded(0)}}" id="collapse-two" role="tabpanel"
+      <div class="panel-collapse collapse {{getSectionPanelClass(0)}}" id="collapse-two" role="tabpanel"
            aria-labelledby="heading-two">
         <div ng-if="listFeaturedQ && listFeaturedQ.length>0" id="fqList" class="list-group">
           <a href="#" class="list-group-item {{isSelected(0, $index)}}" ng-repeat="p in listFeaturedQ" role="presentation" id="{{p.id}}" ng-click="showFeaturedQ($index, p)">
-            <p class="form-name">{{p.name}} <span ng-if="p.id">[{{p.id}}]</span></p>
+            <p class="form-name">{{p.name}} <span ng-if="p.code">[{{p.code}}]</span></p>
           </a>
         </div>
       </div>
@@ -78,7 +78,7 @@
           <span class=showDate><label><input type=checkbox ng-model=showQDate> Show Date</input></label></span>
         </div>
       </div>
-      <div class="panel-collapse collapse {{isSectionExpanded(2)}}" id="collapse-three" role="tabpanel"
+      <div class="panel-collapse collapse {{getSectionPanelClass(2)}}" id="collapse-three" role="tabpanel"
            aria-labelledby="heading-three">
         <div ng-if="listSavedQError">Unable to retrieve saved Questionnaires.</div>
         <div ng-if="!listSavedQError && !listSavedQ">Loading Questionnaires from server...</div>
@@ -98,7 +98,7 @@
             <a id=nextQPage role="button" type="button" class="btn btn-default btn-sm glyphicon glyphicon-chevron-right"
              ng-disabled="!hasPagingLink('Questionnaire','next')" ng-click="getPage('Questionnaire', 'next')"></a>
           </div>
-          <div  ng-if="formSelected.groupIndex" id="deleteQBtn" class="btn-group btn-group-justified" role="group">
+          <div style="display: none" ng-if="formSelected.groupIndex" id="deleteQBtn" class="btn-group btn-group-justified" role="group">
             <a role="button" type="button" class="btn btn-default btn-sm
              btn-danger" ng-click="deleteQuestionnaire($event)" title="Deletes
              a Questionnaire and associated QuestionnaireResponses and
