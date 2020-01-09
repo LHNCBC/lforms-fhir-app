@@ -3,15 +3,18 @@
 angular.module('lformsApp')
   .controller('NavBarCtrl', [
       '$scope', '$http', '$mdDialog', 'selectedFormData', 'fhirService',
-      'FileUploader', 'userMessages', '$timeout',
+      'FileUploader', 'userMessages', '$timeout', 'fhirServerConfig',
       function ($scope, $http, $mdDialog, selectedFormData, fhirService,
-                FileUploader, userMessages, $timeout) {
+                FileUploader, userMessages, $timeout, fhirServerConfig) {
 
         $scope.search = {};
 
         // See https://github.com/nervgh/angular-file-upload/wiki/Introduction on
         // usage of angular-file-upload.
         $scope.uploader = new FileUploader({removeAfterUpload: true});
+
+        // Featured Questionnaire (for demo)
+        $scope.listFeaturedQ = null;
 
         // Saved QuestionnaireResponse of a patient
         $scope.listSavedQR = null;
@@ -306,6 +309,32 @@ angular.module('lformsApp')
           }
         };
 
+
+        /**
+         * Show a featured Questionnaire
+         * @param formIndex form index in the list
+         * @param qInfo info of a Questionnaire
+         */
+        $scope.showFeaturedQ = function(formIndex, qInfo) {
+
+          // ResId, ResType, ResName
+          if (qInfo) {
+            $('.spinner').show();
+            removeMessages();
+            selectedFormData.setFormData(null);
+
+            // Allow the page to update
+            $timeout(function() {
+              $scope.formSelected = {
+                groupIndex: 0,
+                formIndex: formIndex
+              };
+              fhirService.getFhirResourceById('Questionnaire', qInfo.id);
+            }, 10);
+          }
+        };
+
+
         /**
          * Determines the selection-state CSS class for a form in a list
          * @param listIndex list index
@@ -322,6 +351,43 @@ angular.module('lformsApp')
           }
           return ret;
         };
+
+
+        /**
+         * Get the initial CSS class for the section panel Check based on the data retrieved
+         * from the selected FHIR server.
+         * 'in' means the section panel is expanded.
+         * @param listIndex list/section index
+         * @returns {string} a CSS class for the section body element
+         */
+        $scope.getSectionPanelClass = function(listIndex) {
+          // if there is a list of featured questionnaires
+          if ($scope.listFeaturedQ) {
+            return listIndex === 0 ? 'in' : '';
+          }
+          // if there is a list of save questionnaire responses
+          else if ($scope.listSavedQR && $scope.listSavedQR.length > 0 ) {
+            return listIndex === 1 ? 'in' : '';
+          }
+          // if there is a list of available questionnaires
+          else if ($scope.listSavedQ && $scope.listSavedQ.length > 0) {
+            return listIndex === 2 ? 'in' : '';
+          }
+          else {
+            return '';
+          }
+        };
+
+
+        /**
+         * Get the CSS class for the section title depending on whether the section is initially collapsed
+         * @param listIndex list/section index
+         * @returns {string} a CSS class for the section title element
+         */
+        $scope.getSectionTitleClass = function(listIndex) {
+          return $scope.getSectionPanelClass(listIndex) === 'in' ? '' : 'collapsed';
+        };
+
 
         /**
          *  Returns a display name for a Questionnaire resource.
@@ -497,6 +563,16 @@ angular.module('lformsApp')
             groupIndex: 1,
             formIndex: 0
           };
+          $('.spinner').hide();
+        });
+
+
+        /**
+         * Update the Featured Questionnaires list when a new Non-SMART FHIR server is selected
+         */
+        $scope.$on('LF_FHIR_SERVER_SELECTED', function(event, arg) {
+
+          $scope.listFeaturedQ = arg.fhirConfig.featuredQuestionnaires;
           $('.spinner').hide();
         });
 

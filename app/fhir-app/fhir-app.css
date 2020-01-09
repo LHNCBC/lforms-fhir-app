@@ -140,7 +140,8 @@
 }
 
 .showDate {
-  font-size: 80%;
+  padding-left: 1rem;
+  font-size: 75%;
   text-align: right;
 }
 
@@ -177,6 +178,23 @@
   -webkit-animation-delay: -0.16s;
   animation-delay: -0.16s;
 }
+
+.panel-title a {
+  color: inherit;
+}
+.panel-title > a:before {
+  font-family:'Glyphicons Halflings';
+  content:"\e114";
+  float: right;
+  color: grey;
+}
+.panel-title > a.collapsed:before {
+  content:"\e080";
+}
+.panel-title > a {
+  cursor: pointer;
+}
+
 
 @-webkit-keyframes sk-bouncedelay {
   0%, 80%, 100% { -webkit-transform: scale(0) }

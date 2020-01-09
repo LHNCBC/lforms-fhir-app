@@ -4,7 +4,8 @@ fb.service('fhirService', [
   '$q',
   '$http',
   '$window',
-  function($rootScope, $q, $http, $window) {
+  'fhirServerConfig',
+  function($rootScope, $q, $http, $window, fhirServerConfig) {
     var thisService = this;
 
     // Currently selected patient
@@ -80,23 +81,32 @@ fb.service('fhirService', [
       LForms.Util.getServerFHIRReleaseID(function(releaseID) {
         thisService.fhirVersion = releaseID;
       });
+
+      // Check local configuration if there is matching one
+      var serviceUrl = thisService.getSmartConnection().server.serviceUrl;
+      var matchedServer = fhirServerConfig.listFhirServers.find(function(config) {
+        return config.smartServiceUrl === serviceUrl;
+      });
+      if (matchedServer) {
+        $rootScope.$broadcast('LF_FHIR_SERVER_SELECTED', {fhirConfig: matchedServer});
+      }
+
     };
 
 
     /**
      *  Sets up a client for a standard (open) FHIR server.
-     * @param baseURL the base URL of the FHIR server.
+     * @param fhirServer the configuration of the FHIR server.
      * @param commCallback A callback function that will be passed a boolean as to
      *  whether communication with the server was successfully established.
      */
-    thisService.setNonSmartServer = function(baseURL, commCallback) {
+    thisService.setNonSmartServer = function(fhirServer, commCallback) {
       try {
-        thisService.connection = {server: {serviceUrl: baseURL}};
-        thisService.fhir = FHIR.client({serviceUrl: baseURL}).api;
+        thisService.connection = {server: {serviceUrl: fhirServer.url}};
+        thisService.fhir = FHIR.client({serviceUrl: fhirServer.url}).api;
         thisService.nonSmartContext = {
-          baseURL: baseURL,
+          baseURL: fhirServer.url,
           getCurrent: function(typeList, callback) {
-            var rtn = null;
             if (typeList.indexOf('Patient') >= 0) {
               setTimeout(function() {callback(thisService.currentPatient)});
             }
@@ -104,7 +114,7 @@ fb.service('fhirService', [
           getFHIRAPI: function() {
             return thisService.fhir;
           }
-        }
+        };
         LForms.Util.setFHIRContext(thisService.nonSmartContext);
         // Retrieve the fhir version
         LForms.Util.getServerFHIRReleaseID(function(releaseID) {
@@ -115,13 +125,23 @@ fb.service('fhirService', [
           else
             commCallback(false); // error signal
         });
+
+        // Check local configuration if there is matching one
+        var matchedServer = fhirServerConfig.listFhirServers.find(function(config) {
+          return config.url === fhirServer.url;
+        });
+        if (matchedServer) {
+          $rootScope.$broadcast('LF_FHIR_SERVER_SELECTED', {fhirConfig: matchedServer});
+        }
+        else {
+          $rootScope.$broadcast('LF_FHIR_SERVER_SELECTED', {fhirConfig: fhirServer});
+        }
       }
       catch (e) {
         commCallback(false);
         throw e;
       }
     };
-
 
 
     /**
@@ -135,9 +155,9 @@ fb.service('fhirService', [
 
 
     /**
-     *  Returns the base URL of the FHIR server the app is using.
+     *  Returns the service URL of the FHIR server the app is using.
      */
-    thisService.getServerBaseURL = function() {
+    thisService.getServerServiceURL = function() {
       return thisService.getSmartConnection().server.serviceUrl;
     };
 
@@ -342,7 +362,7 @@ fb.service('fhirService', [
       // md-autocomplete directive requires a promise to be returned
       return thisService.fhir.search({
         type: "Questionnaire",
-        query: {name: searchText},
+        query: {title: searchText},
         headers: {'Cache-Control': 'no-cache'}
       })
         .then(function(response) {
@@ -359,7 +379,6 @@ fb.service('fhirService', [
               })
             }
           }
-
           return qList;
         }, function(error) {
           console.log(error);
@@ -433,9 +452,8 @@ fb.service('fhirService', [
       if (thisService.fhirVersion === 'STU3')
         qrData.questionnaire = {"reference": "Questionnaire/" + qID};
       else
-        qrData.questionnaire = "Questionnaire/" + qID
-
-    }
+        qrData.questionnaire = "Questionnaire/" + qID;
+    };
 
 
     /**
@@ -468,7 +486,7 @@ fb.service('fhirService', [
           reportResults();
         }
       );
-    }
+    };
 
 
     /**
@@ -951,5 +969,4 @@ fb.service('fhirService', [
           console.log(error);
         });
     };
-
   }]);
