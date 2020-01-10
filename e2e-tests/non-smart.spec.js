@@ -226,7 +226,7 @@ describe('Non-SMART connection to FHIR server', function() {
         browser.wait(EC.presenceOf(name), 2000);
       });
 
-      it('should display the 2nd questionnaires with pre-populated data', function() {
+      it('should display the weight and height questionnaire with pre-populated data', function() {
         // Continue with form loaded in previous tests
         let secondFeaturedQ = element(by.id('55418-8-x'));
         browser.wait(EC.presenceOf(secondFeaturedQ), 2000);

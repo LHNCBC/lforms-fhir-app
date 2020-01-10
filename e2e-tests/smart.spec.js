@@ -12,7 +12,7 @@ describe('Featured Questionnaires', function() {
 
   });
 
-  it('should display the 2nd questionnaires with pre-populated data', function() {
+  it('should display the the weight and height questionnaire with pre-populated data', function() {
     util.launchSmartAppInSandbox();
 
     let featuredTab = element(by.id('fqList'));
