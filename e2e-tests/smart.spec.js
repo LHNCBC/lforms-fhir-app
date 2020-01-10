@@ -12,6 +12,22 @@ describe('Featured Questionnaires', function() {
 
   });
 
+  it('should display the 2nd questionnaires with pre-populated data', function() {
+    util.launchSmartAppInSandbox();
+
+    let featuredTab = element(by.id('fqList'));
+    browser.wait(EC.presenceOf(featuredTab), 2000);
+
+    let secondFeaturedQ = element(by.id('55418-8-x'));
+    browser.wait(EC.presenceOf(secondFeaturedQ), 2000);
+
+    secondFeaturedQ.click();
+    let weight = element(by.id('/8302-2/1'));
+    browser.sleep(2000)
+    browser.wait(EC.presenceOf(weight), 2000);
+    expect(weight.getAttribute('value')).toBe("77.6");
+  });
+
   it('should NOT display a list of featured questionnaires when R3 server is used', function() {
     util.launchSmartAppInSandbox('r3');
 

@@ -4,18 +4,20 @@ let util = require('./util');
 /**
  *  Selects a patient from the patient dialog.
  */
-function pickPatient()  {
+function pickPatient(patientName)  {
+  if (!patientName)
+    patientName = 'Karen';
   var ptField = '.lf-patient-search input'
   browser.wait(EC.presenceOf($(ptField)), 20000);
-  $(ptField).sendKeys('karen');
-  browser.wait(EC.textToBePresentInElement($('md-virtual-repeat-container'), 'Karen'), 2000);
+  $(ptField).sendKeys(patientName);
+  browser.wait(EC.textToBePresentInElement($('md-virtual-repeat-container'), patientName), 2000);
   $(ptField).sendKeys(protractor.Key.ARROW_DOWN);
   $(ptField).sendKeys(protractor.Key.TAB);
   $('#btnOK').click();
   // Confirm patient info is in header
   var name = $('#ptName');
   browser.wait(EC.presenceOf(name), 5000);
-  browser.wait(EC.textToBePresentInElement(name, 'Karen'), 2000);
+  browser.wait(EC.textToBePresentInElement(name, patientName), 2000);
 }
 
 describe('Non-SMART connection to FHIR server', function() {
@@ -206,7 +208,7 @@ describe('Non-SMART connection to FHIR server', function() {
         // Wait for dialog to close
         browser.wait(EC.not(EC.presenceOf($('#btnOk'))), 5000);
         // Wait for patient picker to open
-        pickPatient();
+        pickPatient('Daniel');
 
         let featuredTab = element(by.id('fqList'));
         browser.wait(EC.presenceOf(featuredTab), 2000);
@@ -222,6 +224,18 @@ describe('Non-SMART connection to FHIR server', function() {
         let name = element(by.id('/54126-8/54125-0/1/1'));
         browser.sleep(2000)
         browser.wait(EC.presenceOf(name), 2000);
+      });
+
+      it('should display the 2nd questionnaires with pre-populated data', function() {
+        // Continue with form loaded in previous tests
+        let secondFeaturedQ = element(by.id('55418-8-x'));
+        browser.wait(EC.presenceOf(secondFeaturedQ), 2000);
+
+        secondFeaturedQ.click();
+        let weight = element(by.id('/8302-2/1'));
+        browser.sleep(2000)
+        browser.wait(EC.presenceOf(weight), 2000);
+        expect(weight.getAttribute('value')).toBe("70.1");
       });
 
       it('should not display a list of featured questionnaires when https://lforms-fhir.nlm.nih.gov/baseDstu3 is selected', function() {

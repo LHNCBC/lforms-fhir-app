@@ -487,7 +487,7 @@ angular.module('lformsApp')
                 questionnaireName : q.name
               };
               $('.spinner').show();
-              formData.loadFHIRResources(false).then(function() {
+              formData.loadFHIRResources(true).then(function() {
                 $('.spinner').hide();
                 $scope.$apply(function() {
                   // set the form data to be displayed
