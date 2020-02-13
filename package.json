@@ -1,6 +1,6 @@
 {
   "name": "lforms-fhir-app",
-  "version": "0.14.1",
+  "version": "0.14.2",
   "description": "A SMART on FHIR app for lforms",
   "repository": "https://github.com/lhncbc/lforms-fhir-app",
   "devDependencies": {

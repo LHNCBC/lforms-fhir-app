@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.14.2] - 2020-02-13
+### Fixed
+- Tests which broke due to data changes on the servers we use for testing.
+
 ## [0.14.1] - 2020-01-10
 ### Fixed
 - Fixed a bug that pre-population stopped working on featured questionnaires
