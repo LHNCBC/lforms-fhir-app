@@ -3,15 +3,21 @@ let util = require('./util');
 
 /**
  *  Selects a patient from the patient dialog.
+ * @param paitentName the text to match the patient name
+ * @param listItemNum the position (starting at 1) of the patient in the search
+ * results list.
  */
-function pickPatient(patientName)  {
-  if (!patientName)
-    patientName = 'Karen';
-  var ptField = '.lf-patient-search input'
+function pickPatient(patientName, listItemNum)  {
+  if (!patientName) {
+    patientName = 'Karen'; // "Karen Lewis"
+    listItemNum = 3;
+  }
+  var ptField = '.lf-patient-search input';
   browser.wait(EC.presenceOf($(ptField)), 20000);
   $(ptField).sendKeys(patientName);
   browser.wait(EC.textToBePresentInElement($('md-virtual-repeat-container'), patientName), 2000);
-  $(ptField).sendKeys(protractor.Key.ARROW_DOWN);
+  for (let i=0; i<listItemNum; ++i)
+    $(ptField).sendKeys(protractor.Key.ARROW_DOWN);
   $(ptField).sendKeys(protractor.Key.TAB);
   $('#btnOK').click();
   // Confirm patient info is in header
@@ -208,7 +214,7 @@ describe('Non-SMART connection to FHIR server', function() {
         // Wait for dialog to close
         browser.wait(EC.not(EC.presenceOf($('#btnOk'))), 5000);
         // Wait for patient picker to open
-        pickPatient('Daniel');
+        pickPatient('Daniel', 1); // "Daniel Johnson"
 
         let featuredTab = element(by.id('fqList'));
         browser.wait(EC.presenceOf(featuredTab), 2000);

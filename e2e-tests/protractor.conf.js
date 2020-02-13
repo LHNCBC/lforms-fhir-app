@@ -22,6 +22,7 @@ exports.config = {
   framework: 'jasmine',
 
   jasmineNodeOpts: {
+    realtimeFailure: true,
     defaultTimeoutInterval: 10000
   },
 
