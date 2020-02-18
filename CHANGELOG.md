@@ -3,12 +3,16 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
-## [0.14.3] - 2020-02-18
+## [0.14.4] - 2020-02-18
 ### Added
 - A "hunger vital signs" form (with FHIRPath expressions) to the tests.
 ### Changed
 - Updated to lforms 20.2.0 from 20.0.0 (mostly fixes, plus one feature
   addition.)
+
+## [0.14.3] - 2020-02-18
+### Fixed
+- Fixed a bug that Questionnaires names, instead of titles, are displayed in search box.
 
 ## [0.14.2] - 2020-02-13
 ### Fixed

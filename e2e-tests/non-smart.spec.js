@@ -200,6 +200,26 @@ describe('Non-SMART connection to FHIR server', function() {
 
   });
 
+  describe('Search Questionnaires', function() {
+
+    it('should find a questionnaire by its title', function() {
+      var title = 'Height';
+      var ptField = '.lf-patient-search input';
+      $('#search').click();
+      browser.wait(EC.presenceOf($(ptField)), 20000);
+      $(ptField).sendKeys(title);
+      browser.wait(EC.textToBePresentInElement($('md-virtual-repeat-container .item-title'), title), 2000);
+      $(ptField).sendKeys(protractor.Key.ARROW_DOWN);
+      $(ptField).sendKeys(protractor.Key.TAB);
+      $('#btnOK').click();
+      // Confirm questionnaire is displayed
+      browser.wait(EC.presenceOf($('.lf-form-title > span')), 5000);
+      browser.wait(EC.textToBePresentInElement($('.lf-form-title > span'), title), 2000);
+
+    });
+
+  });
+
   describe('Featured Questionnaires', function() {
 
     describe('Non-SMART', function() {

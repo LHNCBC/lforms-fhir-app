@@ -654,8 +654,8 @@ angular.module('lformsApp')
          * @param searchText
          * @returns {*}
          */
-        $scope.searchQuestionnaireByName = function(searchText) {
-          return fhirService.searchQuestionnaireByName(searchText);
+        $scope.searchQuestionnaire = function(searchText) {
+          return fhirService.searchQuestionnaire(searchText);
         };
       }
   ]);
