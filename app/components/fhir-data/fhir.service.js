@@ -372,7 +372,7 @@ fb.service('fhirService', [
             for (var i=0, iLen=response.data.entry.length; i<iLen; i++) {
               var q = response.data.entry[i].resource;
               qList.push({
-                name: q.name,
+                title: q.title,
                 status: q.status,
                 id: q.id,
                 resource: q

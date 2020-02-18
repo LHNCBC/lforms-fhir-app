@@ -17,7 +17,7 @@
                   md-selected-item="selectedQuestionnaireInDialog"
                   md-search-text="questionnaireSearchText"
                   md-items="item in searchQuestionnaireByName(questionnaireSearchText)"
-                  md-item-text="item.name"
+                  md-item-text="item.title"
                   md-min-length="1"
                   placeholder="{{dialogHint}}"
                   md-menu-class="autocomplete-custom-template"
@@ -26,7 +26,7 @@
                   <span class="item-title">
                     <span class="glyphicon glyphicon-user"></span>
                     <span class="item-property">
-                      <strong> {{item.name}} </strong>
+                      <strong> {{item.title}} </strong>
                     </span>
                   </span>
                   <span class="item-metadata">
