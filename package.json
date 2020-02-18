@@ -20,7 +20,7 @@
     "grunt-shell": "^2.1.0",
     "grunt-usemin": "^3.1.1",
     "grunt-wiredep": "^3.0.1",
-    "http-server": "^0.11.1",
+    "http-server": "^0.12.1",
     "jasmine-core": "^3.2.1",
     "jit-grunt": "^0.10.0",
     "karma": "^3.0.0",
