@@ -86,7 +86,7 @@
           Questionnaire resources were found.  Try uploading one.</div>
         <div ng-if="listSavedQ && listSavedQ.length>0"  id="qList" class="list-group">
           <div class="btn-group btn-group-justified" role="group">
-            <a role="button" type="button" class="btn btn-default btn-sm btn-success " ng-click="showQuestionnairePicker($event)" title="Choose a Questionnaire from the FHIR server."><span class="glyphicon glyphicon-search"></span><span class="lf-nav-button">Search</span></a>
+            <a id="search" role="button" type="button" class="btn btn-default btn-sm btn-success " ng-click="showQuestionnairePicker($event)" title="Choose a Questionnaire from the FHIR server."><span class="glyphicon glyphicon-search"></span><span class="lf-nav-button">Search</span></a>
           </div>
           <a href="#" class="list-group-item {{isSelected(2, $index)}}" ng-repeat="p in listSavedQ" role="presentation" id="{{p.resId}}" ng-click="showSavedQuestionnaire($index, p)">
             <p class="form-name">{{p.resName}}</p>
