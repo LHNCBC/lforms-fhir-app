@@ -155,7 +155,7 @@ describe('fhir app', function() {
         // kgs and meters
         setUnit(heightUnit, 'meters');
         expect(bmi.getAttribute('value')).toBe('2.8');
-      });
+      }, 5000);
     });
   });
 

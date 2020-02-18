@@ -102,7 +102,7 @@ describe('SMART on FHIR connection', function () {
     // open the saved q section
     element(by.css("#heading-three a")).click();
     util.deleteCurrentQuestionnaire(); // Clean up uploaded form
-  });
+  }, 5000);
 
 
   it('should provide data for observationLinkPeriod', function() {
@@ -121,7 +121,7 @@ describe('SMART on FHIR connection', function () {
     it ('should work via the FHIR client', function() {
       var ethnicityID = '/54126-8/54133-4/1/1';
       var ethnicity = element(by.id(ethnicityID));
-      ethnicity.sendKeys('ar');
+      util.sendKeys(ethnicity, 'ar');
       util.autoCompHelpers.waitForSearchResults();
       util.autoCompHelpers.firstSearchRes.click();
       expect(util.autoCompHelpers.getSelectedItems(ethnicityID)).toEqual(['Argentinean']);
@@ -130,7 +130,7 @@ describe('SMART on FHIR connection', function () {
     it('should work via a terminology server', function() {
       var diseasesID = '/54126-8/54137-5/54140-9/1/1/1';
       var diseaseHistory = element(by.id(diseasesID));
-      diseaseHistory.sendKeys('ar');
+      util.sendKeys(diseaseHistory, 'ar');
       util.autoCompHelpers.waitForSearchResults();
       util.autoCompHelpers.firstSearchRes.click();
       expect(diseaseHistory.getAttribute('value')).toEqual('Arm pain');

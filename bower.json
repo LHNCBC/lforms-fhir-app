@@ -11,10 +11,10 @@
     "angular-strap": "~2.3.3",
     "angular-touch": "~1.6.x",
     "angular-ui-utils": "~0.1.1",
-    "lforms": "20.0.0",
+    "lforms": "21.0.0",
     "json3": "3.3.2",
     "angular-animate": "~1.6.x",
-    "bootstrap": "3.3.5",
+    "bootstrap": "3.4.1",
     "angular-material": "^1.0.8",
     "angular-file-upload": "^2.3.4"
   },

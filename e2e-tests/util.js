@@ -35,6 +35,7 @@ let util = {
   sendKeys: function(field, str) {
     browser.executeScript('arguments[0].value = "'+str.slice(0,-1)+'"', field.getWebElement());
     field.sendKeys(str.slice(-1));
+    field.sendKeys(protractor.Key.ARROW_LEFT);
   },
 
 
