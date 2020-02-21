@@ -1,0 +1,262 @@
+{
+  "code": [
+    {
+      "code": "88121-9",
+      "display": "Hunger Vital Sign [HVS]"
+    }
+  ],
+  "title": "Hunger Vital Sign [HVS]",
+  "resourceType": "Questionnaire",
+  "status": "draft",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire|2.7"
+    ]
+  },
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "worriedAnsCode",
+        "language": "text/fhirpath",
+        "expression": "%resource.item.where(linkId='/88122-7').answer.value.code"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "ranOutAnsCode",
+        "language": "text/fhirpath",
+        "expression": "%resource.item.where(linkId='/88123-5').answer.value.code"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "riskCodes",
+        "language": "text/fhirpath",
+        "expression": "'LA28397-0'.combine('LA6729-3')"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "riskStatus",
+        "language": "text/fhirpath",
+        "expression": "%riskCodes contains %worriedAnsCode or %riskCodes contains %ranOutAnsCode"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "answeredEitherQ",
+        "language": "text/fhirpath",
+        "expression": "%worriedAnsCode.exists() or %ranOutAnsCode.exists()"
+      }
+    }
+  ],
+  "item": [
+    {
+      "type": "choice",
+      "code": [
+        {
+          "code": "88122-7",
+          "display": "Within the past 12Mo we worried whether our food would run out before we got money to buy more"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ],
+            "text": "Drop down"
+          }
+        }
+      ],
+      "required": false,
+     "linkId": "/88122-7",
+      "text": "Within the past 12Mo we worried whether our food would run out before we got money to buy more",
+      "answerOption": [
+        {
+          "valueCoding": {
+            "code": "LA28397-0",
+            "display": "Often true"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "LA6729-3",
+            "display": "Sometimes true"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "LA28398-8",
+            "display": "Never true"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "LA15775-2",
+            "display": "Don't know/refused"
+          }
+        }
+      ]
+    },
+    {
+      "type": "choice",
+      "code": [
+        {
+          "code": "88123-5",
+          "display": "Within the past 12Mo the food we bought just didn't last and we didn't have money to get more"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ],
+            "text": "Drop down"
+          }
+        }
+      ],
+      "required": false,
+      "linkId": "/88123-5",
+      "text": "Within the past 12Mo the food we bought just didn't last and we didn't have money to get more",
+      "answerOption": [
+        {
+          "valueCoding": {
+            "code": "LA28397-0",
+            "display": "Often true"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "LA6729-3",
+            "display": "Sometimes true"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "LA28398-8",
+            "display": "Never true"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "LA15775-2",
+            "display": "Don't know/refused"
+          }
+        }
+      ]
+    },
+    {
+      "type": "choice",
+      "code": [
+        {
+          "code": "88124-3",
+          "display": "Food insecurity risk"
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "code": "drop-down",
+                "display": "Drop down"
+              }
+            ],
+            "text": "Drop down"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "thisItem",
+            "language": "text/fhirpath",
+            "expression": "%questionnaire.item.where(linkId = '/88124-3')"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "atRiskCoding",
+            "language": "text/fhirpath",
+            "expression": "%thisItem.answerOption.valueCoding.where(code='LA19952-3')"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "noRiskCoding",
+            "language": "text/fhirpath",
+            "expression": "%thisItem.answerOption.valueCoding.where(code='LA19983-8')"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-calculatedExpression",
+          "valueExpression": {
+            "description": "risk determination",
+            "language": "text/fhirpath",
+            "expression": "iif(%answeredEitherQ, iif(%riskStatus, %atRiskCoding, %noRiskCoding), {})"
+          }
+        }
+      ],
+      "required": false,
+      "linkId": "/88124-3",
+      "text": "Food insecurity risk",
+      "readOnly": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "code": "LA19952-3",
+            "display": "At risk"
+          }
+        },
+        {
+          "valueCoding": {
+            "code": "LA19983-8",
+            "display": "No risk"
+          }
+        }
+      ],
+      "item": [
+        {
+          "text": "An answer of \"often true\" or \"sometimes true\" to either or both of the Hunger Vital Sign™ questions identifies a patient as at risk for food insecurity (FI).",
+          "type": "display",
+          "linkId": "/88124-3-help",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "text": "Help-Button",
+                "coding": [
+                  {
+                    "code": "help",
+                    "display": "Help-Button",
+                    "system": "http://hl7.org/fhir/questionnaire-item-control"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
