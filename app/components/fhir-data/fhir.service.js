@@ -353,12 +353,12 @@ fb.service('fhirService', [
 
 
     /**
-     * Search questionnaires by name
+     * Search questionnaires by title
      * Data returned through an angular broadcast event.
-     * @param searchText the search text for patient names
+     * @param searchText the search text for the questionnaire's title
      * @returns {*}
      */
-    thisService.searchQuestionnaireByName = function(searchText) {
+    thisService.searchQuestionnaire = function(searchText) {
       // md-autocomplete directive requires a promise to be returned
       return thisService.fhir.search({
         type: "Questionnaire",
@@ -372,7 +372,7 @@ fb.service('fhirService', [
             for (var i=0, iLen=response.data.entry.length; i<iLen; i++) {
               var q = response.data.entry[i].resource;
               qList.push({
-                name: q.name,
+                title: q.title,
                 status: q.status,
                 id: q.id,
                 resource: q
