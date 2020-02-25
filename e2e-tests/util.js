@@ -35,6 +35,7 @@ let util = {
   sendKeys: function(field, str) {
     browser.executeScript('arguments[0].value = "'+str.slice(0,-1)+'"', field.getWebElement());
     field.sendKeys(str.slice(-1));
+    field.sendKeys(protractor.Key.ARROW_LEFT);
   },
 
 
@@ -134,7 +135,7 @@ let util = {
     browser.executeScript('arguments[0].classList.toggle("hide")', util.fileInput.getWebElement());
     // Wait for the form to appear, or an error
     var EC = protractor.ExpectedConditions;
-    browser.wait(EC.or(EC.presenceOf($('#th_Name')), EC.presenceOf($('.error'))), 2000);
+    browser.wait(EC.or(EC.presenceOf($('#th_Name')), EC.presenceOf($('.error'))), 200000);
   },
 
 
