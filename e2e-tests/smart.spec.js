@@ -98,7 +98,7 @@ describe('SMART on FHIR connection', function () {
     // open the saved q section
     element(by.css("#heading-three a")).click();
     util.deleteCurrentQuestionnaire(); // Clean up uploaded form
-  }, 15000);
+  }, 200000);
 
 
   it('should provide data for observationLinkPeriod', function() {
@@ -130,7 +130,7 @@ describe('SMART on FHIR connection', function () {
       util.autoCompHelpers.waitForSearchResults();
       util.autoCompHelpers.firstSearchRes.click();
       expect(diseaseHistory.getAttribute('value')).toEqual('Arm pain');
-    });
+    }, 200000);
   });
 
   describe('Saved QuestionnaireResponses', function() {
