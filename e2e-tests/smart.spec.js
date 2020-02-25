@@ -89,7 +89,7 @@ describe('SMART on FHIR connection', function () {
     // open the saved qr section
     element(by.css("#heading-one a")).click();
     $('#qrList a:first-child').click();
-    browser.wait(EC.presenceOf(element(by.id('/54126-8/8302-2/1/1'))), 200000);
+    browser.wait(EC.presenceOf(element(by.id('/54126-8/8302-2/1/1'))), 15000);
     height = element(by.id('/54126-8/8302-2/1/1')); // new on page
     browser.wait(EC.textToBePresentInElementValue(height, '70'), 2000);
     expect(height.getAttribute('value')).toBe('70');
@@ -98,7 +98,7 @@ describe('SMART on FHIR connection', function () {
     // open the saved q section
     element(by.css("#heading-three a")).click();
     util.deleteCurrentQuestionnaire(); // Clean up uploaded form
-  }, 200000);
+  }, 15000);
 
 
   it('should provide data for observationLinkPeriod', function() {
