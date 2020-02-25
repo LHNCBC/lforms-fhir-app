@@ -41,10 +41,6 @@ describe('Featured Questionnaires', function() {
 describe('SMART on FHIR connection', function () {
   beforeAll(function() {
     util.launchSmartAppInSandbox();
-  });
-
-
-  it('should show patient information', function() {
     var name = $('#ptName');
     browser.wait(EC.presenceOf(name), 5000);
     browser.wait(EC.textToBePresentInElement(name, 'Aaron'), 2000);
@@ -93,7 +89,7 @@ describe('SMART on FHIR connection', function () {
     // open the saved qr section
     element(by.css("#heading-one a")).click();
     $('#qrList a:first-child').click();
-    browser.wait(EC.presenceOf(element(by.id('/54126-8/8302-2/1/1'))), 2000);
+    browser.wait(EC.presenceOf(element(by.id('/54126-8/8302-2/1/1'))), 15000);
     height = element(by.id('/54126-8/8302-2/1/1')); // new on page
     browser.wait(EC.textToBePresentInElementValue(height, '70'), 2000);
     expect(height.getAttribute('value')).toBe('70');
@@ -102,7 +98,7 @@ describe('SMART on FHIR connection', function () {
     // open the saved q section
     element(by.css("#heading-three a")).click();
     util.deleteCurrentQuestionnaire(); // Clean up uploaded form
-  });
+  }, 200000);
 
 
   it('should provide data for observationLinkPeriod', function() {
@@ -121,7 +117,7 @@ describe('SMART on FHIR connection', function () {
     it ('should work via the FHIR client', function() {
       var ethnicityID = '/54126-8/54133-4/1/1';
       var ethnicity = element(by.id(ethnicityID));
-      ethnicity.sendKeys('ar');
+      util.sendKeys(ethnicity, 'ar');
       util.autoCompHelpers.waitForSearchResults();
       util.autoCompHelpers.firstSearchRes.click();
       expect(util.autoCompHelpers.getSelectedItems(ethnicityID)).toEqual(['Argentinean']);
@@ -130,11 +126,11 @@ describe('SMART on FHIR connection', function () {
     it('should work via a terminology server', function() {
       var diseasesID = '/54126-8/54137-5/54140-9/1/1/1';
       var diseaseHistory = element(by.id(diseasesID));
-      diseaseHistory.sendKeys('ar');
+      util.sendKeys(diseaseHistory,'ar');
       util.autoCompHelpers.waitForSearchResults();
       util.autoCompHelpers.firstSearchRes.click();
       expect(diseaseHistory.getAttribute('value')).toEqual('Arm pain');
-    });
+    }, 200000);
   });
 
   describe('Saved QuestionnaireResponses', function() {

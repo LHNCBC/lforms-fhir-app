@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.14.5] - 2020-02-25
+### Fixed
+- Fixed protractor tests.
+
 ## [0.14.4] - 2020-02-18
 ### Added
 - A "hunger vital signs" form (with FHIRPath expressions) to the tests.
