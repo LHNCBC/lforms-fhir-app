@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.14.6] - 2020-02-26
+### Fixed
+- Updated lforms package
+
 ## [0.14.5] - 2020-02-25
 ### Fixed
 - Fixed protractor tests.
