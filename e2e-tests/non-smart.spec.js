@@ -28,6 +28,22 @@ function pickPatient(patientName, listItemNum)  {
 
 describe('Non-SMART connection to FHIR server', function() {
   let mainPageURL = '/lforms-fhir-app/';
+  it('should be able to select an off-list FHIR server', function() {
+    browser.get(mainPageURL);
+    var urlField = '#fhirServerURL';
+    browser.wait(EC.presenceOf($(urlField)), 5000);
+    $(urlField).click();
+    // Note:  If this test fails, it might be because this particular server is
+    // down.  In that case, feel free to replace it with another off-list
+    // server.
+    util.sendKeys($(urlField), 'http://wildfhir4.aegis.net/fhir4-0-0');
+    $(urlField).sendKeys(protractor.Key.TAB);
+    $('#btnOK').click();
+    // Wait for dialog to close
+    browser.wait(EC.not(EC.presenceOf($('#btnOk'))), 5000);
+    pickPatient('a', 1);
+  });
+
   it('should be able to select a FHIR server and a patient', function() {
     browser.get(mainPageURL);
     var urlField = '#fhirServerURL';
