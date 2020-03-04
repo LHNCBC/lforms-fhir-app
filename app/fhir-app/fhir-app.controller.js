@@ -229,8 +229,12 @@ angular.module('lformsApp')
 
             // close the popup and select a patient
             $scope.confirmAndCloseDialog = function () {
-              if ($scope.selectedServerInDialog)
-                setServerAndPickPatient($scope.selectedServerInDialog.serverConfig, function() {$mdDialog.hide()});
+              if ($scope.selectedServerInDialog) {
+                var selectedServerData = $scope.selectedServerInDialog;
+                var serverConfig = (selectedServerData._notOnList) ?
+                  {url: selectedServerData.text} : selectedServerData.serverConfig;
+                setServerAndPickPatient(serverConfig, function() {$mdDialog.hide()});
+              }
               $scope.selectedServerInDialog = null;
               $mdDialog.hide();
             };

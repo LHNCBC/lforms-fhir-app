@@ -119,6 +119,7 @@ describe('SMART on FHIR connection', function () {
       var ethnicity = element(by.id(ethnicityID));
       util.sendKeys(ethnicity, 'ar');
       util.autoCompHelpers.waitForSearchResults();
+      browser.sleep(50); // wait for autocompletion to finish to avoid a stale element
       util.autoCompHelpers.firstSearchRes.click();
       expect(util.autoCompHelpers.getSelectedItems(ethnicityID)).toEqual(['Argentinean']);
     });

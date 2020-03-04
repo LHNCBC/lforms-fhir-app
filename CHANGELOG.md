@@ -3,6 +3,11 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.14.7] - 2020-02-27
+### Fixed
+- Fixed a bug that prevented entry of an off-list FHIR Server.
+- Updated lforms to 21.1.0
+
 ## [0.14.6] - 2020-02-26
 ### Fixed
 - Updated lforms package

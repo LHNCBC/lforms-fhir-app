@@ -91,7 +91,9 @@ angular.module('lformsApp')
                       '<a href="https://www.hl7.org/fhir/references.html#canonical">canonical URLs</a>).</p>'+
                       '<p>Example 1:  http://hl7.org/fhir/4.0/StructureDefinition/Questionnaire'+
                       ' (for Questionnaire version 4.0).<br>'+
-                      'Example 2:  http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire|2.7.0 '+
+                      'Example 2:  http://hl7.org/fhir/3.0/StructureDefinition/Questionnaire'+
+                      ' (for Questionnaire version 3.0).<br>'+
+                      'Example 3:  http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire|2.7.0 '+
                       ' (for SDC Questionnaire version 2.7).</p>';
                     if (!fhirVersion) {
                       $timeout(function() {
