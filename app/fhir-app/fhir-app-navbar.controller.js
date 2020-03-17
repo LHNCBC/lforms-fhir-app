@@ -219,9 +219,10 @@ angular.module('lformsApp')
             var fhirVersion = fhirService.fhirVersion;
             var mergedFormData;
             try {
+              // In case the Questionnaire came from LForms, run the updater.
+              var q = lformsUpdater.update(qrInfo.questionnaire);
               var formData = LForms.Util.convertFHIRQuestionnaireToLForms(
-                 qrInfo.questionnaire, fhirVersion);
-              formData = lformsUpdater.update(formData); // call before constructing LFormsData
+                 q, fhirVersion);
               //var newFormData = (new LForms.LFormsData(formData)).getFormData();
               // TBD -- getFormData() results in _ variables (including FHIR
               // extensions) being thrown away.  Not sure yet if it is needed
@@ -246,7 +247,6 @@ angular.module('lformsApp')
                 questionnaireName : qrInfo.questionnaire.name
               };
               // Load FHIR resources, but don't prepopulate
-              mergedFormData = lformsUpdater.update(mergedFormData);
               mergedFormData = new LForms.LFormsData(mergedFormData);
               $('.spinner').show();
               mergedFormData.loadFHIRResources(false).then(function() {
@@ -281,10 +281,11 @@ angular.module('lformsApp')
                 groupIndex: 2,
                 formIndex: formIndex
               };
-              // merge the QuestionnaireResponse into the form
               try {
+                // In case the Questionnaire came from LForms, run the updater.
+                var q = lformsUpdater.update(qInfo.questionnaire);
                 var formData = LForms.Util.convertFHIRQuestionnaireToLForms(
-                  qInfo.questionnaire, fhirService.fhirVersion);
+                  q, fhirService.fhirVersion);
               }
               catch(e) {
                 userMessages.error = e;
@@ -300,7 +301,6 @@ angular.module('lformsApp')
                   questionnaireName: qInfo.questionnaire.name
                 };
                 // set the form data to be displayed
-                formData = lformsUpdater.update(formData); // call before constructing LFormsData
                 var newFormData = new LForms.LFormsData(formData);
                 $('.spinner').show();
                 newFormData.loadFHIRResources(true).then(function() {
