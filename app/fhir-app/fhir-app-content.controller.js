@@ -464,12 +464,9 @@ angular.module('lformsApp')
             var fhirVersion = fhirService.fhirVersion;
             var formData;
             try {
+              q = lformsUpdater.update(q); // call before converting to LForms
               formData = LForms.Util.convertFHIRQuestionnaireToLForms(
                   q, fhirVersion);
-              //var newFormData = (new LForms.LFormsData(formData)).getFormData();
-              // TBD -- getFormData() results in _ variables (including FHIR
-              // extensions) being thrown away.  Not sure yet if it is needed
-              // for something else.
               formData = (new LForms.LFormsData(formData));
             }
             catch (e) {

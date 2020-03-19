@@ -77,6 +77,7 @@ angular.module('lformsApp')
               $timeout(function() {userMessages.error = e});
             }
             if (importedData) {
+              importedData = lformsUpdater.update(importedData); // call before constructing LFormsData
               // if the imported data is in FHIR Questionnaire format
               if (importedData.resourceType && importedData.resourceType === "Questionnaire") {
                 var questionnaire;
@@ -218,8 +219,10 @@ angular.module('lformsApp')
             var fhirVersion = fhirService.fhirVersion;
             var mergedFormData;
             try {
+              // In case the Questionnaire came from LForms, run the updater.
+              var q = lformsUpdater.update(qrInfo.questionnaire);
               var formData = LForms.Util.convertFHIRQuestionnaireToLForms(
-                 qrInfo.questionnaire, fhirVersion);
+                 q, fhirVersion);
               //var newFormData = (new LForms.LFormsData(formData)).getFormData();
               // TBD -- getFormData() results in _ variables (including FHIR
               // extensions) being thrown away.  Not sure yet if it is needed
@@ -243,7 +246,7 @@ angular.module('lformsApp')
                 questionnaireResId : qrInfo.questionnaire.id,
                 questionnaireName : qrInfo.questionnaire.name
               };
-              // Load FHIR resources, but don't prepoluate
+              // Load FHIR resources, but don't prepopulate
               mergedFormData = new LForms.LFormsData(mergedFormData);
               $('.spinner').show();
               mergedFormData.loadFHIRResources(false).then(function() {
@@ -278,10 +281,11 @@ angular.module('lformsApp')
                 groupIndex: 2,
                 formIndex: formIndex
               };
-              // merge the QuestionnaireResponse into the form
               try {
+                // In case the Questionnaire came from LForms, run the updater.
+                var q = lformsUpdater.update(qInfo.questionnaire);
                 var formData = LForms.Util.convertFHIRQuestionnaireToLForms(
-                  qInfo.questionnaire, fhirService.fhirVersion);
+                  q, fhirService.fhirVersion);
               }
               catch(e) {
                 userMessages.error = e;
@@ -608,6 +612,7 @@ angular.module('lformsApp')
               $scope.confirmAndCloseDialog = function () {
                 $scope.selectedQuestionnaire = angular.copy($scope.selectedQuestionnaireInDialog.resource);
                 var formData = LForms.Util.convertFHIRQuestionnaireToLForms($scope.selectedQuestionnaire);
+                formData = lformsUpdater.update(formData); // call before constructing LFormsData
                 // set the form data to be displayed
                 selectedFormData.setFormData(new LForms.LFormsData(formData));
                 fhirService.setCurrentQuestionnaire($scope.selectedQuestionnaire);
