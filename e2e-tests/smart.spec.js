@@ -119,7 +119,7 @@ describe('SMART on FHIR connection', function () {
       var ethnicity = element(by.id(ethnicityID));
       util.sendKeys(ethnicity, 'ar');
       util.autoCompHelpers.waitForSearchResults();
-      browser.sleep(50); // wait for autocompletion to finish to avoid a stale element
+      browser.sleep(75); // wait for autocompletion to finish to avoid a stale element
       util.autoCompHelpers.firstSearchRes.click();
       expect(util.autoCompHelpers.getSelectedItems(ethnicityID)).toEqual(['Argentinean']);
     });
@@ -137,28 +137,6 @@ describe('SMART on FHIR connection', function () {
   describe('Saved QuestionnaireResponses', function() {
     afterAll(function() {
       util.cleanUpTmpFiles();
-      // Clean up test questionnaires
-      browser.executeScript(function () {
-        var fhirService = angular.element(document.body).injector().get("fhirService")
-        fhirService.fhir.search({
-          type: "Questionnaire",
-          query: {'title:contains': 'LHC-Forms-Test'},
-          headers: {'Cache-Control': 'no-cache'}
-        }).then(function success(resp){
-          var bundle = resp.data;
-          var count = (bundle.entry && bundle.entry.length) || 0;
-          for (var i=0; i<count; ++i) {
-            var qr = bundle.entry[i].resource;
-            var qrId = qr.id;
-            fhirService.deleteFhirResource('Questionnaire', qrId);
-          }
-        });
-      });
-      browser.wait(EC.not(EC.presenceOf(po.firstSavedQ('LHC-Forms-Test'))), 2000);
-    });
-
-    afterEach(function() {
-      util.deleteCurrentQR(); // clean up
     });
 
     ['R4', 'STU3'].forEach(function(fhirVersion) {
@@ -183,6 +161,8 @@ describe('SMART on FHIR connection', function () {
           browser.wait(EC.presenceOf(bodyPos), 2000);
           bodyPos.click();
           expect(po.answerList.isDisplayed()).toBeTruthy();
+
+          util.deleteCurrentQuestionnaire(); // clean up test questionnaire
         });
       });
     });

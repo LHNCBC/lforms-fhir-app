@@ -27,6 +27,12 @@ exports.config = {
   },
 
   onPrepare: function() {
+    // Replace default dot reporter with something better.
+    var SpecReporter = require('jasmine-spec-reporter').SpecReporter;
+    // add jasmine spec reporter
+    jasmine.getEnv().addReporter(new
+    SpecReporter({displayStacktrace: true}));
+
     // Disabling animations, per https://stackoverflow.com/a/32611061/360782
     var disableNgAnimate = function() {
         angular
