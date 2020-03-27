@@ -47,59 +47,65 @@ describe('SMART on FHIR connection', function () {
   });
 
 
-  it ('should display a saved form', function () {
-    // Upload, edit, and save a form.
-    util.uploadForm('R4/ussg-fhp.json');
-    // Wait for name to be auto-filled (pre-population test)
-    let name = element(by.id('/54126-8/54125-0/1/1'));
-    browser.wait(EC.presenceOf(name), 2000);
-    browser.wait(EC.textToBePresentInElementValue(name, 'Aaron'), 2000);
-    // Enter a height value
-    let height = element(by.id('/54126-8/8302-2/1/1'));
-    browser.wait(EC.presenceOf(height), 2000);
-    util.clearField(height);
-    height.sendKeys('70');
-    let saveAs = $('#btn-save-as');
-    saveAs.click();
-    let sdcSave = $('#btn-save-sdc-qr');
-    sdcSave.click();
-    util.waitForSpinnerStopped();
-    util.closeSaveResultsDialog();
-    // Confirm that a warning message (about an unknown FHIR version) is not shown.
-    expect(EC.not(EC.presenceOf($('.warning'))));
+  describe('saved form', function() {
+    beforeAll(function() {
+      // Upload, edit, and save a form.
+      util.uploadForm('R4/ussg-fhp.json');
+      // Wait for name to be auto-filled (pre-population test)
+      let name = element(by.id('/54126-8/54125-0/1/1'));
+      browser.wait(EC.presenceOf(name), 2000);
+      browser.wait(EC.textToBePresentInElementValue(name, 'Aaron'), 2000);
+      // Enter a height value
+      let height = element(by.id('/54126-8/8302-2/1/1'));
+      browser.wait(EC.presenceOf(height), 2000);
+      util.clearField(height);
+      height.sendKeys('70');
+      let saveAs = $('#btn-save-as');
+      saveAs.click();
+      let sdcSave = $('#btn-save-sdc-qr');
+      sdcSave.click();
+      util.waitForSpinnerStopped();
+      util.closeSaveResultsDialog();
+      // Confirm that a warning message (about an unknown FHIR version) is not shown.
+      expect(EC.not(EC.presenceOf($('.warning'))));
+    });
 
-    // Wait for the first saved questionnaire to be this form.
-    // open the saved q section
-    element(by.css("#heading-three a")).click();
-    let firstQ = po.firstSavedUSSGQ();
-    browser.wait(EC.textToBePresentInElement(firstQ, 'Surgeon'), 2000);
-    // Open the form and wait for it to render
-    browser.wait(EC.elementToBeClickable(po.firstSavedUSSGQ()))
-    po.firstSavedUSSGQ().click(); // sometimes firstQ is "stale"
-    util.waitForSpinnerStopped();
-    // Confirm that the edited field value is no longer there.
-    height = element(by.id('/54126-8/8302-2/1/1')); // new on page
-    browser.wait(EC.presenceOf(height), 2000);
-    expect(height.getAttribute('value')).not.toBe('70');
-    // Confirm that a warning message (about an unknown FHIR version) is not shown.
-    expect(EC.not(EC.presenceOf($('.warning'))));
+    it ('should display a saved form', function () {
+      // Wait for the first saved questionnaire to be this form.
+      // open the saved q section
+      element(by.css("#heading-three a")).click();
+      let firstQ = po.firstSavedUSSGQ();
+      browser.wait(EC.textToBePresentInElement(firstQ, 'Surgeon'), 2000);
+      // Open the form and wait for it to render
+      browser.wait(EC.elementToBeClickable(po.firstSavedUSSGQ()))
+      po.firstSavedUSSGQ().click(); // sometimes firstQ is "stale"
+      util.waitForSpinnerStopped();
+      // Confirm that the edited field value is no longer there.
+      height = element(by.id('/54126-8/8302-2/1/1')); // new on page
+      browser.wait(EC.presenceOf(height), 2000);
+      expect(height.getAttribute('value')).not.toBe('70');
+      // Confirm that a warning message (about an unknown FHIR version) is not shown.
+      expect(EC.not(EC.presenceOf($('.warning'))));
 
-    // Now open up the saved QuestionnaireResponse and confirm we can see the
-    // saved value.
-    // open the saved qr section
-    element(by.css("#heading-one a")).click();
-    $('#qrList a:first-child').click();
-    browser.wait(EC.presenceOf(element(by.id('/54126-8/8302-2/1/1'))), 15000);
-    height = element(by.id('/54126-8/8302-2/1/1')); // new on page
-    browser.wait(EC.textToBePresentInElementValue(height, '70'), 2000);
-    expect(height.getAttribute('value')).toBe('70');
-    // Confirm that a warning message (about an unknown FHIR version) is not shown.
-    expect(EC.not(EC.presenceOf($('.warning'))));
-    // open the saved q section
-    element(by.css("#heading-three a")).click();
-    util.deleteCurrentQuestionnaire(); // Clean up uploaded form
-  }, 200000);
+      // Now open up the saved QuestionnaireResponse and confirm we can see the
+      // saved value.
+      // open the saved qr section
+      element(by.css("#heading-one a")).click();
+      $('#qrList a:first-child').click();
+      browser.wait(EC.presenceOf(element(by.id('/54126-8/8302-2/1/1'))), 15000);
+      height = element(by.id('/54126-8/8302-2/1/1')); // new on page
+      browser.wait(EC.textToBePresentInElementValue(height, '70'), 2000);
+      expect(height.getAttribute('value')).toBe('70');
+      // Confirm that a warning message (about an unknown FHIR version) is not shown.
+      expect(EC.not(EC.presenceOf($('.warning'))));
+      // open the saved q section
+      element(by.css("#heading-three a")).click();
+    });
 
+    afterAll(function() {
+      util.deleteCurrentQuestionnaire(); // Clean up uploaded form
+    });
+  });
 
   it('should provide data for observationLinkPeriod', function() {
     util.uploadForm('R4/weight-height-questionnaire.json');

@@ -23,7 +23,7 @@ exports.config = {
 
   jasmineNodeOpts: {
     realtimeFailure: true,
-    defaultTimeoutInterval: 10000
+    defaultTimeoutInterval: 240000
   },
 
   onPrepare: function() {
