@@ -151,7 +151,7 @@ let util = {
     let deleteBtn = $('#deleteQBtn');
     // Make the button visible
     browser.executeScript('arguments[0].style.display=""', deleteBtn.getWebElement());
-    // Make sure the section containing he button is visible
+    // Make sure the section containing the button is visible
     let availQSection = $('#collapse-three');
     availQSection.isDisplayed().then(function (result) {
       if (!result) {
