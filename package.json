@@ -22,6 +22,7 @@
     "grunt-wiredep": "^3.0.1",
     "http-server": "^0.12.1",
     "jasmine-core": "^3.2.1",
+    "jasmine-spec-reporter": "^4.2.1",
     "jit-grunt": "^0.10.0",
     "karma": "^4.4.1",
     "karma-chrome-launcher": "^2.2.0",

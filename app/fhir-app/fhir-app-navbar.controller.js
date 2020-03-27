@@ -639,7 +639,7 @@ angular.module('lformsApp')
           $mdDialog.show(confirmDialog).then(function() {
             fhirService.deleteQAndQRespAndObs(fhirService.currentQuestionnaire.id).then(function() {
               var resultDialog = $mdDialog.alert().title('Deletion Completed').
-                textContent('The questionnaire and its assosiated resources were deleted successfully.').
+                textContent('The questionnaire and its associated resources were deleted successfully.').
                 ok('OK');
               $mdDialog.show(resultDialog);
             });

@@ -171,8 +171,7 @@ describe('Non-SMART connection to FHIR server', function() {
       util.pageObjects.firstSavedQR().click();
       browser.wait(EC.presenceOf($(familyMemberName)));
       expect($(familyMemberName).getAttribute('value')).toBe('aa');
-      // open the saved q section
-      element(by.css("#heading-three a")).click();
+
       util.deleteCurrentQuestionnaire(); // Clean up uploaded form
     });
   });
