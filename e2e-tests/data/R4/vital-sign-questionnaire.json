@@ -36,7 +36,7 @@
       "valueExpression" : {
         "name": "weightQuantity",
         "language": "text/fhirpath",
-        "expression": "%resource.item.where(linkId='/3141-9').answer.value.toQuantity()"
+        "expression": "%resource.item.where(linkId='/3141-9').answer.value"
       }
     }, {
       "url" : "http://hl7.org/fhir/StructureDefinition/variable",
@@ -50,7 +50,7 @@
       "valueExpression" : {
         "name": "heightQuantity",
         "language": "text/fhirpath",
-        "expression": "%resource.item.where(linkId='/8302-2').answer.value.toQuantity()"
+        "expression": "%resource.item.where(linkId='/8302-2').answer.value"
       }
     }, {
       "url" : "http://hl7.org/fhir/StructureDefinition/variable",
