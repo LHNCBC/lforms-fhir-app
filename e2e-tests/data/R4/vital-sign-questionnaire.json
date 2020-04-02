@@ -6,6 +6,11 @@
     "lastUpdated": "2017-08-04T15:07:37.602+00:00",
     "profile": [
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire|2.7"
+    ],
+    "tag": [
+      {
+        "code": "lformsVersion: 23.0.0"
+      }
     ]
   },
   "identifier": [
@@ -30,45 +35,50 @@
     "Patient",
     "Person"
   ],
-  "extension" : [
+  "extension": [
     {
-      "url" : "http://hl7.org/fhir/StructureDefinition/variable",
-      "valueExpression" : {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
         "name": "weightQuantity",
         "language": "text/fhirpath",
         "expression": "%resource.item.where(linkId='/3141-9').answer.valueQuantity"
       }
-    }, {
-      "url" : "http://hl7.org/fhir/StructureDefinition/variable",
-      "valueExpression" : {
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
         "name": "weight",
         "language": "text/fhirpath",
         "expression": "iif(%weightQuantity.unit='lbs', %weightQuantity.value*0.45359237, iif(%weightQuantity.unit='kgs', %weightQuantity.value, {}))"
       }
-    }, {
-      "url" : "http://hl7.org/fhir/StructureDefinition/variable",
-      "valueExpression" : {
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
         "name": "heightQuantity",
         "language": "text/fhirpath",
         "expression": "%resource.item.where(linkId='/8302-2').answer.valueQuantity"
       }
-    }, {
-      "url" : "http://hl7.org/fhir/StructureDefinition/variable",
-      "valueExpression" : {
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
         "name": "hNum",
         "language": "text/fhirpath",
         "expression": "%heightQuantity.value"
       }
-    }, {
-      "url" : "http://hl7.org/fhir/StructureDefinition/variable",
-      "valueExpression" : {
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
         "name": "hUnit",
         "language": "text/fhirpath",
         "expression": "%heightQuantity.unit"
       }
-    }, {
-      "url" : "http://hl7.org/fhir/StructureDefinition/variable",
-      "valueExpression" : {
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
         "name": "height",
         "language": "text/fhirpath",
         "expression": "iif(%hUnit='inches', %hNum*0.0254, iif(%hUnit='feet', %hNum*0.3048, iif(%hUnit='centimeters', %hNum*0.01, iif(%hUnit='meters', %hNum, {}))))"
@@ -113,7 +123,7 @@
           }
         },
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationLinkPeriod",
           "valueDuration": {
             "value": "1",
             "unit": "year",
@@ -122,11 +132,13 @@
           }
         }
       ],
-      "initial": [{
-        "valueQuantity": {
-          "unit": "lbs"
+      "initial": [
+        {
+          "valueQuantity": {
+            "unit": "lbs"
+          }
         }
-      }],
+      ],
       "linkId": "/3141-9",
       "code": [
         {
@@ -196,7 +208,7 @@
           }
         },
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationLinkPeriod",
           "valueDuration": {
             "value": "1",
             "unit": "year",
@@ -215,13 +227,15 @@
       ],
       "text": "Bdy height",
       "type": "quantity",
-      "initial": [{
-        "valueQuantity": {
-          "system": "http://unitsofmeasure.org",
-          "unit": "inches",
-          "code": "[in_i]"
+      "initial": [
+        {
+          "valueQuantity": {
+            "system": "http://unitsofmeasure.org",
+            "unit": "inches",
+            "code": "[in_i]"
+          }
         }
-      }],
+      ],
       "required": false
     },
     {
@@ -369,7 +383,7 @@
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-calculatedExpression",
           "valueExpression": {
             "description": "BMI calculation",
-            "language" : "text/fhirpath",
+            "language": "text/fhirpath",
             "expression": "((%weight/%height/%height*10 +0.5) div 1)/10"
           }
         }
