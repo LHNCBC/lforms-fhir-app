@@ -45,6 +45,6 @@
     "test": "protractor e2e-tests/protractor.conf.js"
   },
   "dependencies": {
-    "lforms-updater": "^1.0.0"
+    "lforms-updater": "^23.0.2"
   }
 }
