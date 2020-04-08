@@ -6,6 +6,11 @@
   "meta": {
     "profile": [
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire|2.7"
+    ],
+    "tag": [
+      {
+        "code": "lformsVersion: 23.0.0"
+      }
     ]
   },
   "title": "US Surgeon General family health portrait",
@@ -27,21 +32,25 @@
     "Patient",
     "Person"
   ],
-  "extension": [{
-    "url" : "http://hl7.org/fhir/StructureDefinition/questionnaire-launchContext",
-    "extension" : [{
-      "url" : "name",
-      "valueId" : "patient"
-    },
+  "extension": [
     {
-      "url" : "type",
-      "valueCode" : "Patient"
-    },
-    {
-      "url" : "descripton",
-      "valueString" : "For filling in patient information as the subject for the form"
-    }]
-  }],
+      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueId": "patient"
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        },
+        {
+          "url": "descripton",
+          "valueString": "For filling in patient information as the subject for the form"
+        }
+      ]
+    }
+  ],
   "item": [
     {
       "required": false,
@@ -73,7 +82,7 @@
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-initialExpression",
               "valueExpression": {
                 "description": "Name from patient resource",
-                "language" : "text/fhirpath",
+                "language": "text/fhirpath",
                 "expression": "%patient.name[0].select(given.first() + ' ' +  family)"
               }
             }
@@ -136,7 +145,7 @@
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-initialExpression",
               "valueExpression": {
                 "description": "Birth date from patient resource",
-                "language" : "text/fhirpath",
+                "language": "text/fhirpath",
                 "expression": "%patient.birthDate"
               }
             }
@@ -302,7 +311,7 @@
               }
             },
             {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationLinkPeriod",
               "valueDuration": {
                 "value": "1",
                 "unit": "year",
@@ -333,7 +342,7 @@
               }
             },
             {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationLinkPeriod",
               "valueDuration": {
                 "value": "1",
                 "unit": "year",
@@ -356,10 +365,6 @@
         },
         {
           "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-answerRepeats",
-              "valueBoolean": true
-            },
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
               "valueCodeableConcept": {
@@ -512,14 +517,11 @@
                 "display": "Other/Unknown/Refuse To Answer"
               }
             }
-          ]
+          ],
+          "repeats": true
         },
         {
           "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-answerRepeats",
-              "valueBoolean": true
-            },
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
               "valueCodeableConcept": {
@@ -545,7 +547,8 @@
           ],
           "text": "Ethnicity",
           "type": "choice",
-          "answerValueSet": "http://terminology.hl7.org/ValueSet/v3-Ethnicity"
+          "answerValueSet": "http://terminology.hl7.org/ValueSet/v3-Ethnicity",
+          "repeats": true
         },
         {
           "required": false,
@@ -1078,7 +1081,7 @@
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-initialExpression",
               "valueExpression": {
                 "description": "Gender from patient resource",
-                "language" : "text/fhirpath",
+                "language": "text/fhirpath",
                 "expression": "%patient.gender"
               }
             }
@@ -1972,10 +1975,6 @@
         {
           "extension": [
             {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-answerRepeats",
-              "valueBoolean": true
-            },
-            {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
               "valueCodeableConcept": {
                 "coding": [
@@ -2127,14 +2126,11 @@
                 "display": "Other/Unknown/Refuse To Answer"
               }
             }
-          ]
+          ],
+          "repeats": true
         },
         {
           "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-answerRepeats",
-              "valueBoolean": true
-            },
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
               "valueCodeableConcept": {
@@ -2245,7 +2241,8 @@
                 "display": "Unknown/No answer"
               }
             }
-          ]
+          ],
+          "repeats": true
         },
         {
           "extension": [

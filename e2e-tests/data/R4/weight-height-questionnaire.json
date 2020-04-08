@@ -6,6 +6,11 @@
   "meta": {
     "profile": [
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire|2.7"
+    ],
+    "tag": [
+      {
+        "code": "lformsVersion: 23.0.0"
+      }
     ]
   },
   "title": "Weight & Height tracking panel",
@@ -27,17 +32,18 @@
     "Patient",
     "Person"
   ],
-  "extension" : [
+  "extension": [
     {
-      "url" : "http://hl7.org/fhir/StructureDefinition/variable",
-      "valueExpression" : {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
         "name": "weight",
         "language": "text/fhirpath",
         "expression": "%resource.item.where(linkId='/29463-7').answer.valueDecimal"
       }
-    }, {
-      "url" : "http://hl7.org/fhir/StructureDefinition/variable",
-      "valueExpression" : {
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
         "name": "height",
         "language": "text/fhirpath",
         "expression": "%resource.item.where(linkId='/8302-2').answer.valueDecimal*0.0254"
@@ -55,7 +61,7 @@
           }
         },
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationLinkPeriod",
           "valueDuration": {
             "value": "1",
             "unit": "year",
@@ -137,7 +143,7 @@
           }
         },
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationLinkPeriod",
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationLinkPeriod",
           "valueDuration": {
             "value": "1",
             "unit": "year",
@@ -171,7 +177,7 @@
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-calculatedExpression",
           "valueExpression": {
             "description": "BMI calculation",
-            "language" : "text/fhirpath",
+            "language": "text/fhirpath",
             "expression": "(%weight/(%height.power(2))).round(1)"
           }
         }
