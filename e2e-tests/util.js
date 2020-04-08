@@ -126,6 +126,10 @@ let util = {
    *  directory, or an absolute path.
    */
   uploadForm: function(formFileName) {
+    // If a form is already showing, change an attribute which we will use as a
+    // test to determine whether the uploaded form renders.
+    browser.executeScript('var n=$("#th_Name")[0]; if (n) n.id="zzz"');
+
     let qFilePath = formFileName.indexOf('/') == 0 ? formFileName :
       require('path').resolve(__dirname, 'data', formFileName);
     let upload = $('#upload');
