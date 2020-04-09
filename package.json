@@ -1,6 +1,6 @@
 {
   "name": "lforms-fhir-app",
-  "version": "0.14.8",
+  "version": "0.14.9",
   "description": "A SMART on FHIR app for lforms",
   "repository": "https://github.com/lhncbc/lforms-fhir-app",
   "devDependencies": {
@@ -45,6 +45,6 @@
     "test": "protractor e2e-tests/protractor.conf.js"
   },
   "dependencies": {
-    "lforms-updater": "^1.0.0"
+    "lforms-updater": "^23.0.2"
   }
 }
