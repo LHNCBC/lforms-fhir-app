@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.14.10] - 2020-04-21
+### Fixed
+- Fixed broken CSS resource links.
+
 ## [0.14.9] - 2020-04-02
 ### Updated
 - Updated lforms to 23.0.1, and the test/example data files.
