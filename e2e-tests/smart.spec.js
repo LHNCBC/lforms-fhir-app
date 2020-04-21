@@ -169,7 +169,7 @@ describe('SMART on FHIR connection', function () {
           expect(po.answerList.isDisplayed()).toBeTruthy();
 
           util.deleteCurrentQuestionnaire(); // clean up test questionnaire
-        });
+        }, 5000);
       });
     });
   });
