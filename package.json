@@ -1,6 +1,6 @@
 {
   "name": "lforms-fhir-app",
-  "version": "0.14.9",
+  "version": "0.14.10",
   "description": "A SMART on FHIR app for lforms",
   "repository": "https://github.com/lhncbc/lforms-fhir-app",
   "devDependencies": {
@@ -12,7 +12,7 @@
     "grunt-contrib-clean": "^2.0.0",
     "grunt-contrib-concat": "^1.0.1",
     "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-cssmin": "^3.0.0",
+    "grunt-contrib-cssmin": "git+https://github.com/yuriy-sedinkin/grunt-contrib-cssmin.git#1061f66987c1ae519201f7094add48cc286e41a7",
     "grunt-contrib-uglify": "^4.0.0",
     "grunt-injector": "^1.1.0",
     "grunt-ng-annotate": "^3.0.0",

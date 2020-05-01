@@ -125,8 +125,8 @@ module.exports = function (grunt) {
 
     cssmin: {
       options: {
-        relativeTo: '<%= yeoman.client %>/index.html',
-        target: '<%= yeoman.client %>/.'
+        rebase: true,
+        rebaseTo: '<%= yeoman.client %>'
       }
     },
 
