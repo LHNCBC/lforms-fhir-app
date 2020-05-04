@@ -123,6 +123,7 @@
       "initial": [
         {
           "valueQuantity": {
+            "unit": "lbs",
             "system": "http://unitsofmeasure.org",
             "code": "[lb_av]"
           }
