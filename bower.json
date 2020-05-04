@@ -11,12 +11,14 @@
     "angular-strap": "~2.3.3",
     "angular-touch": "~1.7.x",
     "angular-ui-utils": "~0.1.1",
-    "lforms": "23.0.1",
+    "lforms": "^24.1.1",
     "json3": "3.3.2",
     "angular-animate": "~1.7.x",
     "bootstrap": "3.4.1",
     "angular-material": "^1.0.8",
-    "angular-file-upload": "^2.3.4"
+    "angular-file-upload": "^2.3.4",
+    "array.prototype.find": "array-prototype-find#^0.1.0",
+    "es6-promise-polyfill": "^1.2.0"
   },
   "overrides": {
     "jquery-ui": {

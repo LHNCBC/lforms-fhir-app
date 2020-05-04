@@ -110,7 +110,7 @@ describe('fhir app', function() {
   });
 
 
-  fdescribe('R4 examples', function() {
+  describe('R4 examples', function() {
     it('should have working answer lists', function() {
       browser.get(mainPageURL);
       util.dismissFHIRServerDialog();
