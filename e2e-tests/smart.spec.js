@@ -165,6 +165,7 @@ describe('SMART on FHIR connection', function () {
           qr.click();
           bodyPos = element(by.id('/8361-8/1')); // get new copy of field
           browser.wait(EC.presenceOf(bodyPos), 2000);
+          browser.wait(EC.visibilityOf(bodyPos), 2000);
           bodyPos.click();
           expect(po.answerList.isDisplayed()).toBeTruthy();
 

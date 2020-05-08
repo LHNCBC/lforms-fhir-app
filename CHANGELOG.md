@@ -3,6 +3,12 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.14.11] - 2020-05-07
+### Changed
+- Updated lforms to 24.1.3
+### Fixed
+- Added missed polyfills for IE11
+
 ## [0.14.10] - 2020-04-21
 ### Fixed
 - Fixed broken CSS resource links.

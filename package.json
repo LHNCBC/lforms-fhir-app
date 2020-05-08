@@ -1,6 +1,6 @@
 {
   "name": "lforms-fhir-app",
-  "version": "0.14.10",
+  "version": "0.14.11",
   "description": "A SMART on FHIR app for lforms",
   "repository": "https://github.com/lhncbc/lforms-fhir-app",
   "devDependencies": {
@@ -31,7 +31,8 @@
     "karma-junit-reporter": "^1.2.0",
     "protractor": "^5.4.3",
     "time-grunt": "^1.4.0",
-    "tmp": "0.0.33"
+    "tmp": "0.0.33",
+    "uglify-js": "3.9.1"
   },
   "scripts": {
     "postinstall": "bower install && npm run update-webdriver",
@@ -41,10 +42,10 @@
     "build": "npm run copy-npm-scripts && grunt build",
     "start": "echo 'Website starting at http://localhost:8000/lforms-fhir-app'; http-server -p 8000 -c-1 .",
     "start-dist": "http-server -p 8000 -c-1 dist",
-    "update-webdriver": "webdriver-manager update --versions.standalone 3.141.59 # skip broken 4.0.0-alpha version",
+    "update-webdriver": "node node_modules/protractor/bin/webdriver-manager update --versions.chrome $(google-chrome --version |awk '{print $NF}')",
     "test": "protractor e2e-tests/protractor.conf.js"
   },
   "dependencies": {
-    "lforms-updater": "^23.0.2"
+    "lforms-updater": "^24.0.0"
   }
 }
