@@ -154,10 +154,14 @@ let util = {
   deleteCurrentQuestionnaire: function() {
     let deleteBtn = $('#deleteQBtn');
     // Make the button visible
-    browser.executeScript('arguments[0].style.display=""', deleteBtn.getWebElement());
+    browser.executeScript('arguments[0].style.display=""', deleteBtn.getWebElement()).then(
+      // Leaving some debugging statements for an intermittment problem.
+      console.log("(debugging) made the delete button visible")
+    );
     // Make sure the section containing the button is visible
-    let availQSection = $('#collapse-three');
-    availQSection.isDisplayed().then(function (result) {
+    let searchButton = $('#search'); // in that same section
+    searchButton.isDisplayed().then(function (result) {
+      console.log("(debugging) isDisplayed() for searchButton returned "+result);
       if (!result) {
         let availQLink = $('#heading-three a');
         availQLink.click();
