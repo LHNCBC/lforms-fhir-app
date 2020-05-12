@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.14.12] - 2020-05-08
+### Changed
+- Removed deprecated json3 package dependency
+
 ## [0.14.11] - 2020-05-07
 ### Changed
 - Updated lforms to 24.1.3
