@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.14.13] - 2020-06-12
+### Fixed
+- Removed a 'Glasgow coma scale' Questionnaire from the featured list of a R4 server
+
 ## [0.14.12] - 2020-05-08
 ### Changed
 - Removed deprecated json3 package dependency
