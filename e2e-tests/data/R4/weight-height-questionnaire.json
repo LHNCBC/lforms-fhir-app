@@ -2,19 +2,19 @@
   "resourceType": "Questionnaire",
   "status": "draft",
   "date": "2018-09-12T18:03:40-04:00",
-  "version": "2.56",
   "meta": {
     "profile": [
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire|2.7"
     ],
     "tag": [
       {
-        "code": "lformsVersion: 23.0.0"
+        "code": "lformsVersion: 25.0.0"
       }
     ]
   },
   "title": "Weight & Height tracking panel",
-  "name": "Weight & Height tracking panel",
+  "name": "weight_height_tracking_panel",
+  "url": "https://lforms-fhir.nlm.nih.gov/baseR4/Questionnaire/55418-8-x",
   "identifier": [
     {
       "system": "http://loinc.org",
@@ -25,12 +25,11 @@
     {
       "system": "http://loinc.org",
       "code": "55418-8",
-      "display": "Weight & Height tracking panel"
+      "display": "Weight and Height tracking panel"
     }
   ],
   "subjectType": [
-    "Patient",
-    "Person"
+    "Patient"
   ],
   "extension": [
     {
@@ -63,7 +62,7 @@
         {
           "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationLinkPeriod",
           "valueDuration": {
-            "value": "1",
+            "value": 1,
             "unit": "year",
             "system": "http://unitsofmeasure.org",
             "code": "a"
@@ -145,7 +144,7 @@
         {
           "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationLinkPeriod",
           "valueDuration": {
-            "value": "1",
+            "value": 1,
             "unit": "year",
             "system": "http://unitsofmeasure.org",
             "code": "a"
@@ -174,7 +173,7 @@
           }
         },
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-calculatedExpression",
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
           "valueExpression": {
             "description": "BMI calculation",
             "language": "text/fhirpath",
