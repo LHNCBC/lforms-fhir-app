@@ -3,6 +3,12 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.14.13] - 2020-06-12
+### Fixed
+- Removed a 'Glasgow coma scale' Questionnaire from the featured list
+  of our R4 server, because the Questionnaire with that ID was missing, 
+  and the score rule feature was adequately demonstrated by the PHQ-9 form.
+
 ## [0.14.12] - 2020-05-08
 ### Changed
 - Removed deprecated json3 package dependency

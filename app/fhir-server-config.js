@@ -58,11 +58,11 @@ angular.module('lformsApp')
               id: 'study-drug-tox-x'
               //code: 'study-drug-tox'
             },
-            {
-              name: 'Glasgow coma scale',
-              id: '35088-4-x',
-              code: '35088-4'
-            },
+            // {
+            //   name: 'Glasgow coma scale',
+            //   id: '35088-4-x',
+            //   code: '35088-4'
+            // },
             {
               name: 'AHC HRSN Screening',
               id: 'lforms-ahn-hrsn-screening'
