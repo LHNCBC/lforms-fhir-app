@@ -8,13 +8,15 @@
   "title": "Hunger Vital Sign [HVS]",
   "resourceType": "Questionnaire",
   "status": "draft",
+  "subjectType": ["Person"],
+  "url": "https://lforms-fhir.nlm.nih.gov/baseR4/Questionnaire/hungerVitalSigns",
   "meta": {
     "profile": [
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire|2.7"
     ],
     "tag": [
       {
-        "code": "lformsVersion: 23.0.0"
+        "code": "lformsVersion: 25.0.0"
       }
     ]
   },
@@ -214,7 +216,7 @@
           }
         },
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-calculatedExpression",
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
           "valueExpression": {
             "description": "risk determination",
             "language": "text/fhirpath",

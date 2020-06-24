@@ -2,14 +2,13 @@
   "resourceType": "Questionnaire",
   "id": "178918",
   "meta": {
-    "versionId": "1",
     "lastUpdated": "2017-08-04T15:07:37.602+00:00",
     "profile": [
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire|2.7"
     ],
     "tag": [
       {
-        "code": "lformsVersion: 23.0.0"
+        "code": "lformsVersion: 25.0.0"
       }
     ]
   },
@@ -19,7 +18,6 @@
       "value": "74728-7_modified"
     }
   ],
-  "version": "2.56",
   "name": "Vital signs, weight, height, head circumference, oximetry, BMI, & BSA panel",
   "title": "Vital signs, weight, height, head circumference, oximetry, BMI, & BSA panel",
   "status": "draft",
@@ -370,7 +368,7 @@
           }
         },
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-calculatedExpression",
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
           "valueExpression": {
             "description": "BMI calculation",
             "language": "text/fhirpath",

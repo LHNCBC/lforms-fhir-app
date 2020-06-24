@@ -1,6 +1,6 @@
 {
   "name": "lforms-fhir-app",
-  "version": "0.14.13",
+  "version": "0.14.14",
   "description": "A SMART on FHIR app for lforms",
   "repository": "https://github.com/lhncbc/lforms-fhir-app",
   "devDependencies": {
@@ -38,7 +38,7 @@
     "postinstall": "bower install && npm run update-webdriver",
     "update-deps": "npm update",
     "postupdate-deps": "bower update",
-    "copy-npm-scripts": "cp node_modules/lforms-updater/browser/updater.js app/lforms-updater.js",
+    "copy-npm-scripts": "mkdir -p app/lforms-updater; cp node_modules/lforms-updater/browser/updater.js* app/lforms-updater/",
     "build": "npm run copy-npm-scripts && grunt build",
     "start": "echo 'Website starting at http://localhost:8000/lforms-fhir-app'; http-server -p 8000 -c-1 .",
     "start-dist": "http-server -p 8000 -c-1 dist",
@@ -46,6 +46,6 @@
     "test": "protractor e2e-tests/protractor.conf.js"
   },
   "dependencies": {
-    "lforms-updater": "^24.0.0"
+    "lforms-updater": "^25.0.1"
   }
 }
