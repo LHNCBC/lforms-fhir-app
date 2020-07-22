@@ -3,18 +3,18 @@
   "version": "0.0.0",
   "dependencies": {
     "jquery-ui": "^1.12.1",
-    "angular": "~1.7.x",
-    "angular-cookies": "~1.7.x",
-    "angular-resource": "~1.7.x",
-    "angular-route": "~1.7.x",
-    "angular-sanitize": "~1.7.x",
+    "angular": "1.8.x",
+    "angular-cookies": "1.8.x",
+    "angular-resource": "1.8.x",
+    "angular-route": "1.8.x",
+    "angular-sanitize": "1.8.x",
     "angular-strap": "~2.3.3",
-    "angular-touch": "~1.7.x",
+    "angular-touch": "1.8.x",
     "angular-ui-utils": "~0.1.1",
-    "lforms": "25.0.0",
-    "angular-animate": "~1.7.x",
+    "lforms": "25.1.2",
+    "angular-animate": "1.8.x",
     "bootstrap": "3.4.1",
-    "angular-material": "^1.0.8",
+    "angular-material": "^1.1.24",
     "angular-file-upload": "^2.3.4",
     "array.prototype.find": "array-prototype-find#^0.1.0",
     "es6-promise-polyfill": "^1.2.0"
@@ -29,12 +29,12 @@
     }
   },
   "resolutions": {
-    "angular": "~1.7.x",
-    "angular-animate": "~1.7.x"
+    "angular": "1.8.x",
+    "angular-animate": "1.8.x"
   },
   "devDependencies": {
-    "angular-mocks": "1.7.x",
-    "angular-scenario": "1.7.x"
+    "angular-mocks": "1.8.x",
+    "angular-scenario": "1.8.x"
   },
   "appPath": "client"
 }
