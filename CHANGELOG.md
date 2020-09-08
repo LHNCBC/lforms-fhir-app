@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.14.16] - 2020-09-08
+### Changed
+- Updated LForms to version 25.1.5.
+
 ## [0.14.15] - 2020-07-21
 ### Changed
 - Updated LForms to version 25.1.2.
