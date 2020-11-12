@@ -1,6 +1,6 @@
 {
   "name": "lforms-fhir-app",
-  "version": "0.14.16",
+  "version": "0.14.17",
   "description": "A SMART on FHIR app for lforms",
   "repository": "https://github.com/lhncbc/lforms-fhir-app",
   "devDependencies": {
@@ -29,7 +29,7 @@
     "karma-firefox-launcher": "^1.1.0",
     "karma-jasmine": "^1.1.2",
     "karma-junit-reporter": "^1.2.0",
-    "protractor": "^5.4.3",
+    "protractor": "^7.0.0",
     "time-grunt": "^1.4.0",
     "tmp": "0.0.33",
     "uglify-js": "3.9.1"

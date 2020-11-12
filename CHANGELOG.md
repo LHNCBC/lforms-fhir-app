@@ -3,6 +3,11 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [0.14.17] - 2020-11-12
+### Fixed
+- The selection of values for BMI calculation has been corrected
+  (see e2e-tests/data/R4/weight-height-questionnaire.json).
+
 ## [0.14.16] - 2020-09-08
 ### Changed
 - Updated LForms to version 25.1.5.
