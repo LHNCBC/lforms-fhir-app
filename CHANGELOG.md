@@ -6,7 +6,7 @@ This project follows [Semantic Versioning](http://semver.org/).
 ## [0.14.17] - 2020-11-12
 ### Fixed
 - The selection of values for BMI calculation has been corrected
-  (see e2e-tests/data/R4/weight-height-questionnaire.json).
+  (see weight-height-questionnaire.json and framingham-HCHD.json in e2e-tests/data/R4).
 
 ## [0.14.16] - 2020-09-08
 ### Changed
