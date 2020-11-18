@@ -141,7 +141,9 @@ describe('Non-SMART connection to FHIR server', function() {
       util.saveAsQR();
       util.closeSaveResultsDialog();
       // Load a blank questionnaire to clear the fields
-      util.pageObjects.firstSavedUSSGQ().click();
+      const firstSavedUSSGQ = util.pageObjects.firstSavedUSSGQ();
+      browser.wait(EC.elementToBeClickable(firstSavedUSSGQ), 2000);
+      firstSavedUSSGQ.click();
       browser.wait(EC.presenceOf($(familyMemberName)));
       expect($(familyMemberName).getAttribute('value')).toBe('');
       // open the saved qr section
@@ -162,7 +164,9 @@ describe('Non-SMART connection to FHIR server', function() {
       // open the saved q section
       element(by.css("#heading-three a")).click();
       // Load a blank questionnaire to clear the fields
-      util.pageObjects.firstSavedUSSGQ().click();
+      const firstSavedUSSGQ = util.pageObjects.firstSavedUSSGQ();
+      browser.wait(EC.elementToBeClickable(firstSavedUSSGQ), 2000);
+      firstSavedUSSGQ.click();
       browser.wait(EC.presenceOf($(familyMemberName)));
       expect($(familyMemberName).getAttribute('value')).toBe('');
       /// open the saved qr section
