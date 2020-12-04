@@ -533,7 +533,6 @@ fb.service('fhirService', [
         else
           qr.questionnaire = qRef;
 
-        //thisService.fhir.transaction({bundle: bundle}).then(
         thisService.fhir.request({url: '', method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify(bundle)}).then(
