@@ -1,6 +1,6 @@
 {
   "name": "lforms-fhir-app",
-  "version": "0.14.16",
+  "version": "1.0.0",
   "description": "A SMART on FHIR app for lforms",
   "repository": "https://github.com/lhncbc/lforms-fhir-app",
   "devDependencies": {
@@ -50,6 +50,6 @@
   },
   "dependencies": {
     "fhirclient": "^2.3.10",
-    "lforms-updater": "^25.0.1"
+    "lforms-updater": "^26.0.1"
   }
 }
