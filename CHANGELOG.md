@@ -9,6 +9,11 @@ This project follows [Semantic Versioning](http://semver.org/).
   to version 2.  (See http://docs.smarthealthit.org/client-js).
 - Updated LForms to version 27.0.0.
 
+## [0.14.17] - 2020-11-12
+### Fixed
+- Replaced value[x] with value in FHIRPath expressions in tests where possible
+  (see e2e-tests/data/R4/*.json).
+
 ## [0.14.16] - 2020-09-08
 ### Changed
 - Updated LForms to version 25.1.5.

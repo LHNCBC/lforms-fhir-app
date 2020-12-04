@@ -37,7 +37,7 @@
       "valueExpression": {
         "name": "weight",
         "language": "text/fhirpath",
-        "expression": "%resource.item.where(linkId='/29463-7').answer.valueDecimal"
+        "expression": "%resource.item.where(linkId='/29463-7').answer.value"
       }
     },
     {
@@ -45,7 +45,7 @@
       "valueExpression": {
         "name": "height",
         "language": "text/fhirpath",
-        "expression": "%resource.item.where(linkId='/8302-2').answer.valueDecimal*0.0254"
+        "expression": "%resource.item.where(linkId='/8302-2').answer.value*0.0254"
       }
     }
   ],

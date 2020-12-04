@@ -83,8 +83,9 @@ describe('SMART on FHIR connection', function () {
       let firstQ = po.firstSavedUSSGQ();
       browser.wait(EC.textToBePresentInElement(firstQ, 'Surgeon'), 2000);
       // Open the form and wait for it to render
-      browser.wait(EC.elementToBeClickable(po.firstSavedUSSGQ()))
-      po.firstSavedUSSGQ().click(); // sometimes firstQ is "stale"
+      const firstSavedUSSGQ = po.firstSavedUSSGQ();
+      browser.wait(EC.elementToBeClickable(firstSavedUSSGQ), 2000);
+      firstSavedUSSGQ.click();
       util.waitForSpinnerStopped();
       // Confirm that the edited field value is no longer there.
       height = element(by.id('/54126-8/8302-2/1/1')); // new on page
@@ -167,7 +168,7 @@ describe('SMART on FHIR connection', function () {
           element(by.css("#heading-one a")).click();
           // Wait for the saved questionnaire response to be this page.
           let qr = po.firstSavedQR(prefix);
-          browser.wait(EC.presenceOf(qr), 2000);
+          browser.wait(EC.elementToBeClickable(qr), 2000);
           qr.click();
           bodyPos = element(by.id('/8361-8/1')); // get new copy of field
           browser.wait(EC.presenceOf(bodyPos), 2000);

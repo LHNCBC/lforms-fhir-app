@@ -175,7 +175,7 @@ describe('Non-SMART connection to FHIR server', function() {
         // open the saved q section
         util.expandAvailQs();
         // Load a blank questionnaire to clear the fields
-        util.pageObjects.firstSavedUSSGQ().click();
+        util.safeClick(util.pageObjects.firstSavedUSSGQ());
         browser.wait(EC.presenceOf($(familyMemberName)));
         expect($(familyMemberName).getAttribute('value')).toBe('');
         /// open the saved qr section
