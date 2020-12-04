@@ -151,8 +151,6 @@ fb.service('fhirService', [
      *  Returns the service URL of the FHIR server the app is using.
      */
     thisService.getServerServiceURL = function() {
-console.log("thisService.getSmartConnection().state");
-console.log(thisService.getSmartConnection().state);
       return thisService.getSmartConnection().state.serverUrl;
     };
 
