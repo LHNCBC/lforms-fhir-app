@@ -30,6 +30,7 @@
     "karma-jasmine": "^1.1.2",
     "karma-junit-reporter": "^1.2.0",
     "protractor": "^5.4.3",
+    "superagent": "^6.1.0",
     "time-grunt": "^1.4.0",
     "tmp": "0.0.33",
     "uglify-js": "3.9.1"
@@ -38,7 +39,9 @@
     "postinstall": "bower install && npm run update-webdriver",
     "update-deps": "npm update",
     "postupdate-deps": "bower update",
-    "copy-npm-scripts": "mkdir -p app/lforms-updater; cp node_modules/lforms-updater/browser/updater.js* app/lforms-updater/",
+    "cp-lforms-updater": "mkdir -p app/lforms-updater; cp node_modules/lforms-updater/browser/updater.js* app/lforms-updater/",
+    "cp-fhirclient": "cp node_modules/fhirclient/build/fhir-client.js app",
+    "copy-npm-scripts": "npm run cp-lforms-updater && npm run cp-fhirclient",
     "build": "npm run copy-npm-scripts && grunt build",
     "start": "echo 'Website starting at http://localhost:8000/lforms-fhir-app'; http-server -p 8000 -c-1 .",
     "start-dist": "http-server -p 8000 -c-1 dist",
@@ -46,6 +49,7 @@
     "test": "protractor e2e-tests/protractor.conf.js"
   },
   "dependencies": {
+    "fhirclient": "^2.3.10",
     "lforms-updater": "^25.0.1"
   }
 }

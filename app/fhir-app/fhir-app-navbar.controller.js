@@ -14,7 +14,9 @@ angular.module('lformsApp')
         $scope.uploader = new FileUploader({removeAfterUpload: true});
 
         // Featured Questionnaire (for demo)
-        $scope.listFeaturedQ = null;
+console.log("%%% setting listFeaturedQ to null");
+console.log(Date.now());
+        $scope.listFeaturedQ = fhirService.getFeaturedQs();
 
         // Saved QuestionnaireResponse of a patient
         $scope.listSavedQR = null;
@@ -576,9 +578,10 @@ angular.module('lformsApp')
         /**
          * Update the Featured Questionnaires list when a new Non-SMART FHIR server is selected
          */
-        $scope.$on('LF_FHIR_SERVER_SELECTED', function(event, arg) {
-
-          $scope.listFeaturedQ = arg.fhirConfig.featuredQuestionnaires;
+        $scope.$on('LF_FHIR_SERVER_SELECTED', function(event) {
+console.log("%%% setting listFeaturedQ to data");
+console.log(Date.now());
+          $scope.listFeaturedQ = fhirService.getFeaturedQs();
           $('.spinner').hide();
         });
 

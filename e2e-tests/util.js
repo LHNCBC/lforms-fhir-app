@@ -3,6 +3,8 @@ var EC = protractor.ExpectedConditions;
 
 var autoCompBasePage = require("../app/bower_components/autocomplete-lhc/test/protractor/basePage").BasePage;
 var autoCompHelpers = new autoCompBasePage();
+const fs = require('fs');
+const sAgent = require('superagent');
 
 let util = {
   /**
@@ -122,6 +124,8 @@ let util = {
 
   /**
    *  Uploads the requested form from the e2e-tests/data directory.
+   *  Note: Consider using uploadFormWithTitleChange instead, which both
+   *  modifies the title and tags the Questionnaire resource for easier cleanup.
    * @param formFileName the pathname to the form, relative to the test/data
    *  directory, or an absolute path.
    */
@@ -132,6 +136,7 @@ let util = {
 
     let qFilePath = formFileName.indexOf('/') == 0 ? formFileName :
       require('path').resolve(__dirname, 'data', formFileName);
+
     let upload = $('#upload');
     var EC = protractor.ExpectedConditions;
     browser.wait(EC.elementToBeClickable(upload), 2000);
@@ -189,24 +194,31 @@ let util = {
    *  Uploads a modified form with the given prefix prepended to the form's title, so that
    *  the instance of the form can be found and selected.  This will also modify
    *  the form's first identifier, to make it unique.
+   *  Also, the form will be tagged for easier cleanup of saved resources.
    * @param formFilePath the pathname to the form, relative to the test/data
    *  directory.
    * @param prefix the text to prepend to the actual form title and to the
-   *  form's first idenifier (so it cannot contain characters that identifer does
-   *  not permit).
+   *  form's first identifier (so it cannot contain characters that identifer does
+   *  not permit).  If not provided, a default will be used.
    */
   uploadFormWithTitleChange: function(formFilePath, prefix) {
+    let tagCode = 'LHC-Forms-Test'
+    let tagSystem = 'https://lhcforms.nlm.nih.gov'
+    if (!prefix)
+      prefix = tagCode + '-';
     let tmp = require('tmp');
     let tmpObj = tmp.fileSync();
     this._tmpFiles.push(tmpObj);
     let qFilePath = require('path').resolve(__dirname, 'data', formFilePath);
-    let fs = require('fs');
     let qData = JSON.parse(fs.readFileSync(qFilePath));
     qData.title = prefix + qData.title;
     qData.name = prefix + qData.name;
     qData.identifier[0].value = prefix + qData.identifier[0].value;
     qData.code[0].display = prefix + qData.code[0].display;
     qData.code[0].code = prefix + qData.code[0].code;
+    let meta = qData.meta || (qData.meta = {});
+    let tag = meta.tag || (meta.tag = []);
+    tag.push({code: tagCode, system: tagSystem});
     fs.writeFileSync(tmpObj.name, JSON.stringify(qData, null, 2));
     util.uploadForm(tmpObj.name);
   },
@@ -278,6 +290,91 @@ let util = {
     util.waitForSpinnerStopped();
   },
 
+  /**
+   *  Returns a promise that resolves to an array of IDs of resources returned
+   *  by a given query.  Used by deleteTestQQRs.
+   * @param query the query to run against a FHIR server.
+   */
+  _findResourceIds: function(query) {
+    return sAgent.get(query).then(res => {
+      let entries = res.body.entry;
+      return entries ? entries.map(e=>e.resource.id) : [];
+    });
+  },
+
+
+  /**
+   *   Returns a promise that resolves when the attempts to delete the given
+   *   resources have completed.
+   *   This is used by deleteTestQQRs.
+   *  @param serverURL the server base URL
+   *  @param resType the resource type
+   *  @param ids an array of the resource IDs to delete.
+   */
+  _deleteResIds: function(serverURL, resType, ids) {
+    let delURLBase = serverURL + '/'+ resType + '/';
+    let promises = [];
+    ids.forEach(id => {
+      let delURL = delURLBase+id;
+      console.log("Deleting "+delURL);
+      promises.push(sAgent.delete(delURL).then(delRes => {
+        if (delRes.status >= 400) {
+          throw 'Deletion of '+delURL+' FAILED';
+        }
+      }));
+    });
+    return Promise.all(promises);
+  },
+
+
+  /**
+   *  Deletes Questionnaire resources created during testing and any associated
+   *  QuestionnaireResponses.
+   * @return a promise that resolves when the deletion attempt is done
+   */
+  deleteTestQQRs: function() {
+    // A resource can't be deleted until resources that reference it are
+    // deleted.  Therefore, we first delete Observations, then
+    // QuestionnaireResponses, then Questionnaires, but the search starts with
+    // Questionnaires that were created during testing.
+    const promises = [];
+    for (let fhirVer of ['Dstu3', 'R4']) {
+      let serverURL = 'https://lforms-fhir.nlm.nih.gov/base'+fhirVer;
+      let qQuery = serverURL + '/Questionnaire?_summary=true&'+
+        '_tag=https://lhcforms.nlm.nih.gov%7CLHC-Forms-Test';
+      promises.push(this._findResourceIds(qQuery).then(qIds => {
+        if (qIds.length) {
+          // Find the QuestionaireResponses and delete those first.
+          let qrQuery = serverURL +
+            '/QuestionnaireResponse?_summary=true&questionnaire='+qIds.join(',');
+          return this._findResourceIds(qrQuery).then(qrIds => {
+            // Find any extracted Observations and delete those first, but
+            // we can only do that for R4 or later.
+            let obsDeleted; // a promise resolving when observations are deleted
+            if (fhirVer != 'Dstu3' && qrIds.length) {
+              let obsQuery = serverURL +
+                '/Observation?_summary=true&derived-from='+qrIds.join(',');
+              obsDeleted = this._findResourceIds(obsQuery).then(obsIds => {
+                return this._deleteResIds(serverURL, 'Observation', obsIds);
+              });
+            }
+            else
+              obsDeleted = Promise.resolve(); // no observations to delete
+
+            return obsDeleted.then(()=> {
+              let qrDeleted =
+                this._deleteResIds(serverURL, 'QuestionnaireResponse', qrIds);
+              return qrDeleted.then(()=> {
+                return this._deleteResIds(serverURL, 'Questionnaire', qIds);
+              });
+            });
+          });
+        }
+      }));
+    }
+    return Promise.all(promises).catch(e => console.log(e));
+  },
+
 
   /**
    *  The tests here do not interact with a FHIR server, so we need to dismiss that selection box.
@@ -287,6 +384,82 @@ let util = {
     browser.wait(EC.elementToBeClickable($(cancelButton)), 5000);
     $(cancelButton).click();
     browser.wait(EC.not(EC.presenceOf($(cancelButton))), 5000);
+  },
+
+
+  /**
+   * Scrolls an element's parent container such that the element is visible to the user
+   * @param {ElementFinder} elementFinder - protractor object to represent the element
+   * @return {Promise}
+   */
+  scrollIntoView: function (elementFinder) {
+    return elementFinder.getWebElement().then((element) => {
+      return browser.executeScript(function (element) {
+        if (element.scrollIntoViewIfNeeded) {
+          element.scrollIntoViewIfNeeded(true);
+        } else {
+          element.scrollIntoView({block: 'center'});
+        }
+      }, element)
+    });
+  },
+
+  /**
+   * Scrolls an element into view and clicks on it when it becomes clickable
+   * @param {ElementFinder} elementFinder - protractor object to represent the element
+   * @return {Promise}
+   */
+  safeClick: function (elementFinder) {
+    // Borrowed Yury's code from fhir-obs-viewer.
+    // Originally this used browser.wait(EC.elementToBeClickable(elementFinder), 5000)
+    // Switched to the following code, which should be the same, while
+    // debugging.
+    return browser.wait(EC.elementToBeClickable(elementFinder), 50000).then(()=>
+      this.scrollIntoView(elementFinder).then(() => elementFinder.click())
+    );
+    /*
+    return elementFinder.isPresent().then(() => {
+        elementFinder.isDisplayed().then(() => {
+          return this.scrollIntoView(elementFinder).then(() => elementFinder.click()});
+        })
+      });
+      */
+  },
+
+
+  /**
+   *  Expands the Saved QuestionnaireResponses section.
+   */
+  expandSavedQRs: function() {
+    $('#collapse-one').getAttribute('class').then(cls=>{
+      if (!(/\bin\b/.test(cls))) {
+        var toggleLink = $('#heading-one a');
+        this.safeClick(toggleLink);
+      }
+    });
+  },
+
+
+  /**
+   *  Expands the Available Questionnaires section.
+   */
+  expandAvailQs: function() {
+    $('#collapse-three').getAttribute('class').then(cls=>{
+      if (!(/\bin\b/.test(cls))) {
+        var toggleLink = $('#heading-three a');
+        this.safeClick(toggleLink);
+      }
+    });
+    /*  Originally was the following
+    browser.executeScript(function() {
+      var section = $('#collapse-three')[0];
+      // Test if the section is collapsed
+      if (!(/\bin\b/.test(section.className))) {
+        var toggleLink = $('#heading-three a')[0];
+        toggleLink.click(); // does not always work
+      }
+    });
+    */
   },
 
 

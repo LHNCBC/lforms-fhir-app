@@ -47,10 +47,16 @@ describe('SMART on FHIR connection', function () {
   });
 
 
+  afterAll(function() {
+    util.cleanUpTmpFiles();
+    return util.deleteTestQQRs(); // Clean up test resources
+  });
+
+
   describe('saved form', function() {
     beforeAll(function() {
       // Upload, edit, and save a form.
-      util.uploadForm('R4/ussg-fhp.json');
+      util.uploadFormWithTitleChange('R4/ussg-fhp.json');
       // Wait for name to be auto-filled (pre-population test)
       let name = element(by.id('/54126-8/54125-0/1/1'));
       browser.wait(EC.presenceOf(name), 2000);
@@ -73,7 +79,7 @@ describe('SMART on FHIR connection', function () {
     it ('should display a saved form', function () {
       // Wait for the first saved questionnaire to be this form.
       // open the saved q section
-      element(by.css("#heading-three a")).click();
+      util.expandAvailQs();
       let firstQ = po.firstSavedUSSGQ();
       browser.wait(EC.textToBePresentInElement(firstQ, 'Surgeon'), 2000);
       // Open the form and wait for it to render
@@ -90,7 +96,7 @@ describe('SMART on FHIR connection', function () {
       // Now open up the saved QuestionnaireResponse and confirm we can see the
       // saved value.
       // open the saved qr section
-      element(by.css("#heading-one a")).click();
+      util.expandSavedQRs();
       $('#qrList a:first-child').click();
       browser.wait(EC.presenceOf(element(by.id('/54126-8/8302-2/1/1'))), 15000);
       height = element(by.id('/54126-8/8302-2/1/1')); // new on page
@@ -99,7 +105,7 @@ describe('SMART on FHIR connection', function () {
       // Confirm that a warning message (about an unknown FHIR version) is not shown.
       expect(EC.not(EC.presenceOf($('.warning'))));
       // open the saved q section
-      element(by.css("#heading-three a")).click();
+      util.expandAvailQs();
     });
 
     afterAll(function() {
@@ -108,7 +114,7 @@ describe('SMART on FHIR connection', function () {
   });
 
   it('should provide data for observationLinkPeriod', function() {
-    util.uploadForm('R4/weight-height-questionnaire.json');
+    util.uploadFormWithTitleChange('R4/weight-height-questionnaire.json');
     let height = element(by.id('/8302-2/1'));
     browser.wait(EC.presenceOf(height), 2000);
     browser.wait(function() {return height.getAttribute('value').then(value => value.length > 0)}, 2000);
@@ -117,7 +123,7 @@ describe('SMART on FHIR connection', function () {
 
   describe('ValueSet search', function() {
     beforeAll(function() {
-      util.uploadForm('R4/ussg-fhp.json');
+      util.uploadFormWithTitleChange('R4/ussg-fhp.json');
     });
 
     it ('should work via the FHIR client', function() {
@@ -182,7 +188,7 @@ describe('SMART on FHIR connection', function () {
     beforeAll(function() {
       // Load a form
       browser.waitForAngular();
-      util.uploadForm('R4/ussg-fhp.json');
+      util.uploadFormWithTitleChange('R4/ussg-fhp.json');
       browser.wait(EC.textToBePresentInElement(element(by.css('.lf-form-title')), "Surgeon"), 5000);
 
       // Save the form

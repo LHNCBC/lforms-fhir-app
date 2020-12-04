@@ -55,7 +55,7 @@ angular.module('lformsApp')
        * SMART on FHIR specific settings
        */
       // trying to get a connection to a FHIR server
-      $timeout(function(){ $scope.establishFHIRContext() }, 1000);
+      $timeout(function(){ $scope.establishFHIRContext() }, 1);
 
 
       /**
@@ -118,6 +118,8 @@ angular.module('lformsApp')
                   fhirService.setCurrentPatient(pt);
                   fhirService.getAllQRByPatientId(pt.id);
                   fhirService.getAllQ();
+console.log("%%% Got patient, calling apply");
+console.log(Date.now());
                   $scope.$apply();
                 });
               }
@@ -160,6 +162,7 @@ angular.module('lformsApp')
               var pt = $scope.selectedPatientInDialog.resource;
               if (pt) {
                 fhirService.setCurrentPatient(pt);
+                fhirService.setNonSmartServerPatient(pt.id); // update connection
                 fhirService.getAllQRByPatientId(pt.id);
                 fhirService.getAllQ();
               }
