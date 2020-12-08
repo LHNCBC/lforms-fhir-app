@@ -244,7 +244,7 @@ fb.service('fhirService', [
      * Get FHIR pagination results using a link url in the current bundle
      *
      * @param resType - The FHIR bundle from which to extract the relation url.
-     * @param relation - A string specifying the relation ('prev' | 'next')
+     * @param url - the URL for getting the next or previous page.
      * @returns {Object} - FHIR resource bundle
      */
     thisService.getPage = function(resType, relation, url) {
