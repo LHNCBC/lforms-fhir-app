@@ -118,8 +118,6 @@ angular.module('lformsApp')
                   fhirService.setCurrentPatient(pt);
                   fhirService.getAllQRByPatientId(pt.id);
                   fhirService.getAllQ();
-console.log("%%% Got patient, calling apply");
-console.log(Date.now());
                   $scope.$apply();
                 });
               }
