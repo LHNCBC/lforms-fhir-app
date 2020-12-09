@@ -6,19 +6,18 @@
   <base href="/lforms-fhir-app/">
   <title>LHC-Forms Questionnaire App</title>
 
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-75410768-8"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-59GQ6JK');</script>
+  <!-- End Google Tag Manager -->
 
-    gtag('config', 'UA-75410768-8');
-  </script>
 </head>
 <body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-59GQ6JK" height="0" width="0" style="display:none;visibility:hidden" title="googletagmanager"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
 <!-- smart on fhir client -->
-<script src="823ccb4f.fhir-client.min.js"></script>
+<script src="5ea715c2.fhir-client.min.js"></script>
 <script>
   FHIR.oauth2.authorize({
     "client_id": "my_web_app",  // hard coded client_id to work with SMART on FHIR starter server
