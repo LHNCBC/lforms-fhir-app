@@ -1,6 +1,6 @@
 {
   "name": "lforms-fhir-app",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A SMART on FHIR app for lforms",
   "repository": "https://github.com/lhncbc/lforms-fhir-app",
   "devDependencies": {
@@ -46,7 +46,8 @@
     "start": "echo 'Website starting at http://localhost:8000/lforms-fhir-app'; http-server -p 8000 -c-1 .",
     "start-dist": "http-server -p 8000 -c-1 dist",
     "update-webdriver": "node node_modules/protractor/bin/webdriver-manager update --versions.chrome $(google-chrome --version |awk '{print $NF}')",
-    "test": "protractor e2e-tests/protractor.conf.js"
+    "test": "http-server -p 8000 -c-1 . & sleep 5; protractor e2e-tests/protractor.conf.js; s=$?; kill %1; exit $s",
+    "test-dist": "http-server -p 8000 -c-1 dist & sleep 5; protractor e2e-tests/protractor.conf.js; s=$?; kill %1; exit $s"
   },
   "dependencies": {
     "fhirclient": "^2.3.10",
