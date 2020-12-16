@@ -5,7 +5,7 @@ This project follows [Semantic Versioning](http://semver.org/).
 
 ## [1.1.0] - 2020-12-15
 ### Changed
-- Added start of HTTP server before running tests
+- Added starting HTTP server before running tests
 
 ## [1.0.0] - 2020-12-04
 ### Changed
