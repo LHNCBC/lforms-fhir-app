@@ -12,22 +12,30 @@
 
   <meta name="viewport" content="width=device-width"/>
 
+  <style>
+    #newLocation {
+      font-weight: bold;
+    }
+  </style>
   <script type="text/javascript">
+    var newLocation = 'https://lhcforms.nlm.nih.gov/lforms-fhir-app/launch.html' + document.location.search;
     function redirect() {
-      document.location.href = 'https://lhcforms.nlm.nih.gov/lforms-fhir-app/launch.html' + document.location.search;
+      document.location.href = newLocation;
     }
   </script>
 </head>
 <body>
   <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-59GQ6JK" height="0" width="0" style="display:none;visibility:hidden" title="googletagmanager"></iframe></noscript>
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-59GQ6JK" height="0" width="0" style="display:none;visibility:hidden" title="googletagmanager" sandbox></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
 
   <p>The location of this page has changed.</p>
+  <p>New location: <span id="newLocation"></span></p>
   <p>You will be redirected to the new location of this page in 5 seconds,
       or you can <a href="#" onclick="redirect();return false;">click here</a>
       to do this immediately.</p>
   <script type="text/javascript">
+    document.getElementById('newLocation').innerText = newLocation;
     setTimeout(redirect, 5000);
   </script>
 </body>
