@@ -43,11 +43,13 @@
     "cp-fhirclient": "cp node_modules/fhirclient/build/fhir-client.js app",
     "copy-npm-scripts": "npm run cp-lforms-updater && npm run cp-fhirclient",
     "build": "npm run copy-npm-scripts && grunt build",
-    "start": "echo 'Website starting at http://localhost:8000/lforms-fhir-app'; http-server -p 8000 -c-1 .",
+    "prestart": "echo 'Website starting at http://localhost:8000/lforms-fhir-app'",
+    "start": "http-server -p 8000 -c-1 .",
+    "prestart-dist": "echo 'Website starting at http://localhost:8000/lforms-fhir-app'",
     "start-dist": "http-server -p 8000 -c-1 dist",
     "update-webdriver": "node node_modules/protractor/bin/webdriver-manager update --versions.chrome $(google-chrome --version |awk '{print $NF}')",
-    "test": "http-server -p 8000 -c-1 . & sleep 5; protractor e2e-tests/protractor.conf.js; s=$?; kill %1; exit $s",
-    "test-dist": "http-server -p 8000 -c-1 dist & sleep 5; protractor e2e-tests/protractor.conf.js; s=$?; kill %1; exit $s"
+    "test": "npm run start & sleep 5; protractor e2e-tests/protractor.conf.js; s=$?; kill %1; exit $s",
+    "test-dist": "npm run start-dist & sleep 5; protractor e2e-tests/protractor.conf.js; s=$?; kill %1; exit $s"
   },
   "dependencies": {
     "fhirclient": "^2.3.10",
