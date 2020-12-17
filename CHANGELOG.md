@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [1.1.0] - 2020-12-15
+### Changed
+- Added starting HTTP server before running tests
+
 ## [1.0.0] - 2020-12-04
 ### Changed
 - Updated the SMART on FHIR client ('client-js', a.k.a. npm package fhirclient)
