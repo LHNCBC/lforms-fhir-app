@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [1.2.0] - 2021-1-13
+### Changed
+- Updated lforms to 28.1.1.
+
 ## [1.1.0] - 2020-12-15
 ### Changed
 - Added starting HTTP server before running tests
