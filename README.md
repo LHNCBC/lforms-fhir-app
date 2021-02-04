@@ -9,7 +9,7 @@ and collect data as FHIR QuestionnaireResponse resources.
 
 ## Demo
 A demo of this app can be launched via SMART
-on FHIR from the [LHC-Forms website](https://lhcforms.nlm.nih.gov/sdc).  It can
+on FHIR from the [LHC FHIR Tools website](https://lhcforms.nlm.nih.gov/sdc).  It can
 also be used without SMART, by going to it
 [directly](https://lhcforms.nlm.nih.gov/lforms-fhir-app/), in which can you can
 enter the base URL of a FHIR server to which you want the app to connect.
@@ -27,7 +27,7 @@ connected to by the SMART App gets reset weekly, but you can use the Upload
 button to upload a new Questionnaire resource.  If downloading one of the forms
 from GitHub, be sure click on the "Raw" button, which will open a page which
 only has the Questionnaire data.  For example:
-https://raw.githubusercontent.com/lhncbc/lforms-fhir-app/master/e2e-tests/data/vital-sign-questionnaire.json
+https://raw.githubusercontent.com/lhncbc/lforms-fhir-app/master/e2e-tests/data/R4/vital-sign-questionnaire.json
 will open a page for a vital signs Questionnaire which you can save to a local
 file and then use "Upload" to use it in the app.
 
@@ -55,7 +55,7 @@ us manage and test the application.
   Java Development Kit (JDK) installed on your machine. Check out the section on
   [end-to-end testing](#e2e-testing) for more info.
 
-We have preconfigured `npm` to automatically run `bower` so we can simply do:
+We have configured `npm` to automatically run `bower` so we can simply do:
 
 ```
 npm ci
