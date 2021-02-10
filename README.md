@@ -91,11 +91,11 @@ will start a server on port 8000 that serves the files in dist.
 Now browse to the app at `localhost:8000/lforms-fhir-app/`.
 
 <a name="e2e-testing"></a>
-### Running End-to-End Tests
+### Running Tests (including End-to-End Tests)
 ```
 npm run test
 ```
-will run the protractor tests.
+will run the tests.
 
 For testing the production build in dist, run
 ```
