@@ -13,8 +13,8 @@ on FHIR from the [LHC FHIR Tools website](https://lhcforms.nlm.nih.gov/sdc).  It
 also be used without SMART, by going to it
 [directly](https://lhcforms.nlm.nih.gov/lforms-fhir-app/), in which can you can
 enter the base URL of a FHIR server to which you want the app to connect.
-The demo's files are also on the gh-pages branch of this repository, and the
-source files from which the demo files are built are on the master branch.
+The source files from which the demo is built are on the master branch.
+See "Customizing the App" below if you wish customize or build your own copy.
 
 The app relies on the [LHC-Forms](http://lhncbc.github.io/lforms/) rendering
 widget for displaying forms.  It has partial support for FHIR Questionnaires
