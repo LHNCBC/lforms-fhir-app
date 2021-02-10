@@ -8,27 +8,26 @@ EHR (electonic health record) systems supporting SMART on FHIR to display
 and collect data as FHIR QuestionnaireResponse resources.
 
 ## Demo
-There is a [demo](https://apps.smarthealthit.org/app/lforms-questionnaire-app)
-of this app running as a GitHub pages website, but to see it work with a SMART
-on FHIR context, try it out via the
-[SMART App Gallery](https://apps.smarthealthit.org/app/lforms-questionnaire-app).
-(That will open a page containing the GitHub pages demo, but the SMART on FHIR
-connection will be established, so you will be able to save and load FHIR
-resources.)
+A demo of this app can be launched via SMART
+on FHIR from the [LHC FHIR Tools website](https://lhcforms.nlm.nih.gov/sdc).  It can
+also be used without SMART, by going to it
+[directly](https://lhcforms.nlm.nih.gov/lforms-fhir-app/), in which can you can
+enter the base URL of a FHIR server to which you want the app to connect.
+The source files from which the demo is built are on the master branch.
+See "Customizing the App" below if you wish customize or build your own copy.
 
 The app relies on the [LHC-Forms](http://lhncbc.github.io/lforms/) rendering
-widget for displaying forms.  It has partial support for both FHIR
-[STU3](http://hl7.org/fhir/us/sdc/) and
-[R4](http://hl7.org/fhir/uv/sdc/2018Sep/index.html) SDC Questionnaires.
+widget for displaying forms.  It has partial support for FHIR Questionnaires
+(versions STU3 and R4) and the [Structured Data Capture Implementation
+Guide](http://build.fhir.org/ig/HL7/sdc/).
 
 For some sample forms to try, this repository comes with some forms under
 e2e-test/data which are used by the test code to test the app.  The FHIR server
-in the SMART App Gallery gets reset nightly, so might not find Questionnaires
-there, but you can always use the Upload button to upload a new Questionnaire
-resource.  If downloading one of the forms from GitHub, be sure click on the
-"Raw" button, which will open a page which only has the Questionnaire data.  For
-example:
-https://raw.githubusercontent.com/lhncbc/lforms-fhir-app/master/e2e-tests/data/vital-sign-questionnaire.json
+connected to by the SMART App gets reset weekly, but you can use the Upload
+button to upload a new Questionnaire resource.  If downloading one of the forms
+from GitHub, be sure click on the "Raw" button, which will open a page which
+only has the Questionnaire data.  For example:
+https://raw.githubusercontent.com/lhncbc/lforms-fhir-app/master/e2e-tests/data/R4/vital-sign-questionnaire.json
 will open a page for a vital signs Questionnaire which you can save to a local
 file and then use "Upload" to use it in the app.
 
@@ -39,6 +38,11 @@ see below.  Note that adding support for additional parts of the SDC specificati
 require edits to the [LHC-Forms](http://lhncbc.github.io/lforms/) widget.  (Pull
 requests are very welcome, but it might be better to open an issue first to see
 if we are already working on that feature.)
+
+### Add Node.js and npm to your path
+The file bashrc.lforms-fhir-app specifies the version of Node.js we are using
+for development.  Download that version of Node.js, and add its bin directory to
+your path.
 
 ### Install Dependencies
 
@@ -51,7 +55,7 @@ us manage and test the application.
   Java Development Kit (JDK) installed on your machine. Check out the section on
   [end-to-end testing](#e2e-testing) for more info.
 
-We have preconfigured `npm` to automatically run `bower` so we can simply do:
+We have configured `npm` to automatically run `bower` so we can simply do:
 
 ```
 npm ci
@@ -63,57 +67,37 @@ two new folders in your project.
 * `node_modules` - contains the npm packages for the tools we need
 * `app/bower_components` - contains the Angular framework files
 
-*Note that the `bower_components` folder would normally be installed in the root folder but
-`angular-seed` changes this location through the `.bowerrc` file. Putting it in the `app` folder
-makes it easier to serve the files by a web server.*
+Add node_modules/.bin to your path.
+
+### Build the application
+```
+npm run build
+```
+This will create files for production in a "dist" directory, but will also copy
+some needed files into place from node_modules.
 
 ### Run the Application
-
-We have preconfigured the project with a simple development web server. The simplest way to start
-this server is:
+```
+npm run start
+```
+will start an http server running at port 8000.  Or, for testing the
+production build,
 
 ```
-npm start
+npm run start-dist
 ```
+will start a server on port 8000 that serves the files in dist.
 
 Now browse to the app at `localhost:8000/lforms-fhir-app/`.
 
-
 <a name="e2e-testing"></a>
-### Running End-to-End Tests
-
-The `angular-seed` app comes with end-to-end tests, again written in Jasmine. These tests
-are run with the Protractor End-to-End test runner. It uses native events and has
-special features for Angular applications.
-
-* The configuration is found at `e2e-tests/protractor-conf.js`.
-* The end-to-end tests are found in `e2e-tests/*spec.js`.
-
-Protractor simulates interaction with our web app and verifies that the application responds
-correctly. Therefore, our web server needs to be serving up the application, so that Protractor can
-interact with it.
-
-**Before starting Protractor, open a separate terminal window and run:**
-
+### Running Tests (including End-to-End Tests)
 ```
-npm start
+npm run test
 ```
+will run the tests.
 
-In addition, since Protractor is built upon WebDriver, we need to ensure that it is installed and
-up-to-date. The `angular-seed` project is configured to do this automatically before running the
-end-to-end tests, so you don't need to worry about it. If you want to manually update the WebDriver,
-you can run:
-
+For testing the production build in dist, run
 ```
-npm run update-webdriver
+npm run test-dist
 ```
-
-Once you have ensured that the development web server hosting our application is up and running, you
-can run the end-to-end tests using the supplied npm script:
-
-```
-npm run protractor
-```
-
-This script will execute the end-to-end tests against the application being hosted on the
-development server.
