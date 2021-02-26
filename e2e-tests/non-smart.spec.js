@@ -10,7 +10,7 @@ let util = require('./util');
 function pickPatient(patientName, listItemNum)  {
   if (!patientName) {
     patientName = 'Karen'; // "Karen Lewis"
-    listItemNum = 3;
+    listItemNum = 2;
   }
   var ptField = '.lf-patient-search input';
   browser.wait(EC.presenceOf($(ptField)), 20000);
