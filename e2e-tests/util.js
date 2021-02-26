@@ -102,7 +102,9 @@ let util = {
       //let iframe = $('#frame');
       //browser.wait(EC.presenceOf(iframe), 2000);
       //browser.switchTo().frame(iframe.getWebElement());
-      $('#search-text').sendKeys('Alexis');
+      var searchField = $('#search-text');
+      browser.wait(EC.presenceOf(searchField), 4000);
+      searchField.sendKeys('Alexis');
       $('input[type=submit]').click();
       let patient = element(by.id('patient-smart-9995679'));
       browser.wait(EC.presenceOf(patient), 4000);
