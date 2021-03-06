@@ -104,9 +104,9 @@ let util = {
       //browser.switchTo().frame(iframe.getWebElement());
       var searchField = $('#search-text');
       browser.wait(EC.presenceOf(searchField), 4000);
-      searchField.sendKeys('Alexis');
+      searchField.sendKeys('Daniel');
       $('input[type=submit]').click();
-      let patient = element(by.id('patient-smart-9995679'));
+      let patient = element(by.id('patient-smart-1186747'));
       browser.wait(EC.presenceOf(patient), 4000);
       patient.click();
       // Wait for the server resources to finish loading.

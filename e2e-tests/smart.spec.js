@@ -22,10 +22,10 @@ describe('Featured Questionnaires', function() {
     browser.wait(EC.presenceOf(secondFeaturedQ), 2000);
 
     secondFeaturedQ.click();
-    let weight = element(by.id('/8302-2/1'));
+    let height = element(by.id('/8302-2/1'));
     browser.sleep(2000)
-    browser.wait(EC.presenceOf(weight), 2000);
-    expect(weight.getAttribute('value')).toBe("77.6");
+    browser.wait(EC.presenceOf(height), 2000);
+    browser.wait(function() {return height.getAttribute('value').then(value => value.length > 0)}, 2000);
   });
 
   it('should NOT display a list of featured questionnaires when R3 server is used', function() {
@@ -43,7 +43,7 @@ describe('SMART on FHIR connection', function () {
     util.launchSmartAppInSandbox();
     var name = $('#ptName');
     browser.wait(EC.presenceOf(name), 5000);
-    browser.wait(EC.textToBePresentInElement(name, 'Aaron'), 2000);
+    browser.wait(EC.textToBePresentInElement(name, 'Daniel'), 2000);
   });
 
 
@@ -60,7 +60,7 @@ describe('SMART on FHIR connection', function () {
       // Wait for name to be auto-filled (pre-population test)
       let name = element(by.id('/54126-8/54125-0/1/1'));
       browser.wait(EC.presenceOf(name), 2000);
-      browser.wait(EC.textToBePresentInElementValue(name, 'Aaron'), 2000);
+      browser.wait(EC.textToBePresentInElementValue(name, 'Daniel'), 2000);
       // Enter a height value
       let height = element(by.id('/54126-8/8302-2/1/1'));
       browser.wait(EC.presenceOf(height), 2000);
