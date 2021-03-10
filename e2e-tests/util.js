@@ -238,6 +238,9 @@ let util = {
     // another test run's data.
     // The second tag is always the same, so we can find any test data that gets
     // left behind such as if the tests error out without cleaning up properly.
+    // (That was the plan, but currently the possibility of a test run not
+    // cleaning up seems much more likely than two users running the tests
+    // simultaneously, so we are really just using the first tag for cleanup for now.)
     let meta = resource.meta || (resource.meta = {});
     let tag = meta.tag || (meta.tag = []);
     tag.push({code: tagCode, system: tagSystem});
