@@ -5,6 +5,12 @@ var autoCompBasePage = require("../app/bower_components/autocomplete-lhc/test/pr
 var autoCompHelpers = new autoCompBasePage();
 const fs = require('fs');
 const sAgent = require('superagent');
+const https = require('https');
+
+// Tag created resources with a unique tag.
+const tagCode = 'LHC-Forms-Test'
+const tagUnique = tagCode+Math.floor(Math.random() * Math.floor(1000000));
+const tagSystem = 'https://lhcforms.nlm.nih.gov'
 
 let util = {
   /**
@@ -204,8 +210,6 @@ let util = {
    *  not permit).  If not provided, a default will be used.
    */
   uploadFormWithTitleChange: function(formFilePath, prefix) {
-    let tagCode = 'LHC-Forms-Test'
-    let tagSystem = 'https://lhcforms.nlm.nih.gov'
     if (!prefix)
       prefix = tagCode + '-';
     let tmp = require('tmp');
@@ -218,11 +222,68 @@ let util = {
     qData.identifier[0].value = prefix + qData.identifier[0].value;
     qData.code[0].display = prefix + qData.code[0].display;
     qData.code[0].code = prefix + qData.code[0].code;
-    let meta = qData.meta || (qData.meta = {});
-    let tag = meta.tag || (meta.tag = []);
-    tag.push({code: tagCode, system: tagSystem});
+    util.tagResource(qData);
     fs.writeFileSync(tmpObj.name, JSON.stringify(qData, null, 2));
     util.uploadForm(tmpObj.name);
+  },
+
+  /**
+   *  Adds tags to a resource for later cleanup.
+   * @param resource the resource object to which to add tags.
+   */
+  tagResource: function(resource) {
+    // We use two tags.  One is a nearly unique tag which we can use for
+    // automated cleanup and which should not collide with another run's tag
+    // so if two test runs are being run simultaneously, one test run will not delete
+    // another test run's data.
+    // The second tag is always the same, so we can find any test data that gets
+    // left behind such as if the tests error out without cleaning up properly.
+    let meta = resource.meta || (resource.meta = {});
+    let tag = meta.tag || (meta.tag = []);
+    tag.push({code: tagCode, system: tagSystem});
+    tag.push({code: tagUnique, system: tagSystem});
+  },
+
+  /**
+   *  Stores an observation on the test fhir server.  This is used to create
+   *  test data for prepopulation.
+   * @param fhirVer the FHIR version (R4 or STU3)
+   * @param patientID the ID of the patient this Observation is for.
+   * @param coding the coding of the Observation
+   * @param valueType the FHIR type of the observation's value (capitalized)
+   * @param value a value of type valueType
+   * @return a promise that resolves when the request is completed
+   */
+  storeObservation: function(fhirVer, patientID, coding, valueType, value) {
+    if (fhirVer == 'STU3')
+      fhirVer = 'Dstu3';  // what HAPI calls it
+    const serverURL = 'https://lforms-fhir.nlm.nih.gov/base'+fhirVer;
+    const obs = {
+      "resourceType": "Observation",
+      "status": "final",
+      "effectiveDateTime": "2021-03-05T00:06:01.282Z",
+      "issued": "2021-03-05T00:06:01.282Z",
+    }
+    obs.code = {coding: [coding]};
+    obs['value'+valueType] = value;
+    obs.subject = {reference: "Patient/"+patientID};
+    obs.effectiveDateTime = obs.issued = (new Date()).toISOString();
+    util.tagResource(obs);
+    return new Promise((resolve, reject) => {
+      let respData = '';
+      let options = {hostname: 'lforms-fhir.nlm.nih.gov',
+        path: '/base'+fhirVer+'/Observation',
+        method: 'POST', headers: {'Content-Type': 'application/fhir+json'}};
+      let req = https.request(options,
+       function callback(res) {
+         res.on('data', (data)=>{respData+=data}); // needed or 'end' isn't called
+         //res.on('end', ()=>{console.log("at end of response, "+respData); resolve(true)});
+         res.on('end', ()=>resolve(true));
+       });
+      req.on('error', (e)=>{console.error(e); reject(e)});
+      req.write(JSON.stringify(obs));
+      req.end();
+    });
   },
 
 
@@ -294,7 +355,7 @@ let util = {
 
   /**
    *  Returns a promise that resolves to an array of IDs of resources returned
-   *  by a given query.  Used by deleteTestQQRs.
+   *  by a given query.  Used by deleteTestResources.
    * @param query the query to run against a FHIR server.
    */
   _findResourceIds: function(query) {
@@ -308,7 +369,7 @@ let util = {
   /**
    *   Returns a promise that resolves when the attempts to delete the given
    *   resources have completed.
-   *   This is used by deleteTestQQRs.
+   *   This is used by deleteTestResources.
    *  @param serverURL the server base URL
    *  @param resType the resource type
    *  @param ids an array of the resource IDs to delete.
@@ -330,11 +391,10 @@ let util = {
 
 
   /**
-   *  Deletes Questionnaire resources created during testing and any associated
-   *  QuestionnaireResponses.
+   *  Deletes resources created during testing.
    * @return a promise that resolves when the deletion attempt is done
    */
-  deleteTestQQRs: function() {
+  deleteTestResources: function() {
     // A resource can't be deleted until resources that reference it are
     // deleted.  Therefore, we first delete Observations, then
     // QuestionnaireResponses, then Questionnaires, but the search starts with
@@ -371,6 +431,14 @@ let util = {
               });
             });
           });
+        }
+      }));
+      // Also delete the observations that were directly created by the tests
+      let obsQuery = serverURL + '/Observation?_summary=true&'+
+        '_tag=https://lhcforms.nlm.nih.gov%7CLHC-Forms-Test';
+      promises.push(this._findResourceIds(obsQuery).then(obsIds => {
+        if (obsIds.length) {
+          return this._deleteResIds(serverURL, 'Observation', obsIds);
         }
       }));
     }
