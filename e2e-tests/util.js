@@ -257,12 +257,9 @@ let util = {
   storeObservation: function(fhirVer, patientID, coding, valueType, value) {
     if (fhirVer == 'STU3')
       fhirVer = 'Dstu3';  // what HAPI calls it
-    const serverURL = 'https://lforms-fhir.nlm.nih.gov/base'+fhirVer;
     const obs = {
       "resourceType": "Observation",
       "status": "final",
-      "effectiveDateTime": "2021-03-05T00:06:01.282Z",
-      "issued": "2021-03-05T00:06:01.282Z",
     }
     obs.code = {coding: [coding]};
     obs['value'+valueType] = value;
