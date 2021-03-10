@@ -1,5 +1,6 @@
 {
   "resourceType": "Questionnaire",
+  "id": "54127-6-x",
   "status": "draft",
   "date": "2018-11-05T16:54:56-05:00",
   "meta": {
@@ -312,7 +313,7 @@
             {
               "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationLinkPeriod",
               "valueDuration": {
-                "value": "1",
+                "value": 100,
                 "unit": "year",
                 "system": "http://unitsofmeasure.org",
                 "code": "a"
@@ -343,7 +344,7 @@
             {
               "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationLinkPeriod",
               "valueDuration": {
-                "value": "1",
+                "value": 100,
                 "unit": "year",
                 "system": "http://unitsofmeasure.org",
                 "code": "a"

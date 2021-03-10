@@ -111,7 +111,7 @@
         {
           "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationLinkPeriod",
           "valueDuration": {
-            "value": "1",
+            "value": 100,
             "unit": "year",
             "system": "http://ucum.org",
             "code": "a"
@@ -198,7 +198,7 @@
         {
           "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationLinkPeriod",
           "valueDuration": {
-            "value": "1",
+            "value": 100,
             "unit": "year",
             "system": "http://ucum.org",
             "code": "a"

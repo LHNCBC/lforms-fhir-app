@@ -35,7 +35,7 @@ describe('Non-SMART connection to FHIR server', function() {
 
   afterAll(function() {
     util.cleanUpTmpFiles();
-    return util.deleteTestQQRs(); // Clean up test resources
+    return util.deleteTestResources(); // Clean up test resources
   });
 
 
@@ -250,8 +250,9 @@ describe('Non-SMART connection to FHIR server', function() {
   });
 
   describe('Featured Questionnaires', function() {
+    const danielJohnsonID = 'smart-1186747';
 
-    it('should display a list of featured questionnaires when https://lforms-fhir.nlm.nih.gov/baseR4 is selected', function() {
+    beforeAll(function() {
       browser.get(mainPageURL);
       var urlField = '#fhirServerURL';
       browser.wait(EC.presenceOf($(urlField)), 5000);
@@ -264,9 +265,18 @@ describe('Non-SMART connection to FHIR server', function() {
       // Wait for patient picker to open
       pickPatient('Daniel', 1); // "Daniel Johnson"
 
+      // Create a height value
+      let obsPromise =
+        util.storeObservation('R4', danielJohnsonID, {"system": "http://loinc.org",
+          "code": "8302-2"}, 'Quantity',
+          {"value": 70.1, "system": "http://unitsofmeasure.org", "code": "[in_i]"});
+      browser.wait(obsPromise);
+    });
+
+
+    it('should display a list of featured questionnaires when https://lforms-fhir.nlm.nih.gov/baseR4 is selected', function() {
       let featuredTab = element(by.id('fqList'));
       browser.wait(EC.presenceOf(featuredTab), 2000);
-
     });
 
     it('should display one of the questionnaires', function() {
@@ -286,10 +296,10 @@ describe('Non-SMART connection to FHIR server', function() {
       browser.wait(EC.presenceOf(secondFeaturedQ), 2000);
 
       secondFeaturedQ.click();
-      let weight = element(by.id('/8302-2/1'));
+      let height = element(by.id('/8302-2/1'));
       browser.sleep(2000)
-      browser.wait(EC.presenceOf(weight), 2000);
-      expect(weight.getAttribute('value')).toBe("70.1");
+      browser.wait(EC.presenceOf(height), 2000);
+      expect(height.getAttribute('value')).toBe("70.1");
     });
 
     it('should not display a list of featured questionnaires when https://lforms-fhir.nlm.nih.gov/baseDstu3 is selected', function() {
