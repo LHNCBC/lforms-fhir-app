@@ -424,7 +424,7 @@ angular.module('lformsApp')
         $scope.$on('LF_FHIR_RESOURCE_DELETED', function(event, arg) {
           // clean up the form
           selectedFormData.setFormData(null);
-          fhirResInfo = {};
+          $scope.fhirResInfo = {};
           $scope.initialLoad = true;
           $scope.$apply();
           $('.spinner').hide();
