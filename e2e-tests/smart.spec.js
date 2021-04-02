@@ -182,6 +182,59 @@ describe('SMART on FHIR connection', function () {
       });
     });
 
+    describe('Delete saved values', function() {
+      var familyMemberName = '#\\/54114-4\\/54138-3\\/1\\/1';
+
+      it('should delete a saved QuestionnaireResponse', function () {
+        // Save a new QuestionnaireResponse
+        util.uploadFormWithTitleChange('R4/ussg-fhp.json');
+        browser.wait(EC.presenceOf($(familyMemberName)), 2000);
+        $(familyMemberName).click();
+        $(familyMemberName).sendKeys('to be deleted');
+        util.saveAsQR();
+        util.closeSaveResultsDialog();
+        // Load a blank questionnaire to clear the fields
+        util.expandAvailQs();
+        util.safeClick(util.pageObjects.firstSavedUSSGQ());
+        browser.wait(EC.presenceOf($(familyMemberName)), 2000);
+        browser.wait(()=>$(familyMemberName).getAttribute('value').then(
+          (val)=>val==''), 5000);
+        // open the saved qr section
+        util.expandSavedQRs();
+        // Load the saved QR and check the value
+        util.pageObjects.firstSavedQR().click();
+        browser.wait(EC.presenceOf($(familyMemberName)));
+        expect($(familyMemberName).getAttribute('value')).toBe('to be deleted');
+        util.deleteCurrentQR();
+        expect($('div.loading.initial').getText()).toBe('Please select a FHIR resource or upload from file.');
+      });
+
+      it('should delete a saved QuestionnarieResponse and associated Observations', function() {
+        // Save a new QuestionnaireResponse
+        util.uploadFormWithTitleChange('R4/ussg-fhp.json');
+        browser.wait(EC.presenceOf($(familyMemberName)), 2000);
+        $(familyMemberName).click();
+        $(familyMemberName).sendKeys('to be deleted2');
+        util.saveAsQRAndObs();
+        util.closeSaveResultsDialog();
+        // Load a blank questionnaire to clear the fields
+        util.expandAvailQs();
+        util.safeClick(util.pageObjects.firstSavedUSSGQ());
+        browser.wait(EC.presenceOf($(familyMemberName)), 2000);
+        browser.wait(()=>$(familyMemberName).getAttribute('value').then(
+          (val)=>val==''), 5000);
+        // open the saved qr section
+        util.expandSavedQRs();
+        // Load the saved QR and check the value
+        util.pageObjects.firstSavedQR().click();
+        browser.wait(EC.presenceOf($(familyMemberName)));
+        expect($(familyMemberName).getAttribute('value')).toBe('to be deleted2');
+        util.deleteCurrentQR();
+        expect($('div.loading.initial').getText()).toBe('Please select a FHIR resource or upload from file.');
+      });
+    });
+
+
 
     describe("'Show' Menu", function () {
       var showMenu = $('#btn-show-as');

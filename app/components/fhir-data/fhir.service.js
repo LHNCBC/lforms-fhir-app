@@ -731,7 +731,7 @@ fb.service('fhirService', [
             var obsDelPromises = [];
             for (var i=0, len=entries.length; i<len; ++i) {
               var obsId = entries[i].resource.id;
-              obsDelPromises.push(thisService.fhir.delete({type: 'Observation', id: obsId}));
+              obsDelPromises.push(thisService.fhir.delete('Observation/' + obsId));
             }
             thenPromise = Promise.all(obsDelPromises).then(
               function success(response) {
@@ -818,7 +818,7 @@ fb.service('fhirService', [
     thisService.deleteFhirResource = function(resType, resId, reportSuccess) {
       if (reportSuccess === undefined)
         reportSuccess = true;
-      return thisService.fhir.delete({type: resType, id: resId})
+      return thisService.fhir.delete(resType + "/" + resId)
         .then(function success(response) {
           // response === "OK"
           if (reportSuccess) {

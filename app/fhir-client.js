@@ -284,6 +284,32 @@ module.exports = _isNativeReflectConstruct;
 
 /***/ }),
 
+/***/ "./node_modules/@babel/runtime/helpers/objectWithoutPropertiesLoose.js":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/objectWithoutPropertiesLoose.js ***!
+  \*****************************************************************************/
+/*! all exports used */
+/***/ (function(module, exports) {
+
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+module.exports = _objectWithoutPropertiesLoose;
+
+/***/ }),
+
 /***/ "./node_modules/@babel/runtime/helpers/setPrototypeOf.js":
 /*!***************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/setPrototypeOf.js ***!
@@ -10982,10 +11008,6 @@ var Client = /*#__PURE__*/function () {
       },
 
       read: function read(requestOptions) {
-        if (requestOptions === void 0) {
-          requestOptions = {};
-        }
-
         var id = _this.patient.id;
         return id ? _this.request(Object.assign({}, requestOptions, {
           url: "Patient/" + id
@@ -11029,10 +11051,6 @@ var Client = /*#__PURE__*/function () {
       },
 
       read: function read(requestOptions) {
-        if (requestOptions === void 0) {
-          requestOptions = {};
-        }
-
         var id = _this.encounter.id;
         return id ? _this.request(Object.assign({}, requestOptions, {
           url: "Encounter/" + id
@@ -11054,10 +11072,6 @@ var Client = /*#__PURE__*/function () {
       },
 
       read: function read(requestOptions) {
-        if (requestOptions === void 0) {
-          requestOptions = {};
-        }
-
         var fhirUser = _this.user.fhirUser;
         return fhirUser ? _this.request(Object.assign({}, requestOptions, {
           url: fhirUser
@@ -11357,10 +11371,6 @@ var Client = /*#__PURE__*/function () {
   ;
 
   _proto.create = function create(resource, requestOptions) {
-    if (requestOptions === void 0) {
-      requestOptions = {};
-    }
-
     return this.request(Object.assign({}, requestOptions, {
       url: "" + resource.resourceType,
       method: "POST",
@@ -11368,7 +11378,7 @@ var Client = /*#__PURE__*/function () {
       headers: Object.assign({
         // TODO: Do we need to alternate with "application/json+fhir"?
         "Content-Type": "application/json"
-      }, requestOptions.headers)
+      }, (requestOptions || {}).headers)
     }));
   }
   /**
@@ -11383,10 +11393,6 @@ var Client = /*#__PURE__*/function () {
   ;
 
   _proto.update = function update(resource, requestOptions) {
-    if (requestOptions === void 0) {
-      requestOptions = {};
-    }
-
     return this.request(Object.assign({}, requestOptions, {
       url: resource.resourceType + "/" + resource.id,
       method: "PUT",
@@ -11394,7 +11400,7 @@ var Client = /*#__PURE__*/function () {
       headers: Object.assign({
         // TODO: Do we need to alternate with "application/json+fhir"?
         "Content-Type": "application/json"
-      }, requestOptions.headers)
+      }, (requestOptions || {}).headers)
     }));
   }
   /**
@@ -11433,7 +11439,7 @@ var Client = /*#__PURE__*/function () {
     var _request = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee6(requestOptions, fhirOptions, _resolvedRefs) {
       var _this2 = this;
 
-      var _a, debugRequest, url, options, signal, job;
+      var _a, debugRequest, url, options, signal, job, response;
 
       return _regenerator.default.wrap(function _callee6$(_context6) {
         while (1) {
@@ -11495,7 +11501,14 @@ var Client = /*#__PURE__*/function () {
               }) // Make the request
               .then(function (requestOptions) {
                 debugRequest("%s, options: %O, fhirOptions: %O", url, requestOptions, options);
-                return lib_1.request(url, requestOptions);
+                return lib_1.request(url, requestOptions).then(function (result) {
+                  if (requestOptions.includeResponse) {
+                    response = result.response;
+                    return result.body;
+                  }
+
+                  return result;
+                });
               }) // Handle 401 ------------------------------------------------------
               .catch( /*#__PURE__*/function () {
                 var _ref3 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3(error) {
@@ -11504,44 +11517,50 @@ var Client = /*#__PURE__*/function () {
                       switch (_context3.prev = _context3.next) {
                         case 0:
                           if (!(error.status == 401)) {
-                            _context3.next = 12;
+                            _context3.next = 15;
                             break;
                           }
 
                           if (_this2.getState("tokenResponse.access_token")) {
-                            _context3.next = 3;
+                            _context3.next = 4;
                             break;
                           }
 
-                          throw new Error("This app cannot be accessed directly. Please launch it as SMART app!");
+                          error.message += "\nThis app cannot be accessed directly. Please launch it as SMART app!";
+                          throw error;
 
-                        case 3:
+                        case 4:
                           if (options.useRefreshToken) {
-                            _context3.next = 8;
+                            _context3.next = 10;
                             break;
                           }
 
                           debugRequest("Your session has expired and the useRefreshToken option is set to false. Please re-launch the app.");
-                          _context3.next = 7;
+                          _context3.next = 8;
                           return _this2._clearState();
 
-                        case 7:
-                          throw new Error(strings_1.default.expired);
-
                         case 8:
+                          error.message += "\n" + strings_1.default.expired;
+                          throw error;
+
+                        case 10:
+                          // In rare cases we may have a valid access token and a refresh
+                          // token and the request might still fail with 401 just because
+                          // the access token has just been revoked.
                           // otherwise -> auto-refresh failed. Session expired.
                           // Need to re-launch. Clear state to start over!
                           debugRequest("Auto-refresh failed! Please re-launch the app.");
-                          _context3.next = 11;
+                          _context3.next = 13;
                           return _this2._clearState();
 
-                        case 11:
-                          throw new Error(strings_1.default.expired);
-
-                        case 12:
+                        case 13:
+                          error.message += "\n" + strings_1.default.expired;
                           throw error;
 
-                        case 13:
+                        case 15:
+                          throw error;
+
+                        case 16:
                         case "end":
                           return _context3.stop();
                       }
@@ -11560,10 +11579,11 @@ var Client = /*#__PURE__*/function () {
 
                 throw error;
               }).then(function (data) {
-                // Handle raw responses (anything other than json) -------------
-                if (!data) return data;
-                if (typeof data == "string") return data;
-                if (data instanceof Response) return data; // Resolve References ------------------------------------------
+                // At this point we don't know what `data` actually is!
+                // We might gen an empty or falsy result. If so return it as is
+                if (!data) return data; // Handle raw responses
+
+                if (typeof data == "string" || data instanceof Response) return data; // Resolve References ------------------------------------------
 
                 return function () {
                   var _ref4 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4(_data) {
@@ -11702,6 +11722,15 @@ var Client = /*#__PURE__*/function () {
                     return {
                       data: _data,
                       references: _resolvedRefs
+                    };
+                  }
+
+                  return _data;
+                }).then(function (_data) {
+                  if (requestOptions.includeResponse) {
+                    return {
+                      body: _data,
+                      response: response
                     };
                   }
 
@@ -11990,7 +12019,17 @@ var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/inte
 
 __webpack_require__(/*! core-js/modules/es.function.name */ "./node_modules/core-js/modules/es.function.name.js");
 
+__webpack_require__(/*! core-js/modules/es.regexp.exec */ "./node_modules/core-js/modules/es.regexp.exec.js");
+
+__webpack_require__(/*! core-js/modules/es.string.match */ "./node_modules/core-js/modules/es.string.match.js");
+
 __webpack_require__(/*! core-js/modules/web.url.to-json */ "./node_modules/core-js/modules/web.url.to-json.js");
+
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js"));
+
+__webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
+
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ "./node_modules/@babel/runtime/helpers/asyncToGenerator.js"));
 
 var _inheritsLoose2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/inheritsLoose */ "./node_modules/@babel/runtime/helpers/inheritsLoose.js"));
 
@@ -12003,36 +12042,101 @@ Object.defineProperty(exports, "__esModule", {
 var HttpError = /*#__PURE__*/function (_Error) {
   (0, _inheritsLoose2.default)(HttpError, _Error);
 
-  function HttpError(message, statusCode, statusText, body) {
+  function HttpError(response) {
     var _this;
 
-    if (message === void 0) {
-      message = "Unknown error";
-    }
-
-    if (statusCode === void 0) {
-      statusCode = 0;
-    }
-
-    if (statusText === void 0) {
-      statusText = "Error";
-    }
-
-    if (body === void 0) {
-      body = null;
-    }
-
-    _this = _Error.call(this, message) || this;
-    _this.message = message;
+    _this = _Error.call(this, response.status + " " + response.statusText + "\nURL: " + response.url) || this;
     _this.name = "HttpError";
-    _this.statusCode = statusCode;
-    _this.status = statusCode;
-    _this.statusText = statusText;
-    _this.body = body;
+    _this.response = response;
+    _this.statusCode = response.status;
+    _this.status = response.status;
+    _this.statusText = response.statusText;
     return _this;
   }
 
   var _proto = HttpError.prototype;
+
+  _proto.parse = /*#__PURE__*/function () {
+    var _parse = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+      var type, body, _body;
+
+      return _regenerator.default.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              if (this.response.bodyUsed) {
+                _context.next = 19;
+                break;
+              }
+
+              _context.prev = 1;
+              type = this.response.headers.get("Content-Type") || "text/plain";
+
+              if (!type.match(/\bjson\b/i)) {
+                _context.next = 10;
+                break;
+              }
+
+              _context.next = 6;
+              return this.response.json();
+
+            case 6:
+              body = _context.sent;
+
+              if (body.error) {
+                this.message += "\n" + body.error;
+
+                if (body.error_description) {
+                  this.message += ": " + body.error_description;
+                }
+              } else {
+                this.message += "\n\n" + JSON.stringify(body, null, 4);
+              }
+
+              _context.next = 15;
+              break;
+
+            case 10:
+              if (!type.match(/^text\//i)) {
+                _context.next = 15;
+                break;
+              }
+
+              _context.next = 13;
+              return this.response.text();
+
+            case 13:
+              _body = _context.sent;
+
+              if (_body) {
+                this.message += "\n\n" + _body;
+              }
+
+            case 15:
+              _context.next = 19;
+              break;
+
+            case 17:
+              _context.prev = 17;
+              _context.t0 = _context["catch"](1);
+
+            case 19:
+              return _context.abrupt("return", this);
+
+            case 20:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, this, [[1, 17]]);
+    }));
+
+    function parse() {
+      return _parse.apply(this, arguments);
+    }
+
+    return parse;
+  }();
 
   _proto.toJSON = function toJSON() {
     return {
@@ -12040,8 +12144,7 @@ var HttpError = /*#__PURE__*/function (_Error) {
       statusCode: this.statusCode,
       status: this.status,
       statusText: this.statusText,
-      message: this.message,
-      body: this.body
+      message: this.message
     };
   };
 
@@ -12378,12 +12481,14 @@ var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime
 
 __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
 
+var _objectWithoutPropertiesLoose2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/objectWithoutPropertiesLoose */ "./node_modules/@babel/runtime/helpers/objectWithoutPropertiesLoose.js"));
+
 var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ "./node_modules/@babel/runtime/helpers/asyncToGenerator.js"));
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getTargetWindow = exports.getPatientParam = exports.byCodes = exports.byCode = exports.getAccessTokenExpiration = exports.jwtDecode = exports.randomString = exports.absolute = exports.makeArray = exports.setPath = exports.getPath = exports.humanizeError = exports.fetchConformanceStatement = exports.getAndCache = exports.request = exports.responseToJSON = exports.checkResponse = exports.units = exports.debug = void 0;
+exports.getTargetWindow = exports.getPatientParam = exports.byCodes = exports.byCode = exports.getAccessTokenExpiration = exports.jwtDecode = exports.randomString = exports.absolute = exports.makeArray = exports.setPath = exports.getPath = exports.fetchConformanceStatement = exports.getAndCache = exports.request = exports.responseToJSON = exports.checkResponse = exports.units = exports.debug = void 0;
 
 var HttpError_1 = __webpack_require__(/*! ./HttpError */ "./src/HttpError.ts");
 
@@ -12467,25 +12572,27 @@ function checkResponse(_x) {
 
 function _checkResponse() {
   _checkResponse = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(resp) {
+    var error;
     return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             if (resp.ok) {
-              _context.next = 4;
+              _context.next = 5;
               break;
             }
 
-            _context.next = 3;
-            return humanizeError(resp);
-
-          case 3:
-            throw _context.sent;
+            error = new HttpError_1.default(resp);
+            _context.next = 4;
+            return error.parse();
 
           case 4:
-            return _context.abrupt("return", resp);
+            throw error;
 
           case 5:
+            return _context.abrupt("return", resp);
+
+          case 6:
           case "end":
             return _context.stop();
         }
@@ -12520,11 +12627,14 @@ exports.responseToJSON = responseToJSON;
  * - Otherwise return the response object on which we call stuff like `.blob()`
  */
 
-function request(url, options) {
-  if (options === void 0) {
-    options = {};
+function request(url, requestOptions) {
+  if (requestOptions === void 0) {
+    requestOptions = {};
   }
 
+  var _requestOptions = requestOptions,
+      includeResponse = _requestOptions.includeResponse,
+      options = (0, _objectWithoutPropertiesLoose2.default)(_requestOptions, ["includeResponse"]);
   return fetch(url, Object.assign({
     mode: "cors"
   }, options, {
@@ -12568,9 +12678,17 @@ function request(url, options) {
       if (location) {
         return request(location, Object.assign({}, options, {
           method: "GET",
-          body: null
+          body: null,
+          includeResponse: includeResponse
         }));
       }
+    }
+
+    if (includeResponse) {
+      return {
+        body: body,
+        response: res
+      };
     } // For any non-text and non-json response return the Response object.
     // This to let users decide if they want to call text(), blob() or
     // something else on it
@@ -12629,89 +12747,6 @@ function fetchConformanceStatement(baseUrl, requestOptions) {
 }
 
 exports.fetchConformanceStatement = fetchConformanceStatement;
-/**
- * Given a response object, generates and throws detailed HttpError.
- * @param resp The `Response` object of a failed `fetch` request
- */
-
-function humanizeError(_x2) {
-  return _humanizeError.apply(this, arguments);
-}
-
-function _humanizeError() {
-  _humanizeError = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(resp) {
-    var msg, body, type;
-    return _regenerator.default.wrap(function _callee2$(_context2) {
-      while (1) {
-        switch (_context2.prev = _context2.next) {
-          case 0:
-            msg = resp.status + " " + resp.statusText + "\nURL: " + resp.url;
-            body = null;
-            _context2.prev = 2;
-            type = resp.headers.get("Content-Type") || "text/plain";
-
-            if (!type.match(/\bjson\b/i)) {
-              _context2.next = 11;
-              break;
-            }
-
-            _context2.next = 7;
-            return resp.json();
-
-          case 7:
-            body = _context2.sent;
-
-            if (body.error) {
-              msg += "\n" + body.error;
-
-              if (body.error_description) {
-                msg += ": " + body.error_description;
-              }
-            } else {
-              msg += "\n\n" + JSON.stringify(body, null, 4);
-            }
-
-            _context2.next = 16;
-            break;
-
-          case 11:
-            if (!type.match(/^text\//i)) {
-              _context2.next = 16;
-              break;
-            }
-
-            _context2.next = 14;
-            return resp.text();
-
-          case 14:
-            body = _context2.sent;
-
-            if (body) {
-              msg += "\n\n" + body;
-            }
-
-          case 16:
-            _context2.next = 20;
-            break;
-
-          case 18:
-            _context2.prev = 18;
-            _context2.t0 = _context2["catch"](2);
-
-          case 20:
-            throw new HttpError_1.default(msg, resp.status, resp.statusText, body);
-
-          case 21:
-          case "end":
-            return _context2.stop();
-        }
-      }
-    }, _callee2, null, [[2, 18]]);
-  }));
-  return _humanizeError.apply(this, arguments);
-}
-
-exports.humanizeError = humanizeError;
 /**
  * Walks through an object (or array) and returns the value found at the
  * provided path. This function is very simple so it intentionally does not
@@ -13008,17 +13043,17 @@ exports.getPatientParam = getPatientParam;
  * @param height Only used when `target = "popup"`
  */
 
-function getTargetWindow(_x3, _x4, _x5) {
+function getTargetWindow(_x2, _x3, _x4) {
   return _getTargetWindow.apply(this, arguments);
 }
 
 function _getTargetWindow() {
-  _getTargetWindow = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3(target, width, height) {
+  _getTargetWindow = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(target, width, height) {
     var error, targetWindow, _error, _targetWindow, winOrFrame;
 
-    return _regenerator.default.wrap(function _callee3$(_context3) {
+    return _regenerator.default.wrap(function _callee2$(_context2) {
       while (1) {
-        switch (_context3.prev = _context3.next) {
+        switch (_context2.prev = _context2.next) {
           case 0:
             if (width === void 0) {
               width = 800;
@@ -13029,159 +13064,159 @@ function _getTargetWindow() {
             }
 
             if (!(typeof target == "function")) {
-              _context3.next = 6;
+              _context2.next = 6;
               break;
             }
 
-            _context3.next = 5;
+            _context2.next = 5;
             return target();
 
           case 5:
-            target = _context3.sent;
+            target = _context2.sent;
 
           case 6:
             if (!(target && typeof target == "object")) {
-              _context3.next = 8;
+              _context2.next = 8;
               break;
             }
 
-            return _context3.abrupt("return", target);
+            return _context2.abrupt("return", target);
 
           case 8:
             if (!(typeof target != "string")) {
-              _context3.next = 11;
+              _context2.next = 11;
               break;
             }
 
             _debug("Invalid target type '%s'. Failing back to '_self'.", typeof target);
 
-            return _context3.abrupt("return", self);
+            return _context2.abrupt("return", self);
 
           case 11:
             if (!(target == "_self")) {
-              _context3.next = 13;
+              _context2.next = 13;
               break;
             }
 
-            return _context3.abrupt("return", self);
+            return _context2.abrupt("return", self);
 
           case 13:
             if (!(target == "_parent")) {
-              _context3.next = 15;
+              _context2.next = 15;
               break;
             }
 
-            return _context3.abrupt("return", parent);
+            return _context2.abrupt("return", parent);
 
           case 15:
             if (!(target == "_top")) {
-              _context3.next = 17;
+              _context2.next = 17;
               break;
             }
 
-            return _context3.abrupt("return", top);
+            return _context2.abrupt("return", top);
 
           case 17:
             if (!(target == "_blank")) {
-              _context3.next = 34;
+              _context2.next = 34;
               break;
             }
 
             targetWindow = null;
-            _context3.prev = 19;
+            _context2.prev = 19;
             targetWindow = window.open("", "SMARTAuthPopup");
 
             if (targetWindow) {
-              _context3.next = 23;
+              _context2.next = 23;
               break;
             }
 
             throw new Error("Perhaps window.open was blocked");
 
           case 23:
-            _context3.next = 28;
+            _context2.next = 28;
             break;
 
           case 25:
-            _context3.prev = 25;
-            _context3.t0 = _context3["catch"](19);
-            error = _context3.t0;
+            _context2.prev = 25;
+            _context2.t0 = _context2["catch"](19);
+            error = _context2.t0;
 
           case 28:
             if (targetWindow) {
-              _context3.next = 33;
+              _context2.next = 33;
               break;
             }
 
             _debug("Cannot open window. Failing back to '_self'. %s", error);
 
-            return _context3.abrupt("return", self);
+            return _context2.abrupt("return", self);
 
           case 33:
-            return _context3.abrupt("return", targetWindow);
+            return _context2.abrupt("return", targetWindow);
 
           case 34:
             if (!(target == "popup")) {
-              _context3.next = 51;
+              _context2.next = 51;
               break;
             }
 
             _targetWindow = null; // if (!targetWindow || targetWindow.closed) {
 
-            _context3.prev = 36;
+            _context2.prev = 36;
             _targetWindow = window.open("", "SMARTAuthPopup", ["height=" + height, "width=" + width, "menubar=0", "resizable=1", "status=0", "top=" + (screen.height - height) / 2, "left=" + (screen.width - width) / 2].join(","));
 
             if (_targetWindow) {
-              _context3.next = 40;
+              _context2.next = 40;
               break;
             }
 
             throw new Error("Perhaps the popup window was blocked");
 
           case 40:
-            _context3.next = 45;
+            _context2.next = 45;
             break;
 
           case 42:
-            _context3.prev = 42;
-            _context3.t1 = _context3["catch"](36);
-            _error = _context3.t1;
+            _context2.prev = 42;
+            _context2.t1 = _context2["catch"](36);
+            _error = _context2.t1;
 
           case 45:
             if (_targetWindow) {
-              _context3.next = 50;
+              _context2.next = 50;
               break;
             }
 
             _debug("Cannot open window. Failing back to '_self'. %s", _error);
 
-            return _context3.abrupt("return", self);
+            return _context2.abrupt("return", self);
 
           case 50:
-            return _context3.abrupt("return", _targetWindow);
+            return _context2.abrupt("return", _targetWindow);
 
           case 51:
             // Frame or window by name
             winOrFrame = frames[target];
 
             if (!winOrFrame) {
-              _context3.next = 54;
+              _context2.next = 54;
               break;
             }
 
-            return _context3.abrupt("return", winOrFrame);
+            return _context2.abrupt("return", winOrFrame);
 
           case 54:
             _debug("Unknown target '%s'. Failing back to '_self'.", target);
 
-            return _context3.abrupt("return", self);
+            return _context2.abrupt("return", self);
 
           case 56:
           case "end":
-            return _context3.stop();
+            return _context2.stop();
         }
       }
-    }, _callee3, null, [[19, 25], [36, 42]]);
+    }, _callee2, null, [[19, 25], [36, 42]]);
   }));
   return _getTargetWindow.apply(this, arguments);
 }
@@ -13258,6 +13293,8 @@ var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/inte
 
 __webpack_require__(/*! core-js/modules/es.array.filter */ "./node_modules/core-js/modules/es.array.filter.js");
 
+__webpack_require__(/*! core-js/modules/es.array.find */ "./node_modules/core-js/modules/es.array.find.js");
+
 __webpack_require__(/*! core-js/modules/es.array.for-each */ "./node_modules/core-js/modules/es.array.for-each.js");
 
 __webpack_require__(/*! core-js/modules/es.array.iterator */ "./node_modules/core-js/modules/es.array.iterator.js");
@@ -13274,7 +13311,11 @@ __webpack_require__(/*! core-js/modules/es.object.to-string */ "./node_modules/c
 
 __webpack_require__(/*! core-js/modules/es.promise */ "./node_modules/core-js/modules/es.promise.js");
 
+__webpack_require__(/*! core-js/modules/es.regexp.constructor */ "./node_modules/core-js/modules/es.regexp.constructor.js");
+
 __webpack_require__(/*! core-js/modules/es.regexp.exec */ "./node_modules/core-js/modules/es.regexp.exec.js");
+
+__webpack_require__(/*! core-js/modules/es.regexp.to-string */ "./node_modules/core-js/modules/es.regexp.to-string.js");
 
 __webpack_require__(/*! core-js/modules/es.string.iterator */ "./node_modules/core-js/modules/es.string.iterator.js");
 
@@ -13493,7 +13534,7 @@ function authorize(_x, _x2, _x3) {
 
 function _authorize() {
   _authorize = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(env, params, _noRedirect) {
-    var _params, redirect_uri, clientSecret, fakeTokenResponse, patientId, encounterId, client_id, target, width, height, _params2, iss, launch, fhirServiceUrl, redirectUri, _params2$scope, scope, clientId, completeInTarget, url, storage, serverUrl, inFrame, inPopUp, oldKey, stateKey, state, fullSessionStorageSupport, redirectUrl, extensions, redirectParams, win;
+    var url, urlISS, cfg, _params, redirect_uri, clientSecret, fakeTokenResponse, patientId, encounterId, client_id, target, width, height, _params2, iss, launch, fhirServiceUrl, redirectUri, _params2$scope, scope, clientId, completeInTarget, storage, serverUrl, inFrame, inPopUp, oldKey, stateKey, state, fullSessionStorageSupport, redirectUrl, extensions, redirectParams, win;
 
     return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
@@ -13507,10 +13548,61 @@ function _authorize() {
               _noRedirect = false;
             }
 
+            url = env.getUrl(); // Multiple config for EHR launches ---------------------------------------
+
+            if (!Array.isArray(params)) {
+              _context.next = 13;
+              break;
+            }
+
+            urlISS = url.searchParams.get("iss") || url.searchParams.get("fhirServiceUrl");
+
+            if (urlISS) {
+              _context.next = 7;
+              break;
+            }
+
+            throw new Error('Passing in an "iss" url parameter is required if authorize ' + 'uses multiple configurations');
+
+          case 7:
+            // pick the right config
+            cfg = params.find(function (x) {
+              if (x.issMatch) {
+                if (typeof x.issMatch === "function") {
+                  return !!x.issMatch(urlISS);
+                }
+
+                if (typeof x.issMatch === "string") {
+                  return x.issMatch === urlISS;
+                }
+
+                if (x.issMatch instanceof RegExp) {
+                  return x.issMatch.test(urlISS);
+                }
+              }
+
+              return false;
+            });
+
+            if (cfg) {
+              _context.next = 10;
+              break;
+            }
+
+            throw new Error("No configuration found matching the current \"iss\" parameter \"" + urlISS + "\"");
+
+          case 10:
+            _context.next = 12;
+            return authorize(env, cfg, _noRedirect);
+
+          case 12:
+            return _context.abrupt("return", _context.sent);
+
+          case 13:
+            // ------------------------------------------------------------------------
             // Obtain input
             _params = params, redirect_uri = _params.redirect_uri, clientSecret = _params.clientSecret, fakeTokenResponse = _params.fakeTokenResponse, patientId = _params.patientId, encounterId = _params.encounterId, client_id = _params.client_id, target = _params.target, width = _params.width, height = _params.height;
             _params2 = params, iss = _params2.iss, launch = _params2.launch, fhirServiceUrl = _params2.fhirServiceUrl, redirectUri = _params2.redirectUri, _params2$scope = _params2.scope, scope = _params2$scope === void 0 ? "" : _params2$scope, clientId = _params2.clientId, completeInTarget = _params2.completeInTarget;
-            url = env.getUrl();
             storage = env.getStorage(); // For these three an url param takes precedence over inline option
 
             iss = url.searchParams.get("iss") || iss;
@@ -13534,13 +13626,13 @@ function _authorize() {
             serverUrl = String(iss || fhirServiceUrl || ""); // Validate input
 
             if (serverUrl) {
-              _context.next = 15;
+              _context.next = 25;
               break;
             }
 
             throw new Error("No server url found. It must be specified as `iss` or as " + "`fhirServiceUrl` parameter");
 
-          case 15:
+          case 25:
             if (iss) {
               debug("Making %s launch...", launch ? "EHR" : "standalone");
             } // append launch scope if needed
@@ -13568,15 +13660,15 @@ function _authorize() {
             // this is a re-authorize)
 
 
-            _context.next = 20;
+            _context.next = 30;
             return storage.get(settings_1.SMART_KEY);
 
-          case 20:
+          case 30:
             oldKey = _context.sent;
-            _context.next = 23;
+            _context.next = 33;
             return storage.unset(oldKey);
 
-          case 23:
+          case 33:
             // create initial state
             stateKey = lib_1.randomString(16);
             state = {
@@ -13592,14 +13684,14 @@ function _authorize() {
             fullSessionStorageSupport = isBrowser() ? lib_1.getPath(env, "options.fullSessionStorageSupport") : true;
 
             if (!fullSessionStorageSupport) {
-              _context.next = 29;
+              _context.next = 39;
               break;
             }
 
-            _context.next = 29;
+            _context.next = 39;
             return storage.set(settings_1.SMART_KEY, stateKey);
 
-          case 29:
+          case 39:
             // fakeTokenResponse to override stuff (useful in development)
             if (fakeTokenResponse) {
               Object.assign(state.tokenResponse, fakeTokenResponse);
@@ -13622,60 +13714,60 @@ function _authorize() {
             redirectUrl = redirectUri + "?state=" + encodeURIComponent(stateKey); // bypass oauth if fhirServiceUrl is used (but iss takes precedence)
 
             if (!(fhirServiceUrl && !iss)) {
-              _context.next = 42;
+              _context.next = 52;
               break;
             }
 
             debug("Making fake launch...");
-            _context.next = 37;
+            _context.next = 47;
             return storage.set(stateKey, state);
 
-          case 37:
+          case 47:
             if (!_noRedirect) {
-              _context.next = 39;
+              _context.next = 49;
               break;
             }
 
             return _context.abrupt("return", redirectUrl);
 
-          case 39:
-            _context.next = 41;
+          case 49:
+            _context.next = 51;
             return env.redirect(redirectUrl);
-
-          case 41:
-            return _context.abrupt("return", _context.sent);
-
-          case 42:
-            _context.next = 44;
-            return getSecurityExtensions(env, serverUrl);
-
-          case 44:
-            extensions = _context.sent;
-            Object.assign(state, extensions);
-            _context.next = 48;
-            return storage.set(stateKey, state);
-
-          case 48:
-            if (state.authorizeUri) {
-              _context.next = 54;
-              break;
-            }
-
-            if (!_noRedirect) {
-              _context.next = 51;
-              break;
-            }
-
-            return _context.abrupt("return", redirectUrl);
 
           case 51:
-            _context.next = 53;
-            return env.redirect(redirectUrl);
-
-          case 53:
             return _context.abrupt("return", _context.sent);
 
+          case 52:
+            _context.next = 54;
+            return getSecurityExtensions(env, serverUrl);
+
           case 54:
+            extensions = _context.sent;
+            Object.assign(state, extensions);
+            _context.next = 58;
+            return storage.set(stateKey, state);
+
+          case 58:
+            if (state.authorizeUri) {
+              _context.next = 64;
+              break;
+            }
+
+            if (!_noRedirect) {
+              _context.next = 61;
+              break;
+            }
+
+            return _context.abrupt("return", redirectUrl);
+
+          case 61:
+            _context.next = 63;
+            return env.redirect(redirectUrl);
+
+          case 63:
+            return _context.abrupt("return", _context.sent);
+
+          case 64:
             // build the redirect uri
             redirectParams = ["response_type=code", "client_id=" + encodeURIComponent(clientId || ""), "scope=" + encodeURIComponent(scope), "redirect_uri=" + encodeURIComponent(redirectUri), "aud=" + encodeURIComponent(serverUrl), "state=" + encodeURIComponent(stateKey)]; // also pass this in case of EHR launch
 
@@ -13686,22 +13778,22 @@ function _authorize() {
             redirectUrl = state.authorizeUri + "?" + redirectParams.join("&");
 
             if (!_noRedirect) {
-              _context.next = 59;
+              _context.next = 69;
               break;
             }
 
             return _context.abrupt("return", redirectUrl);
 
-          case 59:
+          case 69:
             if (!(target && isBrowser())) {
-              _context.next = 68;
+              _context.next = 78;
               break;
             }
 
-            _context.next = 62;
+            _context.next = 72;
             return lib_1.getTargetWindow(target, width, height);
 
-          case 62:
+          case 72:
             win = _context.sent;
 
             if (win !== self) {
@@ -13730,14 +13822,14 @@ function _authorize() {
 
             return _context.abrupt("return");
 
-          case 68:
-            _context.next = 70;
+          case 78:
+            _context.next = 80;
             return env.redirect(redirectUrl);
 
-          case 70:
+          case 80:
             return _context.abrupt("return", _context.sent);
 
-          case 71:
+          case 81:
           case "end":
             return _context.stop();
         }

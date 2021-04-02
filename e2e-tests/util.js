@@ -335,6 +335,16 @@ let util = {
 
 
   /**
+   *  Saves the current form as a questionnaire response.
+   */
+  saveAsQRAndObs: function() {
+    let saveAs = $('#btn-save-as');
+    saveAs.click();
+    $('#btn-save-sdc-qr-obs').click();
+  },
+  
+
+  /**
    *  Returns a function, which when called, will send the given message to the
    *  log.  The purpose is to be used in .then clauses for debugging.
    */

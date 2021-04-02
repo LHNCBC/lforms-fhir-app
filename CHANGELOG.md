@@ -3,6 +3,13 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [1.2.2] - 2021-03-29
+### Fixed
+- Fixe a bug in FHIR delete operation that now takes a URL string
+  instead of an object.
+### Updated
+- Update fhirclient.js to 2.3.11
+
 ## [1.2.1] - 2021-03-05
 ### Fixed
 - Updated lforms to 28.1.4 and adjusted tests and test Questionnaires.
