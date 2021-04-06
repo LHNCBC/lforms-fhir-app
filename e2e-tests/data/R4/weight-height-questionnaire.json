@@ -9,7 +9,7 @@
     ],
     "tag": [
       {
-        "code": "lformsVersion: 25.0.0"
+        "code": "lformsVersion: 28.0.0"
       }
     ]
   },
@@ -68,6 +68,10 @@
             "system": "http://unitsofmeasure.org",
             "code": "a"
           }
+        },
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract",
+          "valueBoolean": true
         }
       ],
       "required": false,
@@ -150,6 +154,10 @@
             "system": "http://unitsofmeasure.org",
             "code": "a"
           }
+        },
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract",
+          "valueBoolean": true
         }
       ],
       "required": false,
