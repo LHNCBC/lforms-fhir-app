@@ -3,6 +3,11 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [1.2.3] - 2021-04-06
+### Changed
+- Updated NIH/NLM/LHC logo;
+- Removed favicon.ico
+
 ## [1.2.2] - 2021-03-29
 ### Fixed
 - Fixe a bug in FHIR delete operation that now takes a URL string
