@@ -81,7 +81,7 @@ md-dialog-content {
 /* Styles for the NIH/NLM/LHC logo */
 #lhc-logo {
   background-color: #0BACB6;
-  padding: 4px 0 8px 8px;
+  padding: 2px 0 5px 5px;
   overflow: hidden;
 }
 #lhc-logo img {
@@ -107,11 +107,10 @@ body {
 }
 #logo {
   position: relative;
-  top: 6px;
+  top: 4px;
   font-size: 18px;
   display: block;
-  margin-bottom: 6px;
-  display: block;
+  margin-bottom: 2px;
 }
 #header a {
   color: #1E4193;
@@ -120,10 +119,10 @@ body {
 
 #logo img {
   float: left;
-  margin-right: 8px;
-  margin-left: 8px;
+  margin-right: 5px;
+  margin-left: 5px;
   border-right: 1px solid #0BACB6;
-  padding-right: 0.75em;
+  padding-right: 5px;
   display: block;
 }
 
