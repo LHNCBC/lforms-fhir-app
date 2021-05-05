@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [1.2.4] - 2021-05-05
+### Changed
+- Updated lforms to 29.0.3
+
 ## [1.2.3] - 2021-04-06
 ### Changed
 - Updated NIH/NLM/LHC logo;
