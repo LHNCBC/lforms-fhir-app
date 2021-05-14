@@ -10,7 +10,7 @@ fb.service('fhirService', [
     "use strict";
     var thisService = this;
 
-    // Currently user
+    // current user
     thisService.currentUser = null;
 
     // Currently selected patient
