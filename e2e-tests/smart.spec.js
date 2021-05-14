@@ -27,6 +27,8 @@ describe('SMART on FHIR connection', function () {
       var name = $('#ptName');
       browser.wait(EC.presenceOf(name), 5000);
       browser.wait(EC.textToBePresentInElement(name, 'Daniel'), 2000);
+      var user = $('#userName');
+      browser.wait(EC.textToBePresentInElement(user, 'Susan Clark'), 2000);
     });
 
     describe('Featured Questionnaires', function() {

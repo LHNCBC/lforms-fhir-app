@@ -10,6 +10,9 @@ fb.service('fhirService', [
     "use strict";
     var thisService = this;
 
+    // Currently user
+    thisService.currentUser = null;
+
     // Currently selected patient
     thisService.currentPatient = null;
 
@@ -177,6 +180,51 @@ fb.service('fhirService', [
 
 
     /**
+     * Set the current user (practitioner/patient/related persion/...)
+     * Data returned through an angular broadcast event.
+     * @param patient the selected patient
+     */
+    thisService.setCurrentUser = function(user) {
+      thisService.currentUser = user;
+    };
+
+
+    /**
+     * Get the current user
+     * @returns {null}
+     */
+    thisService.getCurrentUser = function() {
+      return thisService.currentUser;
+    };    
+
+
+    /**
+     * Get the user's display name
+     * @param user optional, an FHIR Patient resource
+     * @returns {string} a formatted patient name
+     * @private
+     */
+    thisService.getUserName = function(user) {
+      var currentUser = user ? user : thisService.currentUser;
+      var name = "";
+      // the user could be a FHIR Practitioner/Patient/RelatedPersion/Person/..
+      // which all have a 'name' field that is of the same type of HumaneName
+      if (currentUser && currentUser.name && currentUser.name.length > 0) {
+        if (currentUser.name[0].given && currentUser.name[0].family) {
+          name = currentUser.name[0].given[0] + " " + currentUser.name[0].family;
+        }
+        else if (currentUser.name[0].family) {
+          name = currentUser.name[0].family;
+        }
+        else if (currentUser.name[0].given ) {
+          name = currentUser.name[0].given[0]
+        }
+      }
+      return name;
+    }
+
+
+    /**
      * Set the current selected patient
      * Data returned through an angular broadcast event.
      * @param patient the selected patient
@@ -194,6 +242,7 @@ fb.service('fhirService', [
       return thisService.currentPatient;
     };
 
+    
     /**
      * Get the patient's display name
      * @param patient optional, an FHIR Patient resource

@@ -108,6 +108,13 @@ let util = {
       //let iframe = $('#frame');
       //browser.wait(EC.presenceOf(iframe), 2000);
       //browser.switchTo().frame(iframe.getWebElement());
+
+      // practitioner login
+      //var loginButton = $("button[type='submit']")
+      var loginButton = $("span.show-if-records");
+      browser.wait(EC.presenceOf(loginButton), 4000);
+      loginButton.click();
+      // patient search
       var searchField = $('#search-text');
       browser.wait(EC.presenceOf(searchField), 4000);
       searchField.sendKeys('Daniel');
