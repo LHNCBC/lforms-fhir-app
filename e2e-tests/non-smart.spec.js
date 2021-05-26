@@ -150,6 +150,12 @@ describe('Non-SMART connection to FHIR server', function() {
         $(familyMemberName).click();
         $(familyMemberName).sendKeys('zz');
         util.saveAsQR();
+        // check if qr.author is saved
+        util.getQRUrlFromDialog().then(function(url) {
+          util.getResouceByUrl(url).then(function(res) {
+            expect(res.author).toBe(undefined)
+          })
+        })
         util.closeSaveResultsDialog();
         // Load a blank questionnaire to clear the fields
         util.expandAvailQs();
@@ -222,6 +228,13 @@ describe('Non-SMART connection to FHIR server', function() {
         $(familyMemberName).click();
         $(familyMemberName).sendKeys('to be deleted2');
         util.saveAsQRAndObs();
+        // check if qr.author is saved
+        util.getQRUrlFromDialog().then(function(url) {
+          util.getResouceByUrl(url).then(function(res) {
+            expect(res.author).toBe(undefined)
+          })
+        })
+        
         util.closeSaveResultsDialog();
         // Load a blank questionnaire to clear the fields
         util.expandAvailQs();

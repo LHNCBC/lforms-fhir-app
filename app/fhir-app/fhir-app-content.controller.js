@@ -124,6 +124,12 @@ angular.module('lformsApp')
             qExists = false;
           }
           var qr = resArray.shift();
+          
+          // add an author if in SMART environment
+          if (fhirService.getCurrentUser() && !qr.author) {
+            qr.author = fhirService.getCurrentUserReference();
+          }
+
           fhirService.createQQRObs(qData, qr, resArray, qExists);
         };
 
@@ -158,6 +164,11 @@ angular.module('lformsApp')
           if (qr) {
             // patient data should already be filled in above
             delete qr.id;
+
+            // add an author if in SMART environment
+            if (fhirService.getCurrentUser() && !qr.author) {
+              qr.author = fhirService.getCurrentUserReference();
+            }
 
             if ($scope.fhirResInfo.questionnaireResId) {
               var qData = {id: $scope.fhirResInfo.questionnaireResId,

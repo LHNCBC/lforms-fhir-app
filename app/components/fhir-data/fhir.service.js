@@ -197,6 +197,23 @@ fb.service('fhirService', [
       return thisService.currentUser;
     };    
 
+    
+    /**
+     * Get a Reference to the current user
+     * @returns a Reference to the current user
+     */
+    thisService.getCurrentUserReference = function() {
+      var ref = null;
+      if (this.currentUser) {
+        ref = {
+                "type": this.currentUser.resourceType,
+                "reference": this.currentUser.resourceType + "/" + this.currentUser.id,
+                "display": this.getUserName()
+              }
+      }
+      return ref;
+    };
+
 
     /**
      * Get the user's display name
