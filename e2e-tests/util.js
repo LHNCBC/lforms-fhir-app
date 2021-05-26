@@ -111,8 +111,9 @@ let util = {
 
       // practitioner login
       //var loginButton = $("button[type='submit']")
-      var loginButton = $("span.show-if-records");
-      browser.wait(EC.presenceOf(loginButton), 4000);
+      //var loginButton = $("span.show-if-records");
+      let loginButton = element(by.css("button"))
+      browser.wait(EC.presenceOf(loginButton), 10000);
       loginButton.click();
       // patient search
       var searchField = $('#search-text');
