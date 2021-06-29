@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [1.3.0] - 2021-05-13
+### Added
+- Added the display of the pratitioner's name on the page
+
 ## [1.2.4] - 2021-05-05
 ### Changed
 - Updated lforms to 29.0.3

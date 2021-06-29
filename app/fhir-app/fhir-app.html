@@ -26,11 +26,18 @@
     <div class="md-toolbar-tools">
       <span class="glyphicon glyphicon-user"></span>
       <span ng-if="getCurrentPatient()" flex="" class="lf-patient-info">
-        <div id=ptName class="col-xs-6 col-md-3">Name: {{getPatientName()}}</div>
+        <div id="ptName" class="col-xs-6 col-md-3">Patient: {{getPatientName()}}</div>
         <div class="col-xs-6 col-md-3">Gender: {{getPatientGender()}}</div>
         <div class="col-xs-6 col-md-3">DoB: {{getPatientDob()}}</div>
-        <div class="col-xs-6 col-md-3">Phone: {{getPatientPhone()}}</div>
+        <div class="col-xs-6 col-md-3">
+          <span id="userName" ng-if="getCurrentUser()" flex="" class="lf-user-info">
+            <img class="lf-icon-doctor" src="assets/images/doctor.png" alt="user" />
+            User: {{getUserName()}}
+          </span>
+    
+        </div>
       </span>
+
     </div>
 
   </md-toolbar>

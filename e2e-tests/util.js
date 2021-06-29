@@ -108,6 +108,12 @@ let util = {
       //let iframe = $('#frame');
       //browser.wait(EC.presenceOf(iframe), 2000);
       //browser.switchTo().frame(iframe.getWebElement());
+
+      // practitioner login
+      let loginButton = element(by.css("button"))
+      browser.wait(EC.elementToBeClickable(loginButton), 4000);
+      loginButton.click();
+      // patient search
       var searchField = $('#search-text');
       browser.wait(EC.presenceOf(searchField), 4000);
       searchField.sendKeys('Daniel');
@@ -321,6 +327,28 @@ let util = {
     browser.wait(EC.presenceOf($(okButton)));
     $(okButton).click();
     browser.wait(EC.not(EC.presenceOf($(okButton))));
+  },
+
+
+  /**
+   * Get the URL of the save QuestionnaireResponse (the first in the list)
+   * @returns a promise
+   */
+  getQRUrlFromDialog: function() {
+    var link = element(by.css('li a.ng-binding'));
+    browser.wait(EC.presenceOf(link), 1000);
+    return link.getAttribute('href')    
+  },
+
+
+  /**
+   * Returns a promise that resolves a resource on a FHIR server
+   * @param url the url of a resource on a FHIR server.
+   */
+   getResouceByUrl: function(url) {
+    return sAgent.get(url).then(res => {
+      return res.body
+    });
   },
 
 

@@ -23,7 +23,7 @@
 <script>
   FHIR.oauth2.authorize({
     "client_id": "my_web_app",  // hard coded client_id to work with SMART on FHIR starter server
-    "scope":  "user/*.* launch/patient"
+    "scope":  "openid fhirUser user/*.* launch/patient"
   });
 </script>
 Loading...

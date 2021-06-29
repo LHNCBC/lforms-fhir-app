@@ -137,6 +137,10 @@ body {
   padding-right: 1em;
   font-weight: bold;
 }
+.lf-icon-doctor {
+  filter: brightness(0) invert(1);
+}
+
 /* End of styles for the header */
 /* Styles for the footer */
 #fine-print {

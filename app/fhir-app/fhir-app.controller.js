@@ -16,6 +16,23 @@ angular.module('lformsApp')
 
 
       /**
+       *  Returns the logged in user resource.
+       */
+       $scope.getCurrentUser = function() {
+        return fhirService.getCurrentUser();
+      };
+
+
+      /**
+       * Get the name of the logged in user
+       * @returns {*|string}
+       */
+       $scope.getUserName = function() {
+        return fhirService.getUserName();
+      };
+
+      
+      /**
        * Get the name of the selected patient
        * @returns {*|string}
        */
@@ -118,6 +135,10 @@ angular.module('lformsApp')
                   fhirService.setCurrentPatient(pt);
                   fhirService.getAllQRByPatientId(pt.id);
                   fhirService.getAllQ();
+                  $scope.$apply();
+                });
+                smart.user.read().then(function(user) {
+                  fhirService.setCurrentUser(user);
                   $scope.$apply();
                 });
               }

@@ -10,6 +10,9 @@ fb.service('fhirService', [
     "use strict";
     var thisService = this;
 
+    // current user
+    thisService.currentUser = null;
+
     // Currently selected patient
     thisService.currentPatient = null;
 
@@ -177,6 +180,68 @@ fb.service('fhirService', [
 
 
     /**
+     * Set the current user (practitioner/patient/related persion/...)
+     * Data returned through an angular broadcast event.
+     * @param user the selected user
+     */
+    thisService.setCurrentUser = function(user) {
+      thisService.currentUser = user;
+    };
+
+
+    /**
+     * Get the current user
+     * @returns {null}
+     */
+    thisService.getCurrentUser = function() {
+      return thisService.currentUser;
+    };    
+
+    
+    /**
+     * Get a Reference to the current user
+     * @returns a Reference to the current user
+     */
+    thisService.getCurrentUserReference = function() {
+      var ref = null;
+      if (this.currentUser) {
+        ref = {
+                "type": this.currentUser.resourceType,
+                "reference": this.currentUser.resourceType + "/" + this.currentUser.id,
+                "display": this.getUserName()
+              }
+      }
+      return ref;
+    };
+
+
+    /**
+     * Get the user's display name
+     * @param user optional, a FHIR Practitioner/Patient/RelatedPersion/Person/..
+     * @returns {string} a formatted name of the user
+     */
+    thisService.getUserName = function(user) {
+      var currentUser = user ? user : thisService.currentUser;
+      return this.getPersonName(currentUser);
+      var name = "";
+      
+      // which all have a 'name' field that is of the same type of HumaneName
+      if (currentUser && currentUser.name && currentUser.name.length > 0) {
+        if (currentUser.name[0].given && currentUser.name[0].family) {
+          name = currentUser.name[0].given[0] + " " + currentUser.name[0].family;
+        }
+        else if (currentUser.name[0].family) {
+          name = currentUser.name[0].family;
+        }
+        else if (currentUser.name[0].given ) {
+          name = currentUser.name[0].given[0]
+        }
+      }
+      return name;
+    }
+
+
+    /**
      * Set the current selected patient
      * Data returned through an angular broadcast event.
      * @param patient the selected patient
@@ -194,28 +259,39 @@ fb.service('fhirService', [
       return thisService.currentPatient;
     };
 
+    
     /**
      * Get the patient's display name
      * @param patient optional, an FHIR Patient resource
      * @returns {string} a formatted patient name
-     * @private
      */
     thisService.getPatientName = function(patient) {
       var currentPatient = patient ? patient : thisService.currentPatient;
+      return this.getPersonName(currentPatient);
+    };
+
+
+    /**
+     * Get a person's name, for display
+     * @param {string}} person a resource of Patient, Practioner, and etc.
+     * @returns 
+     * @private
+     */
+    thisService.getPersonName = function(person) {
       var name = "";
-      if (currentPatient && currentPatient.name && currentPatient.name.length > 0) {
-        if (currentPatient.name[0].given && currentPatient.name[0].family) {
-          name = currentPatient.name[0].given[0] + " " + currentPatient.name[0].family;
+      if (person && person.name && person.name.length > 0) {
+        if (person.name[0].given && person.name[0].family) {
+          name = person.name[0].given[0] + " " + person.name[0].family;
         }
-        else if (currentPatient.name[0].family) {
-          name = currentPatient.name[0].family;
+        else if (person.name[0].family) {
+          name = person.name[0].family;
         }
-        else if (currentPatient.name[0].given ) {
-          name = currentPatient.name[0].given[0]
+        else if (person.name[0].given ) {
+          name = person.name[0].given[0]
         }
       }
       return name;
-    };
+    }
 
 
     /**

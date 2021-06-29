@@ -27,6 +27,8 @@ describe('SMART on FHIR connection', function () {
       var name = $('#ptName');
       browser.wait(EC.presenceOf(name), 5000);
       browser.wait(EC.textToBePresentInElement(name, 'Daniel'), 2000);
+      var user = $('#userName');
+      browser.wait(EC.textToBePresentInElement(user, 'Susan Clark'), 2000);
     });
 
     describe('Featured Questionnaires', function() {
@@ -163,6 +165,18 @@ describe('SMART on FHIR connection', function () {
             $('#btn-save-as').click(); // open save as menu
             $('#btn-save-sdc-qr').click(); // save the Q & QR
             util.waitForSpinnerStopped();
+            // check if qr.author is saved
+            util.getQRUrlFromDialog().then(function(url) {
+              util.getResouceByUrl(url).then(function(res) {
+                expect(res.author).toEqual(
+                  {
+                    reference: 'Practitioner/smart-Practitioner-71482713',
+                    type: 'Practitioner',
+                    display: 'Susan Clark'
+                  }                
+                )
+              })
+            })            
             util.closeSaveResultsDialog();
             /// open the saved qr section
             element(by.css("#heading-one a")).click();
@@ -216,6 +230,19 @@ describe('SMART on FHIR connection', function () {
         $(familyMemberName).click();
         $(familyMemberName).sendKeys('to be deleted2');
         util.saveAsQRAndObs();
+        // check if qr.author is saved
+        util.getQRUrlFromDialog().then(function(url) {
+          util.getResouceByUrl(url).then(function(res) {
+            expect(res.author).toEqual(
+              {
+                reference: 'Practitioner/smart-Practitioner-71482713',
+                type: 'Practitioner',
+                display: 'Susan Clark'
+              }                
+            )
+          })
+        })
+        
         util.closeSaveResultsDialog();
         // Load a blank questionnaire to clear the fields
         util.expandAvailQs();
@@ -233,7 +260,6 @@ describe('SMART on FHIR connection', function () {
         expect($('div.loading.initial').getText()).toBe('Please select a FHIR resource or upload from file.');
       });
     });
-
 
 
     describe("'Show' Menu", function () {
