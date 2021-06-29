@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [1.3.1] - 2021-06-29
+### Fixed
+- Added a missing icon in production mode.
+
 ## [1.3.0] - 2021-05-13
 ### Added
 - Added the display of the pratitioner's name on the page

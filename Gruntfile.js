@@ -216,7 +216,7 @@ module.exports = function (grunt) {
             '*.{ico,png,txt}',
             '.htaccess',
             'bower_components/**/**',
-            'assets/images/{,*/}*.{jpg,gif,svg}',
+            'assets/images/{,*/}*.{jpg,gif,svg,png}',
             'assets/fonts/**/*',
             'launch.html',
             'index.html',
