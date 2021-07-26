@@ -46,7 +46,7 @@ describe('Non-SMART connection to FHIR server', function() {
     // Note:  If this test fails, it might be because this particular server is
     // down.  In that case, feel free to replace it with another off-list
     // server.
-    util.sendKeys($(urlField), 'http://wildfhir4.aegis.net/fhir4-0-0');
+    util.sendKeys($(urlField), 'http://wildfhir4.aegis.net/fhir4-0-1');
     $(urlField).sendKeys(protractor.Key.TAB);
     $('#btnOK').click();
     // Wait for dialog to close
@@ -234,7 +234,7 @@ describe('Non-SMART connection to FHIR server', function() {
             expect(res.author).toBe(undefined)
           })
         })
-        
+
         util.closeSaveResultsDialog();
         // Load a blank questionnaire to clear the fields
         util.expandAvailQs();
