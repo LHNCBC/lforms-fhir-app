@@ -1,15 +1,4 @@
-<div class="demo-app" ng-controller="FhirAppContentCtrl">
-
-  <!--<p class="status-bar" ng-if="formData">-->
-    <!--<span class="status-label" flex="50">-->
-      <!--<span class="">Resource Type:</span>-->
-      <!--<span class="text-primary">{{fhirResInfo.resTypeDisplay}}</span>-->
-    <!--</span>-->
-    <!--<span class="status-label" flex="50">-->
-      <!--<span class="">Resource ID:</span>-->
-      <!--<span class="text-primary">{{fhirResInfo.resId}}</span>-->
-    <!--</span>-->
-  <!--</p>-->
+<div class="demo-app">
 
   <div class="btn-group btn-group-sm" role="group" ng-if="formData">
     <button ng-if="formData && fhirResInfo.resId" type="button" class="btn btn-primary" ng-click="saveQRToFhir()" id="btn-save"
@@ -76,19 +65,13 @@
 
   <lforms lf-data="formData" lf-options="lfOptions"></lforms>
 
-  <!-- inline templates. these could be in template files too. -->
-  <script type="text/ng-template" id="initial.html">
-    <div class="loading initial">
-      <span>Please select a FHIR resource or upload from file.</span>
-    </div>
-  </script>
+  <div class="loading initial">
+    <span>Please select a FHIR resource or upload from file.</span>
+  </div>
 
-  <script type="text/ng-template" id="loading.html">
-    <div class="loading">
-      <span>Loading...</span>
-    </div>
-  </script>
-  <!-- end of inline templates -->
+  <div class="loading">
+    <span>Loading...</span>
+  </div>
 
 </div>
 
