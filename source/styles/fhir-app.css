@@ -48,15 +48,34 @@
   font-style: italic;
   margin: 0 0 5px 0;
 }
+
+/* Patient info banner */
 .lf-patient {
   /*background-color: rgb(139, 150, 225) !important;*/
   background-color: #458ac5 !important;
-  height: 2.2em;
-  min-height: 2.2em;
+  color: white;
+  font-size: 20px;
 }
 .lf-patient-info {
   font-size: 70%;
 }
+.lf-patient table {
+  width: 100%;
+  margin: 0 16px;
+  height: 2.2em;
+  visibility: hidden;
+}
+.lf-patient td {
+  width: 25%;
+}
+.lf-patient td:first-child {
+  width: inherit;
+  margin-top: 10px;
+  margin-right: 0.5em;
+  font-size: 20px;
+}
+/* End of patient info banner */
+
 .lf-content {
   width: 100%;
   padding: 15px 0 15px 0;
@@ -144,6 +163,7 @@
   font-size: 75%;
   text-align: right;
 }
+
 
 /* Spinner from http://tobiasahlin.com/spinkit/ */
 .spinner {
