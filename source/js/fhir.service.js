@@ -315,35 +315,6 @@ thisService.getPatientPhoneNumber = function(patient) {
 
 
 /**
- * Get FHIR pagination results using a link url in the current bundle
- *
- * @param resType - The FHIR bundle from which to extract the relation url.
- * @param url - the URL for getting the next or previous page.
- * @returns {Object} - FHIR resource bundle
- */
-thisService.getPage = function(resType, relation, url) {
-  var baseUrl = $window.location.origin + '/fhir-api?';
-  var url = url.replace(/^.*\/baseDstu3\?/, baseUrl);
-
-  thisService.fhir.request(url)
-    .then(function(response) {   // response is a searchset bundle
-      if (resType === "Questionnaire") {
-        $rootScope.$broadcast('LF_FHIR_QUESTIONNAIRE_LIST', response);
-      }
-      else if (resType === "QuestionnaireResponse") {
-        $rootScope.$broadcast('LF_FHIR_QUESTIONNAIRERESPONSE_LIST', response);
-      }
-      // else if (resType === "DiagnosticReport") {
-      //   $rootScope.$broadcast('LF_FHIR_DIAGNOSTICREPORT_LIST', response);
-      // }
-    }, function(error) {
-      console.log(error);
-    });
-
-};
-
-
-/**
  *  Build a FHIR search query and returns a promise with the result.
  * @param searchConfig an object with the following sub-keys for configuring the search.
  *  type: (required) the Resource type to search for
@@ -366,6 +337,7 @@ function fhirSearch(searchConfig) {
     headers: searchConfig.headers
   });
 }
+
 
 /**
  * Search patients by name
@@ -406,11 +378,62 @@ thisService.searchPatientByName = function(searchText, resultCount) {
 
 
 /**
+ *   Sets the reference to a questionnaire in a QuestionnaireResponse.
+ *  @param qrData the QuestionnaireResponse needing the Questionnaire
+ *  reference.
+ *  @param qData the Questionnaire (or at least the ID field).
+ */
+thisService.setQRRefToQ = function(qrData, qData) {
+  var qID = qData.id;
+  if (thisService.fhirVersion === 'STU3')
+    qrData.questionnaire = {"reference": "Questionnaire/" + qID};
+  else
+    qrData.questionnaire = "Questionnaire/" + qID;
+};
+
+
+
+
+// TBD - Code below this point has either not been updated yet or will be
+// removed.
+
+/**
+ * Get FHIR pagination results using a link url in the current bundle
+ *
+ * @param resType - The FHIR bundle from which to extract the relation url.
+ * @param url - the URL for getting the next or previous page.
+ * @returns {Object} - FHIR resource bundle
+ */
+/*
+thisService.getPage = function(resType, relation, url) {
+  var baseUrl = $window.location.origin + '/fhir-api?';
+  var url = url.replace(/^.*\/baseDstu3\?/, baseUrl);
+
+  thisService.fhir.request(url)
+    .then(function(response) {   // response is a searchset bundle
+      if (resType === "Questionnaire") {
+        $rootScope.$broadcast('LF_FHIR_QUESTIONNAIRE_LIST', response);
+      }
+      else if (resType === "QuestionnaireResponse") {
+        $rootScope.$broadcast('LF_FHIR_QUESTIONNAIRERESPONSE_LIST', response);
+      }
+      // else if (resType === "DiagnosticReport") {
+      //   $rootScope.$broadcast('LF_FHIR_DIAGNOSTICREPORT_LIST', response);
+      // }
+    }, function(error) {
+      console.log(error);
+    });
+};
+*/
+
+
+/**
  * Search questionnaires by title
  * Data returned through an angular broadcast event.
  * @param searchText the search text for the questionnaire's title
  * @returns {*}
  */
+/*
 thisService.searchQuestionnaire = function(searchText) {
   // md-autocomplete directive requires a promise to be returned
   return fhirSearch({
@@ -437,6 +460,7 @@ thisService.searchQuestionnaire = function(searchText) {
       console.log(error);
     });
 };
+*/
 
 /**
  * Get a FHIR resource by resource ID
@@ -444,6 +468,7 @@ thisService.searchQuestionnaire = function(searchText) {
  * @param resType FHIR resource type
  * @param resId FHIR resource ID
  */
+/*
 thisService.getFhirResourceById = function(resType, resId) {
   thisService.fhir.request(resType+'/'+encodeURIComponent(resId))
     .then(function(response) {
@@ -453,6 +478,7 @@ thisService.getFhirResourceById = function(resType, resId) {
       console.log(error);
     });
 };
+*/
 
 
 /**
@@ -461,6 +487,7 @@ thisService.getFhirResourceById = function(resType, resId) {
  * @param resType FHIR resource type
  * @param resId FHIR resource ID
  */
+/*
 thisService.getMergedQQR = function(resType, resId) {
   fhirSearch(
     {
@@ -492,22 +519,7 @@ thisService.getMergedQQR = function(resType, resId) {
       console.log(error);
     });
 };
-
-
-/**
- *   Sets the reference to a questionnaire in a QuesitonnaireResponse.
- *  @param qrData the QuestionnaireResponse needing the Questionnaire
- *  reference.
- *  @param qData the Questionnaire (or at least the ID field).
- */
-thisService.setQRRefToQ = function(qrData, qData) {
-  var qID = qData.id;
-  if (thisService.fhirVersion === 'STU3')
-    qrData.questionnaire = {"reference": "Questionnaire/" + qID};
-  else
-    qrData.questionnaire = "Questionnaire/" + qID;
-};
-
+*/
 
 /**
  *  Creates a QuestionnairResponse.
@@ -515,6 +527,7 @@ thisService.setQRRefToQ = function(qrData, qData) {
  * @param qData the Questionnaire resource, or at least the ID and name
  *  fields.
  */
+/*
 thisService.createQR = function (qrData, qData) {
   // Set the questionnaire reference in the response
   thisService.setQRRefToQ(qrData, qData);
@@ -540,6 +553,7 @@ thisService.createQR = function (qrData, qData) {
     }
   );
 };
+*/
 
 
 /**
@@ -548,6 +562,7 @@ thisService.createQR = function (qrData, qData) {
  * @param opName the name of the operation (e.g. "create")
  * @param errInfo the error structure returned by the FHIR client.
  */
+/*
 function reportError(resourceType, opName, errInfo) {
   $rootScope.$broadcast('OP_FAILED',
     { resType: resourceType,
@@ -555,6 +570,7 @@ function reportError(resourceType, opName, errInfo) {
       errInfo: errInfo
     });
 }
+*/
 
 
 /**
@@ -567,6 +583,7 @@ function reportError(resourceType, opName, errInfo) {
  * @param qExists true if the questionnaire is known to exist (in which case
  * we skip the lookup)
  */
+/*
 thisService.createQQRObs = function(q, qr, obsArray, qExists) {
   _terminatingError = null;
 
@@ -641,12 +658,14 @@ thisService.createQQRObs = function(q, qr, obsArray, qExists) {
   else
     createOrFindAndCall(q, withQuestionnaire);
 };
+*/
 
 
 /**
  *  Reports the results of one or more operations (which might have
  *  terminated in an error.
  */
+/*
 function reportResults() {
   $rootScope.$broadcast('OP_RESULTS',
     {
@@ -657,6 +676,7 @@ function reportResults() {
   _collectedResults = [];
   _terminatingError = null;
 }
+*/
 
 
 /**
@@ -667,6 +687,7 @@ function reportResults() {
  * @param withQuestionnaire a function to be called with the questionnaire
  *  resource from the server.
  */
+/*
 function createOrFindAndCall(q, withQuestionnaire) {
   function createQAndCall() {
     thisService.fhir.create(q).then(function success(resp) {
@@ -731,6 +752,7 @@ function createOrFindAndCall(q, withQuestionnaire) {
     });
   }
 };
+*/
 
 
 /**
@@ -740,6 +762,7 @@ function createOrFindAndCall(q, withQuestionnaire) {
  * @param qr the QuestionnaireResponse resource
  * @param extenstionType optional, for Questionnaire/QuestionnaireResponse it could be "SDC"
  */
+/*
 thisService.createQQR = function(q, qr, extensionType) {
   function withQuestionnaire(q) {
     thisService.createQR(qr, q);
@@ -747,6 +770,7 @@ thisService.createQQR = function(q, qr, extensionType) {
 
   createOrFindAndCall(q, withQuestionnaire);
 };
+*/
 
 
 /**
@@ -755,6 +779,7 @@ thisService.createQQR = function(q, qr, extensionType) {
  * @param resType FHIR resource type
  * @param resource the FHIR resource
  */
+/*
 thisService.updateFhirResource = function(resType, resource) {
   thisService.fhir.update(resource)
     .then(function success(response) {
@@ -766,7 +791,7 @@ thisService.updateFhirResource = function(resType, resource) {
       reportError(resType, 'update', response);
     });
 };
-
+*/
 
 /**
  * Delete a QuestionnaireResponse and its associated Observations (if any).
@@ -776,6 +801,7 @@ thisService.updateFhirResource = function(resType, resource) {
  *  true).
  * @return a promise that resolves when the deletion has finished.
  */
+/*
 thisService.deleteQRespAndObs = function(resId, reportSuccess) {
   var rtnPromise;;
   if (thisService.fhirVersion === 'STU3') {
@@ -828,7 +854,7 @@ thisService.deleteQRespAndObs = function(resId, reportSuccess) {
   }
   return rtnPromise;
 };
-
+*/
 
 /**
  * Delete a Questionnaire, any saved QuestionnaireResponses for that
@@ -837,6 +863,7 @@ thisService.deleteQRespAndObs = function(resId, reportSuccess) {
  * @param resId FHIR resource ID
  * @return a promise that resolves when all of the deletion is finished.
  */
+/*
 thisService.deleteQAndQRespAndObs = function(resId) {
   return fhirSearch({
     type: 'QuestionnaireResponse',
@@ -875,7 +902,7 @@ thisService.deleteQAndQRespAndObs = function(resId) {
     reportError('QuestionnaireResponse', 'delete', error);
   });
 };
-
+*/
 
 /**
  *  Deletes an FHIR resource, and reports the result.
@@ -886,6 +913,7 @@ thisService.deleteQAndQRespAndObs = function(resId) {
  *  true).
  * @return a promise that resolves when the resource is deleted
  */
+/*
 thisService.deleteFhirResource = function(resType, resId, reportSuccess) {
   if (reportSuccess === undefined)
     reportSuccess = true;
@@ -902,31 +930,7 @@ thisService.deleteFhirResource = function(resType, resId, reportSuccess) {
       reportError(resType, 'delete', response);
     });
 };
-
-
-/**
- * Get a Bundle with a DiagnosticReport resource and its all results Observation resources
- * @param resType FHIR resource type (should be DiagnosticReport)
- * @param resId FHIR resource ID
- * not used
- */
-thisService.getDRAndObxBundle = function(resType, resId) {
-  fhirSearch({
-    type: 'DiagnosticReport',
-    query: {
-      _id: resId,
-      _include: 'DiagnosticReport:result'
-    },
-    headers: {
-      'Cache-Control': 'no-cache'
-    }
-  })
-    .then(function(response) {   // response is a searchset bundle
-      $rootScope.$broadcast('LF_FHIR_DR_OBX_BUNDLE', response);
-    }, function(error) {
-      console.log(error);
-    });
-};
+*/
 
 
 /**
@@ -934,6 +938,7 @@ thisService.getDRAndObxBundle = function(resType, resId) {
  * Within the bundle, each resource could have its own request method.
  * @param bundle a FHIR transaction bundel.
  */
+/*
 thisService.handleTransactionBundle = function(bundle) {
   thisService.fhir.transaction({bundle: bundle}).then(
     function success(resp) {
@@ -952,13 +957,14 @@ thisService.handleTransactionBundle = function(bundle) {
     }
   )
 };
-
+*/
 
 /**
  * Get all QuestionnaireResponse resources of a patient
  *  Returns a promise that resolves to the response from the FHIR server.
  * @param pId the current patient's ID
  */
+/*
 thisService.getAllQRByPatientId = function(pId) {
   return fhirSearch({
     type: 'QuestionnaireResponse',
@@ -973,6 +979,7 @@ thisService.getAllQRByPatientId = function(pId) {
     }
   });
 };
+*/
 
 
 /**
@@ -981,6 +988,7 @@ thisService.getAllQRByPatientId = function(pId) {
  * @param qId the id of a Questionnaire resource
  * @returns {*}
  */
+/*
 thisService.findQuestionnaire = function(searchSet, qId) {
   var qRes = null;
   if (searchSet) {
@@ -994,12 +1002,13 @@ thisService.findQuestionnaire = function(searchSet, qId) {
   }
   return qRes;
 };
-
+*/
 
 /**
  *  Get all Questionnaire resources
  *  Returns a promise that resolves to the response from the server.
  */
+/*
 thisService.getAllQ = function() {
 
   fhirSearch({
@@ -1013,3 +1022,4 @@ thisService.getAllQ = function() {
     }
   });
 };
+*/
