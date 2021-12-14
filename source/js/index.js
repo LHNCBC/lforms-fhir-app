@@ -1,5 +1,6 @@
 import {fhirService} from './fhir.service.js';
 import {Dialogs} from './dialogs.js';
+import './left-sidebar.js';
 
 /**
  * Get the connection to FHIR server and the selected patient

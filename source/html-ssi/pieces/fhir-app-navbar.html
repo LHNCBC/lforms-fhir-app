@@ -1,110 +1,106 @@
-<div ng-controller="NavBarCtrl">
+<div class="panel">
+  <div class="panel-body">
+    <input type="file" id="loadFileInput" accept="application/json" class="hide" />
 
-  <div class="panel">
-    <div class="panel-body">
-      <input type="file" id="inputAnchor" nv-file-select uploader="uploader"
-             class="hide" />
+    <div class="btn-group btn-group-justified" role="group">
+      <a id="upload" role="button" type="button"
+       class="btn btn-default btn-sm btn-success"
+       title="Upload a file."><span class="glyphicon glyphicon-upload"></span><span
+       class="lf-nav-button">Upload</span></a></div>
+    <p>If you do not have a Questionnaire of your own to upload, you can try
+     downloading one of our <a href=
+     "https://raw.githubusercontent.com/lhncbc/lforms-fhir-app/master/e2e-tests/data/R4/weight-height-questionnaire.json"
+     target="_blank" rel="noopener noreferrer" id=sampleQ>samples</a> (saving
+     it to file, and then uploading it here).</p>
+  </div>
+</div>
 
-      <div class="btn-group btn-group-justified" role="group">
-        <a id="upload" role="button" type="button"
-         class="btn btn-default btn-sm btn-success" ng-click="loadFromFile()"
-         title="Upload a file."><span class="glyphicon glyphicon-upload"></span><span
-         class="lf-nav-button">Upload</span></a></div>
-      <p>If you do not have a Questionnaire of your own to upload, you can try
-       downloading one of our <a href=
-       "https://raw.githubusercontent.com/lhncbc/lforms-fhir-app/master/e2e-tests/data/R4/weight-height-questionnaire.json"
-       target="_blank" rel="noopener noreferrer" id=sampleQ>samples</a> (saving
-       it to file, and then uploading it here).</p>
+<div class="panel-group" id="listAccordion" role="tablist" aria-multiselectable="true">
+
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="heading-one">
+      <div class="panel-title">
+        <a role="button" class="{{getSectionTitleClass(1)}}" data-toggle="collapse" data-target="#collapse-one"
+           data-parent="#listAccordion" aria-expanded="false" aria-controls="collapse-one">
+          Saved QuestionnaireResponses
+        </a>
+      </div>
+    </div>
+    <div class="panel-collapse collapse {{getSectionPanelClass(1)}}" id="collapse-one" role="tabpanel"
+         aria-labelledby="heading-one">
+      <div ng-if="listSavedQRError">Unable to retrieve saved QuestionnaireResponses.</div>
+      <div ng-if="!listSavedQRError && !listSavedQR">Loading QuestionnaireResponses from server...</div>
+      <div ng-if="!listSavedQRError && listSavedQR && listSavedQR.length==0">No saved
+        QuestionnaireResponse resources were found for this patient.</div>
+      <div ng-if="listSavedQR && listSavedQR.length>0" id="qrList" class="list-group">
+        <a href="#" class="list-group-item {{isSelected(1, $index)}}" ng-repeat="p in listSavedQR" role="presentation" id="{{p.resId}}" ng-click="showSavedQQR($index, p)">
+          <p class="form-name">{{p.resName}}</p>
+          <p class="res-type" ng-if="p.extensionType">{{p.resTypeDisplay}}</p>
+          <p class="last-updated">{{p.updatedAt}}</p>
+        </a>
+        <div class="btn-group btn-group-justified" role="group">
+          <a role="button" type="button" class="btn btn-default btn-sm glyphicon glyphicon-chevron-left" ng-disabled="!hasPagingLink('QuestionnaireResponse','previous')" ng-click="getPage('QuestionnaireResponse', 'previous')"></a>
+          <a role="button" type="button" class="btn btn-default btn-sm glyphicon glyphicon-chevron-right" ng-disabled="!hasPagingLink('QuestionnaireResponse','next')" ng-click="getPage('QuestionnaireResponse', 'next')"></a>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="panel-group" id="listAccordion" role="tablist" aria-multiselectable="true">
-
-    <div class="panel panel-default">
-      <div class="panel-heading" role="tab" id="heading-one">
-        <div class="panel-title">
-          <a role="button" class="{{getSectionTitleClass(1)}}" data-toggle="collapse" data-target="#collapse-one"
-             data-parent="#listAccordion" aria-expanded="false" aria-controls="collapse-one">
-            Saved QuestionnaireResponses
-          </a>
-        </div>
-      </div>
-      <div class="panel-collapse collapse {{getSectionPanelClass(1)}}" id="collapse-one" role="tabpanel"
-           aria-labelledby="heading-one">
-        <div ng-if="listSavedQRError">Unable to retrieve saved QuestionnaireResponses.</div>
-        <div ng-if="!listSavedQRError && !listSavedQR">Loading QuestionnaireResponses from server...</div>
-        <div ng-if="!listSavedQRError && listSavedQR && listSavedQR.length==0">No saved
-          QuestionnaireResponse resources were found for this patient.</div>
-        <div ng-if="listSavedQR && listSavedQR.length>0" id="qrList" class="list-group">
-          <a href="#" class="list-group-item {{isSelected(1, $index)}}" ng-repeat="p in listSavedQR" role="presentation" id="{{p.resId}}" ng-click="showSavedQQR($index, p)">
-            <p class="form-name">{{p.resName}}</p>
-            <p class="res-type" ng-if="p.extensionType">{{p.resTypeDisplay}}</p>
-            <p class="last-updated">{{p.updatedAt}}</p>
-          </a>
-          <div class="btn-group btn-group-justified" role="group">
-            <a role="button" type="button" class="btn btn-default btn-sm glyphicon glyphicon-chevron-left" ng-disabled="!hasPagingLink('QuestionnaireResponse','previous')" ng-click="getPage('QuestionnaireResponse', 'previous')"></a>
-            <a role="button" type="button" class="btn btn-default btn-sm glyphicon glyphicon-chevron-right" ng-disabled="!hasPagingLink('QuestionnaireResponse','next')" ng-click="getPage('QuestionnaireResponse', 'next')"></a>
-          </div>
-        </div>
+  <div ng-if="listFeaturedQ" class="panel panel-default">
+    <div class="panel-heading" role="tab" id="heading-two">
+      <div class="panel-title">
+        <a role="button" class="{{getSectionTitleClass(0)}}" data-toggle="collapse" data-target="#collapse-two"
+           data-parent="#listAccordion" aria-expanded="false" aria-controls="collapse-two">
+          Featured Questionnaires:
+        </a>
       </div>
     </div>
-
-    <div ng-if="listFeaturedQ" class="panel panel-default">
-      <div class="panel-heading" role="tab" id="heading-two">
-        <div class="panel-title">
-          <a role="button" class="{{getSectionTitleClass(0)}}" data-toggle="collapse" data-target="#collapse-two"
-             data-parent="#listAccordion" aria-expanded="false" aria-controls="collapse-two">
-            Featured Questionnaires:
-          </a>
-        </div>
-      </div>
-      <div class="panel-collapse collapse {{getSectionPanelClass(0)}}" id="collapse-two" role="tabpanel"
-           aria-labelledby="heading-two">
-        <div ng-if="listFeaturedQ && listFeaturedQ.length>0" id="fqList" class="list-group">
-          <a href="#" class="list-group-item {{isSelected(0, $index)}}" ng-repeat="p in listFeaturedQ" role="presentation" id="{{p.id}}" ng-click="showFeaturedQ($index, p)">
-            <p class="form-name">{{p.name}} <span ng-if="p.code">[{{p.code}}]</span></p>
-          </a>
-        </div>
+    <div class="panel-collapse collapse {{getSectionPanelClass(0)}}" id="collapse-two" role="tabpanel"
+         aria-labelledby="heading-two">
+      <div ng-if="listFeaturedQ && listFeaturedQ.length>0" id="fqList" class="list-group">
+        <a href="#" class="list-group-item {{isSelected(0, $index)}}" ng-repeat="p in listFeaturedQ" role="presentation" id="{{p.id}}" ng-click="showFeaturedQ($index, p)">
+          <p class="form-name">{{p.name}} <span ng-if="p.code">[{{p.code}}]</span></p>
+        </a>
       </div>
     </div>
+  </div>
 
-    <div class="panel panel-default">
-      <div class="panel-heading" role="tab" id="heading-three">
-        <div class="panel-title">
-            <a role="button" class="{{getSectionTitleClass(2)}}" data-toggle="collapse" data-target="#collapse-three"
-               data-parent="#listAccordion" aria-expanded="false" aria-controls="collapse-three">
-            Available Questionnaires:
-            </a>
-          <span class=showDate><label><input type=checkbox ng-model=showQDate> Show Date</input></label></span>
-        </div>
-      </div>
-      <div class="panel-collapse collapse {{getSectionPanelClass(2)}}" id="collapse-three" role="tabpanel"
-           aria-labelledby="heading-three">
-        <div ng-if="listSavedQError">Unable to retrieve saved Questionnaires.</div>
-        <div ng-if="!listSavedQError && !listSavedQ">Loading Questionnaires from server...</div>
-        <div ng-if="!listSavedQError && listSavedQ && listSavedQ.length==0">No saved
-          Questionnaire resources were found.  Try uploading one.</div>
-        <div ng-if="listSavedQ && listSavedQ.length>0"  id="qList" class="list-group">
-          <div class="btn-group btn-group-justified" role="group">
-            <a id="search" role="button" type="button" class="btn btn-default btn-sm btn-success " ng-click="showQuestionnairePicker($event)" title="Choose a Questionnaire from the FHIR server."><span class="glyphicon glyphicon-search"></span><span class="lf-nav-button">Search</span></a>
-          </div>
-          <a href="#" class="list-group-item {{isSelected(2, $index)}}" ng-repeat="p in listSavedQ" role="presentation" id="{{p.resId}}" ng-click="showSavedQuestionnaire($index, p)">
-            <p class="form-name">{{p.resName}}</p>
-            <p class="last-updated" ng-if="showQDate">{{p.updatedAt}}</p>
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="heading-three">
+      <div class="panel-title">
+          <a role="button" class="{{getSectionTitleClass(2)}}" data-toggle="collapse" data-target="#collapse-three"
+             data-parent="#listAccordion" aria-expanded="false" aria-controls="collapse-three">
+          Available Questionnaires:
           </a>
-          <div class="btn-group btn-group-justified" role="group">
-            <a id=prevQPage role="button" type="button" class="btn btn-default btn-sm glyphicon glyphicon-chevron-left"
-             ng-disabled="!hasPagingLink('Questionnaire','previous')" ng-click="getPage('Questionnaire', 'previous')"></a>
-            <a id=nextQPage role="button" type="button" class="btn btn-default btn-sm glyphicon glyphicon-chevron-right"
-             ng-disabled="!hasPagingLink('Questionnaire','next')" ng-click="getPage('Questionnaire', 'next')"></a>
-          </div>
-          <div style="display: none" ng-if="formSelected.groupIndex" id="deleteQBtn" class="btn-group btn-group-justified" role="group">
-            <a role="button" type="button" class="btn btn-default btn-sm
-             btn-danger" ng-click="deleteQuestionnaire($event)" title="Deletes
-             a Questionnaire and associated QuestionnaireResponses and
-             Observations"><span class="glyphicon glyphicon-warning-sign"></span><span
-             class="lf-nav-button">Delete Questionnaire and Its Responses</span></a>
-          </div>
+        <span class=showDate><label><input type=checkbox ng-model=showQDate> Show Date</input></label></span>
+      </div>
+    </div>
+    <div class="panel-collapse collapse {{getSectionPanelClass(2)}}" id="collapse-three" role="tabpanel"
+         aria-labelledby="heading-three">
+      <div ng-if="listSavedQError">Unable to retrieve saved Questionnaires.</div>
+      <div ng-if="!listSavedQError && !listSavedQ">Loading Questionnaires from server...</div>
+      <div ng-if="!listSavedQError && listSavedQ && listSavedQ.length==0">No saved
+        Questionnaire resources were found.  Try uploading one.</div>
+      <div ng-if="listSavedQ && listSavedQ.length>0"  id="qList" class="list-group">
+        <div class="btn-group btn-group-justified" role="group">
+          <a id="search" role="button" type="button" class="btn btn-default btn-sm btn-success " ng-click="showQuestionnairePicker($event)" title="Choose a Questionnaire from the FHIR server."><span class="glyphicon glyphicon-search"></span><span class="lf-nav-button">Search</span></a>
+        </div>
+        <a href="#" class="list-group-item {{isSelected(2, $index)}}" ng-repeat="p in listSavedQ" role="presentation" id="{{p.resId}}" ng-click="showSavedQuestionnaire($index, p)">
+          <p class="form-name">{{p.resName}}</p>
+          <p class="last-updated" ng-if="showQDate">{{p.updatedAt}}</p>
+        </a>
+        <div class="btn-group btn-group-justified" role="group">
+          <a id=prevQPage role="button" type="button" class="btn btn-default btn-sm glyphicon glyphicon-chevron-left"
+           ng-disabled="!hasPagingLink('Questionnaire','previous')" ng-click="getPage('Questionnaire', 'previous')"></a>
+          <a id=nextQPage role="button" type="button" class="btn btn-default btn-sm glyphicon glyphicon-chevron-right"
+           ng-disabled="!hasPagingLink('Questionnaire','next')" ng-click="getPage('Questionnaire', 'next')"></a>
+        </div>
+        <div style="display: none" ng-if="formSelected.groupIndex" id="deleteQBtn" class="btn-group btn-group-justified" role="group">
+          <a role="button" type="button" class="btn btn-default btn-sm
+           btn-danger" ng-click="deleteQuestionnaire($event)" title="Deletes
+           a Questionnaire and associated QuestionnaireResponses and
+           Observations"><span class="glyphicon glyphicon-warning-sign"></span><span
+           class="lf-nav-button">Delete Questionnaire and Its Responses</span></a>
         </div>
       </div>
     </div>

@@ -1,5 +1,37 @@
 'use strict';
+import * as formPane from './form-pane';
 
+// Functions and initialization for the left navigation bar.
+
+// Upload button
+const loadFileInput = document.getElementById('loadFileInput');
+document.getElementById('upload').addEventListener('click', ()=>{
+  loadFileInput.click();
+});
+loadFileInput.addEventListener('change', ()=>{
+  const files = loadFileInput.files;
+  if (files.length > 0) {
+    var reader = new FileReader(); // Read from local file system.
+    reader.onload = function(event) {
+      try {
+        var importedData = JSON.parse(event.target.result);
+        // Update it to the current version of LForms
+        importedData = lformsUpdater.update(importedData);
+        formPane.showForm(importedData);
+      }
+      catch (e) {
+        formPane.showError('Could not process the file.', e);
+      }
+    };
+    reader.readAsText(files[0]);
+  }
+  loadFileInput.value = ''; // so the same file can be selectd again
+});
+
+
+// TBD - below this line code should be removed or updated
+
+/*
 angular.module('lformsApp')
   .controller('NavBarCtrl', [
       '$scope', '$http', '$mdDialog', 'selectedFormData', 'fhirService',
@@ -38,18 +70,12 @@ angular.module('lformsApp')
         /**
          *  Deletes all messages from userMessages.
          */
+/*
         function removeMessages() {
           var keys = Object.keys(userMessages);
           for (var i=0, len=keys.length; i<len; ++i)
             delete userMessages[keys[i]];
         }
-
-        /**
-         * Open the file dialog and load a file
-         */
-        $scope.loadFromFile = function() {
-          document.querySelector('#inputAnchor').click();
-        };
 
 
         /**
@@ -58,6 +84,7 @@ angular.module('lformsApp')
          * @param {Object} item - Refer to angular-file-upload for object definition.
          *   Apart from others, it has selected file reference.
          */
+/*
         $scope.uploader.onAfterAddingFile = function(item) {
           // clean up the form before assigning a new one for performance reasons related to AngularJS watches
           selectedFormData.setFormData(null);
@@ -162,6 +189,7 @@ angular.module('lformsApp')
          * @param relation 'next' or 'previous' page
          * @returns {*}
          */
+/*
         $scope.hasPagingLink = function(resType, relation) {
           return $scope.pagingLinks[resType][relation];
         };
@@ -172,6 +200,7 @@ angular.module('lformsApp')
          * @param resType FHIR resource type
          * @param relation 'next' or 'previous' page
          */
+/*
         $scope.getPage = function(resType, relation) {
           var link = $scope.pagingLinks[resType][relation];
           if (link) {
@@ -185,6 +214,7 @@ angular.module('lformsApp')
          * @param resType FHIR resoruce type
          * @param links the link field in a searchset bundle
          */
+/*
         $scope.processPagingLinks = function(resType, links) {
 
           var pagingLinks = {previous: null, next: null};
@@ -204,6 +234,7 @@ angular.module('lformsApp')
          * @param formIndex form index in the list
          * @param qrInfo info of a QuestionnaireResponse
          */
+/*
         $scope.showSavedQQR = function(formIndex, qrInfo) {
           // ResId, ResType, ResName
           if (qrInfo && qrInfo.resType === "QuestionnaireResponse") {
@@ -267,6 +298,7 @@ angular.module('lformsApp')
          * @param formIndex form index in the list
          * @param qInfo info of a Questionnaire
          */
+/*
         $scope.showSavedQuestionnaire = function(formIndex, qInfo) {
 
           // ResId, ResType, ResName
@@ -321,6 +353,7 @@ angular.module('lformsApp')
          * @param formIndex form index in the list
          * @param qInfo info of a Questionnaire
          */
+/*
         $scope.showFeaturedQ = function(formIndex, qInfo) {
 
           // ResId, ResType, ResName
@@ -347,6 +380,7 @@ angular.module('lformsApp')
          * @param formIndex form index in the list
          * @returns {string}
          */
+/*
         $scope.isSelected = function (listIndex, formIndex) {
           var ret = "";
           if ($scope.formSelected &&
@@ -366,6 +400,7 @@ angular.module('lformsApp')
          * @param listIndex list/section index
          * @returns {string} a CSS class for the section body element
          */
+/*
         $scope.getSectionPanelClass = function(listIndex) {
           // if there is a list of featured questionnaires
           if ($scope.listFeaturedQ) {
@@ -390,6 +425,7 @@ angular.module('lformsApp')
          * @param listIndex list/section index
          * @returns {string} a CSS class for the section title element
          */
+/*
         $scope.getSectionTitleClass = function(listIndex) {
           return $scope.getSectionPanelClass(listIndex) === 'in' ? '' : 'collapsed';
         };
@@ -399,6 +435,7 @@ angular.module('lformsApp')
          *  Returns a display name for a Questionnaire resource.
          * @param q the Questionnaire resource
          */
+/*
         function getQName(q) {
           var title = q.title || q.name || (q.code && q.code.length && q.code[0].display);
           // For LOINC only, add the code to title
@@ -421,6 +458,7 @@ angular.module('lformsApp')
         /**
          * Update the saved QuestionnaireResponse list when the data is returned
          */
+/*
         $scope.$on('LF_FHIR_QUESTIONNAIRERESPONSE_LIST', function(event, arg, error) {
           $scope.listSavedQR = [];
           $scope.listSavedQRError = error;
@@ -483,6 +521,7 @@ angular.module('lformsApp')
         /**
          * Update the Questionnaire list when the data is returned
          */
+/*
         $scope.$on('LF_FHIR_QUESTIONNAIRE_LIST', function(event, arg, error) {
           $scope.listSavedQ = [];
           $scope.listSavedQError = error;
@@ -516,6 +555,7 @@ angular.module('lformsApp')
         /**
          * Update the QuestionnaireResponse list when a QuestionnaireResponse has been deleted on an FHIR server
          */
+/*
         $scope.$on('LF_FHIR_RESOURCE_DELETED', function(event, arg) {
           var patient = fhirService.getCurrentPatient();
           fhirService.getAllQRByPatientId(patient.id);
@@ -529,6 +569,7 @@ angular.module('lformsApp')
          *  Update the Questionnnaire list when a Questionnaire has been created
          *  on an FHIR server
          */
+/*
         $scope.$on('LF_FHIR_Q_CREATED', function(event, arg) {
           fhirService.getAllQ();
           $scope.formSelected = {
@@ -543,6 +584,7 @@ angular.module('lformsApp')
          *  Update the QuestionnaireResponse and Questionnnaire lists when a
          *  QuestionnaireResponse has been created on an FHIR server
          */
+/*
         $scope.$on('OP_RESULTS', function(event, arg) {
           if (arg && arg.successfulResults) {
             var patient = fhirService.getCurrentPatient();
@@ -560,6 +602,7 @@ angular.module('lformsApp')
         /**
          * Update the QuestionnaireResponse list when a QuestionnaireResponse has been updated on an FHIR server
          */
+/*
         $scope.$on('LF_FHIR_RESOURCE_UPDATED', function(event, arg) {
           // also update the list to get the updated timestamp and fhir resources.
           var patient = fhirService.getCurrentPatient();
@@ -576,6 +619,7 @@ angular.module('lformsApp')
         /**
          * Update the Featured Questionnaires list when a new Non-SMART FHIR server is selected
          */
+/*
         $scope.$on('LF_FHIR_SERVER_SELECTED', function(event) {
           $scope.listFeaturedQ = fhirService.getFeaturedQs();
           $('.spinner').hide();
@@ -589,6 +633,7 @@ angular.module('lformsApp')
          * Show a popup window to let user use a search field to choose a Questionnaire from HAPI FHIR server
          * @param event the click event
          */
+/*
         $scope.showQuestionnairePicker = function(event) {
           $scope.selectedQuestionnaireInDialog = null;
           $mdDialog.show({
@@ -629,6 +674,7 @@ angular.module('lformsApp')
          *  (Perhaps this should not be a part of the user interface normally,
          *  but it is useful for testing.)
          */
+/*
         $scope.deleteQuestionnaire = function(event) {
           var confirmDialog = $mdDialog.confirm().title('Warning').
             textContent('This will delete the selected Questionnaire, all ' +
@@ -651,6 +697,7 @@ angular.module('lformsApp')
          * @param newlySelected the newly selected Questionnaire
          * @returns {*|boolean}
          */
+/*
         $scope.differentQuestionnaire = function(current, newlySelected) {
           return (current && newlySelected && current.id !== newlySelected.id)
         };
@@ -660,8 +707,10 @@ angular.module('lformsApp')
          * @param searchText
          * @returns {*}
          */
+/*
         $scope.searchQuestionnaire = function(searchText) {
           return fhirService.searchQuestionnaire(searchText);
         };
       }
   ]);
+*/
