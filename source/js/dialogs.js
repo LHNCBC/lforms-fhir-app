@@ -22,7 +22,7 @@ const formContainer_ = document.getElementById(config.formContainer);
 export const Dialogs = {
   /**
    *  Initialization, to set up event handlers for showing dialogs.
-   * @param formContainer a refernece to the element containing the form.
+   * @param formContainer a reference to the element containing the form.
    */
   init: function(formContainer) {
     this.formContainer_ = formContainer;
@@ -63,9 +63,9 @@ export const Dialogs = {
    * @param title the dialog title
    * @param msg the message to show
    */
-  showMsgDialog: function (title, data) {
+  showMsgDialog: function (title, msg) {
     document.getElementById('msgModalTitle').textContent = title;
-    document.getElementById('msgMessageBody').textContent = data;
+    document.getElementById('msgMessageBody').textContent = msg;
     announce('Showing dialog with title: ' +title);
     $('#msgDialog').modal('show');
   },
@@ -135,9 +135,9 @@ export const Dialogs = {
 
       // The search results list needs to be higher than the modals, so the autocompleter can be
       // used there.
-      document.getElementById('searchResults').style = "z-index: 1100";
+      document.getElementById('searchResults').style.zIndex = '1100';
 
-    // Set up event listeners
+      // Set up event listener for the select button
       document.getElementById('psSelectBtn').addEventListener('click', ()=> {
         const selectedData = selectionField.autocomp.getSelectedItemData();
         if (selectedData?.length) {
