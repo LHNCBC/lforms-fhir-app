@@ -29,9 +29,7 @@ export const Dialogs = {
 
     // Handle the copy button on the dialog
     document.getElementById('copyToClipboardBtn').addEventListener('click', ()=>{
-      window.getSelection().selectAllChildren(document.getElementById('message-body'));
-      /* Copy the text inside the element */
-      document.execCommand("Copy");
+      util.copyToClipboard('message-body');
       announce('The data from the dialog has been copied to the clipboard.');
     });
 
@@ -68,7 +66,7 @@ export const Dialogs = {
   showMsgDialog: function (title, data) {
     document.getElementById('msgModalTitle').textContent = title;
     document.getElementById('msgMessageBody').textContent = data;
-    util.announce('Showing dialog with title: ' +title);
+    announce('Showing dialog with title: ' +title);
     $('#msgDialog').modal('show');
   },
 
@@ -76,7 +74,7 @@ export const Dialogs = {
    *  Hides the general message dialog.
    */
   hideMsgDialog: function() {
-    util.announce('Hiding dialog with title: ' +
+    announce('Hiding dialog with title: ' +
       document.getElementById('msgModalTitle').textContent);
     $('#msgDialog').modal('hide');
   },
@@ -150,7 +148,7 @@ export const Dialogs = {
     }
     this.hideMsgDialog();
     $('#patientSelectDialog').modal('show');
-    util.announce('A dialog for selecting a patient is being opened');
+    announce('A dialog for selecting a patient is being opened');
   }
 
 

@@ -6,10 +6,3 @@ export function copyToClipboard(elementId) {
   document.execCommand("Copy");
 }
 
-/**
- *  Sends a message for a screen reader to reader.
- * @msg the message to read
- */
-export function announce(msg) {
-  LForms.Def.ScreenReaderLog.add(msg);
-};
