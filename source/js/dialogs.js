@@ -6,6 +6,7 @@ import { config } from './config.js';
 import {fhirService} from './fhir.service.js';
 import * as util from './util.js';
 import 'bootstrap/js/modal.js';
+import { fhirServerConfig } from './fhir-server-config';
 
 /**
  *  The version of FHIR output by this app (in the "show" dialogs).
@@ -109,8 +110,33 @@ export const Dialogs = {
   /**
    *  Shows a popup window to let user use a select or enter a FHIR server
    *  to use.
+   *  Page location will be updated with query param of the selected server
+   *  url, after user picks one.
    */
   showFHIRServerPicker: function () {
+    const selectionFieldID = 'serverSelection';
+    const selectionField = document.getElementById(selectionFieldID);
+    selectionField.value = '';
+    if (!selectionField.autocomp) {
+      const urlOptions = fhirServerConfig.listFhirServers.map(s => s.url || s.smartServiceUrl);
+      new LForms.Def.Autocompleter.Prefetch(selectionFieldID, urlOptions, {});
+
+      // The search results list needs to be higher than the modals, so the autocompleter can be
+      // used there.
+      document.getElementById('searchResults').style = "z-index: 1100";
+
+      // Set up event listeners
+      document.getElementById('serverSelectBtn').addEventListener('click', ()=> {
+        const selectedData = selectionField.autocomp.getSelectedItemData();
+        if (selectedData?.length) {
+          const urlParams = new URLSearchParams(window.location.search);
+          urlParams.set('server', selectedData[0].text);
+          window.location.search = urlParams;
+        }
+      });
+    }
+    $('#serverSelectDialog').modal('show');
+    util.announce('A dialog for selecting a server is being opened');
   },
 
 
