@@ -157,27 +157,6 @@ thisService.getServerServiceURL = function() {
 
 
 /**
- * Set the current Questionnaire resource
- * Data returned through an angular broadcast event.
- * @param q the selected Questionnaire resource
- */
-thisService.setCurrentQuestionnaire = function(q) {
-  // reset current Questionnaire resource
-  thisService.currentQuestionnaire = q;
-  $rootScope.$broadcast('LF_FHIR_QUESTIONNAIRE_SELECTED', {resource: q});
-};
-
-
-/**
- * Get the current selected Questionnaire resource
- * @returns {null}
- */
-thisService.getCurrentQuestionnaire = function() {
-  return thisService.currentQuestionnaire;
-};
-
-
-/**
  * Set the current user (practitioner/patient/related persion/...)
  * Data returned through an angular broadcast event.
  * @param user the selected user
@@ -221,21 +200,6 @@ thisService.getCurrentUserReference = function() {
 thisService.getUserName = function(user) {
   var currentUser = user ? user : thisService.currentUser;
   return this.getPersonName(currentUser);
-  var name = "";
-
-  // which all have a 'name' field that is of the same type of HumaneName
-  if (currentUser && currentUser.name && currentUser.name.length > 0) {
-    if (currentUser.name[0].given && currentUser.name[0].family) {
-      name = currentUser.name[0].given[0] + " " + currentUser.name[0].family;
-    }
-    else if (currentUser.name[0].family) {
-      name = currentUser.name[0].family;
-    }
-    else if (currentUser.name[0].given ) {
-      name = currentUser.name[0].given[0]
-    }
-  }
-  return name;
 }
 
 
@@ -396,6 +360,29 @@ thisService.setQRRefToQ = function(qrData, qData) {
 
 // TBD - Code below this point has either not been updated yet or will be
 // removed.
+
+/**
+ * Set the current Questionnaire resource
+ * Data returned through an angular broadcast event.
+ * @param q the selected Questionnaire resource
+ */
+/*
+thisService.setCurrentQuestionnaire = function(q) {
+  // reset current Questionnaire resource
+  thisService.currentQuestionnaire = q;
+  $rootScope.$broadcast('LF_FHIR_QUESTIONNAIRE_SELECTED', {resource: q});
+};
+
+
+/**
+ * Get the current selected Questionnaire resource
+ * @returns {null}
+ */
+/*
+thisService.getCurrentQuestionnaire = function() {
+  return thisService.currentQuestionnaire;
+};
+
 
 /**
  * Get FHIR pagination results using a link url in the current bundle

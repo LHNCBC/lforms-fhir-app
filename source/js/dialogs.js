@@ -23,16 +23,14 @@ const formContainer_ = document.getElementById(config.formContainer);
 export const Dialogs = {
   /**
    *  Initialization, to set up event handlers for showing dialogs.
-   * @param formContainer a refernece to the element containing the form.
+   * @param formContainer a reference to the element containing the form.
    */
   init: function(formContainer) {
     this.formContainer_ = formContainer;
 
     // Handle the copy button on the dialog
     document.getElementById('copyToClipboardBtn').addEventListener('click', ()=>{
-      window.getSelection().selectAllChildren(document.getElementById('message-body'));
-      /* Copy the text inside the element */
-      document.execCommand("Copy");
+      util.copyToClipboard('message-body');
       announce('The data from the dialog has been copied to the clipboard.');
     });
 
@@ -66,10 +64,10 @@ export const Dialogs = {
    * @param title the dialog title
    * @param msg the message to show
    */
-  showMsgDialog: function (title, data) {
+  showMsgDialog: function (title, msg) {
     document.getElementById('msgModalTitle').textContent = title;
-    document.getElementById('msgMessageBody').textContent = data;
-    util.announce('Showing dialog with title: ' +title);
+    document.getElementById('msgMessageBody').textContent = msg;
+    announce('Showing dialog with title: ' +title);
     $('#msgDialog').modal('show');
   },
 
@@ -77,7 +75,7 @@ export const Dialogs = {
    *  Hides the general message dialog.
    */
   hideMsgDialog: function() {
-    util.announce('Hiding dialog with title: ' +
+    announce('Hiding dialog with title: ' +
       document.getElementById('msgModalTitle').textContent);
     $('#msgDialog').modal('hide');
   },
@@ -165,7 +163,7 @@ export const Dialogs = {
       // used there.
       document.getElementById('searchResults').style.zIndex = "1100";
 
-    // Set up event listeners
+      // Set up event listener for the select button
       document.getElementById('psSelectBtn').addEventListener('click', ()=> {
         const selectedData = selectionField.autocomp.getSelectedItemData();
         if (selectedData?.length) {
@@ -176,7 +174,7 @@ export const Dialogs = {
     }
     this.hideMsgDialog();
     $('#patientSelectDialog').modal('show');
-    util.announce('A dialog for selecting a patient is being opened');
+    announce('A dialog for selecting a patient is being opened');
   }
 
 
