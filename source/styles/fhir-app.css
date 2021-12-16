@@ -49,36 +49,11 @@
   margin: 0 0 5px 0;
 }
 
-/* Patient info banner */
-.lf-patient {
-  /*background-color: rgb(139, 150, 225) !important;*/
-  background-color: #458ac5 !important;
-  color: white;
-  font-size: 20px;
-}
-.lf-patient-info {
-  font-size: 70%;
-}
-.lf-patient table {
-  width: 100%;
-  margin: 0 16px;
-  height: 2.2em;
-  visibility: hidden;
-}
-.lf-patient td {
-  width: 25%;
-}
-.lf-patient td:first-child {
-  width: inherit;
-  margin-top: 10px;
-  margin-right: 0.5em;
-  font-size: 20px;
-}
-/* End of patient info banner */
-
 .lf-content {
   width: 100%;
   padding: 15px 0 15px 0;
+  overflow: auto;
+  background-color: #FAFAFA;
 }
 .lf-message {
   background-color: #458ac5;
@@ -138,12 +113,7 @@
   margin-left: 5px;
   font-size: 14px;
 }
-.error {
-  border: 2px solid red;
-  padding: 0.5em;
-  margin: 1em;
-  color: red;
-}
+
 .warning {
   border: 2px solid orange;
   padding: 0.5em;
@@ -164,41 +134,6 @@
   text-align: right;
 }
 
-
-/* Spinner from http://tobiasahlin.com/spinkit/ */
-.spinner {
-  position: fixed;
-  top: 50%;
-  left: 40%;
-  width: 200px;
-  background-color: rgba(225, 225, 225, 0.5);
-  text-align: center;
-  border-radius: 16px;
-  padding-top: 40px;
-  padding-bottom: 40px;
-}
-
-.spinner > div {
-  width: 40px;
-  height: 40px;
-  background-color: orange;
-
-  border-radius: 100%;
-  display: inline-block;
-  -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
-  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
-}
-
-.spinner .bounce1 {
-  -webkit-animation-delay: -0.32s;
-  animation-delay: -0.32s;
-}
-
-.spinner .bounce2 {
-  -webkit-animation-delay: -0.16s;
-  animation-delay: -0.16s;
-}
-
 .panel-title a {
   color: inherit;
 }
@@ -215,19 +150,3 @@
   cursor: pointer;
 }
 
-
-@-webkit-keyframes sk-bouncedelay {
-  0%, 80%, 100% { -webkit-transform: scale(0) }
-  40% { -webkit-transform: scale(1.0) }
-}
-
-@keyframes sk-bouncedelay {
-  0%, 80%, 100% {
-    -webkit-transform: scale(0);
-    transform: scale(0);
-  } 40% {
-    -webkit-transform: scale(1.0);
-    transform: scale(1.0);
-  }
-}
-/* End spinner */
