@@ -1,9 +1,35 @@
 'use strict';
-import * as formPane from './form-pane';
-
 // Functions and initialization for the left navigation bar.
 
-// Upload button
+import 'bootstrap/js/collapse.js';
+import * as util from './util';
+import * as formPane from './form-pane';
+import {fhirService} from './fhir.service.js';
+import lformsUpdater from 'lforms-updater';
+
+/**
+ *  The date time format used in the list items.
+ */
+var dateTimeFormat_ = "MM/dd/yyyy HH:mm:ss";
+
+/**
+ *  A list of saved QuestionnaireResponses about the current patient.
+ */
+let savedQRList_;
+
+/**
+ *  An element that is the template for the saved QuestionnaireResponse list
+ *  items.
+ */
+let savedQRItemTemplate_;
+
+/**
+ *  The currently selected item in the side bar.
+ */
+let selectedItem_;
+
+
+// File Upload button
 const loadFileInput = document.getElementById('loadFileInput');
 document.getElementById('upload').addEventListener('click', ()=>{
   loadFileInput.click();
@@ -25,8 +51,206 @@ loadFileInput.addEventListener('change', ()=>{
     };
     reader.readAsText(files[0]);
   }
-  loadFileInput.value = ''; // so the same file can be selectd again
+  loadFileInput.value = ''; // so the same file can be selected again
 });
+
+/**
+ *  Initializes the lists of resources in the nav bar after the server
+ *  connection has been established and the patient has been selected.
+ *  (It assumes those two things have happened.)
+ */
+export function initSideBarLists() {
+  loadSavedQRList().then((count) => {
+    if (count) {
+      showSavedQRList();
+    }
+  });
+  // TBD fhirService.getAllQ();
+  // TBD fhirService.getFeaturedQs();
+}
+
+/**
+ *  Expands the saved QuestionnaireResponses section.
+ */
+function showSavedQRList() {
+  document.getElementById('toggleQRList').click();
+}
+
+
+/**
+ *  Loads (or reloads) the saved QuestionnaireResponse list.
+ * @return a Promise that resolves to the number of QuestionnaireResponses in
+ *  the list if the attempt to load has completed successfully.
+ */
+function loadSavedQRList() {
+  const pt = fhirService.getCurrentPatient();
+  const savedQRListMsg = document.getElementById('savedQRListMsg');
+  let rtn;
+  try {
+    util.show(savedQRListMsg);
+    savedQRListMsg.innerText = 'Loading QuestionnaireResponses from server...';
+    rtn = fhirService.getAllQRByPatientId(pt.id).then((resp) => {
+      let count = 0;
+      if (!resp.entry?.length) {
+        savedQRListMsg.innerText =
+          'No saved QuestionnaireResponse resources were found for this patient.';
+      }
+      else {
+        count = setSavedQRList(resp);
+      }
+      util.hide(savedQRListMsg);
+      return count;
+    });
+  }
+  catch(e) {
+    savedQRListMsg.innerText = 'Unable to retrieve saved QuestionnaireResponses.';
+    rtn = Promise.reject(e);
+  };
+  return rtn;
+};
+
+
+/**
+ *  Sets the list of saved QuestionnaireResponses to show the given
+ *  QuestionnaireResponses.
+ * @param bundle a bundle of QuetionnaireResponses and their Questionnaires.
+ * @return the number of QuestionnaireResponses added to the list (which could
+ *  be less than the number in the bundle)
+ */
+function setSavedQRList(bundle) {
+  // Create some lookup maps for the included Questionnaires.
+  const urlToQ = {}, qIdToQ = {};
+  bundle.entry.forEach((entry) => {
+    const res = entry.resource;
+    if (res.resourceType === 'Questionnaire') {
+      if (res.url)
+        urlToQ[url] = res;
+      qIdToQ[res.id] = res;
+    }
+  });
+
+  const listItemDiv = document.getElementById('qrListItems');
+  if (!savedQRItemTemplate_) {
+    // Then the template is still sitting in the DOM.
+    savedQRItemTemplate_ = listItemDiv.firstElementChild;
+    savedQRItemTemplate_.style.display = '';
+    listItemDiv.removeChild(savedQRItemTemplate_);
+  }
+  let listCount = 0;
+  listItemDiv.innerText  = ''; // erase current list
+  bundle.entry.forEach((entry) => {
+    const res = entry.resource;
+    if (res.resourceType === 'QuestionnaireResponse') {
+      // Find the Questionnaire
+      let q = urlToQ[res.questionnaire];
+      if (!q) {
+        // Hope .questionnaire ends with the Questionnaire ID
+        const qRefURL =  (res.questionnaire && res.questionnaire.reference) ?
+          res.questionnaire.reference : // STU3
+          res.questionnaire; // R4+
+        if (qRefURL) {
+          const qId = qRefURL.split(/\//).pop();
+          if (qId)
+            q = qIdToQ[qId];
+        }
+      }
+      if (q) { // We can't display a response without the Questionnaire
+        const qrItemElem = savedQRItemTemplate_.cloneNode(true);
+        const itemChildren = qrItemElem.children;
+        const qrName = itemChildren.item(0);
+        qrName.innerText = getQName(q);
+        const qrUpdated = itemChildren.item(1);
+        var updated;
+        if (res.meta && res.meta.lastUpdated) {
+          updated = new Date(res.meta.lastUpdated).toString(dateTimeFormat_);
+        }
+        else if (res.authored) {
+          updated = new Date(res.authored).toString(dateTimeFormat_);
+        }
+        qrUpdated.innerText = updated;
+        listItemDiv.appendChild(qrItemElem);
+        ++listCount;
+        qrItemElem.addEventListener('click', () => {
+          selectItemAfterPromise(qrItemElem, ()=>showSavedQQR(q, res));
+        });
+      }
+    }
+  });
+  return listCount;
+}
+
+
+/**
+ *  Unselects the current sidebar item, and selects the given item if the given promise
+ *  returns successfully.
+ * @param newItem the item to be selected
+ * @param p (optional) a function returning a promise on which to wait for successful resolution.
+ */
+function selectItemAfterPromise(newItem, p) {
+  if (selectedItem_)
+    selectedItem_.classList.remove("active");
+  if (p) {
+    p().then(()=>{
+      selectedItem_ = newItem;
+      selectedItem_.classList.add("active");
+    });
+  }
+}
+
+
+/**
+ *  Returns a display name for a Questionnaire resource.
+ * @param q the Questionnaire resource
+ */
+function getQName(q) {
+  var title = q.title || q.name || (q.code && q.code.length && q.code[0].display);
+  // For LOINC only, add the code to title
+  if (q.code && q.code.length) {
+    var firstCode = q.code[0];
+    if (firstCode.system == "http://loinc.org" && firstCode.code) {
+      if (!title)
+        title = '';
+      title += ' ['+firstCode.code+']';
+    }
+  }
+  if (!title)
+    title = 'Untitled, #'+q.id;
+  return title;
+}
+
+
+/**
+ * Show a saved QuestionnaireResponse
+ * @param q the Questionnaire for the response
+ * @param qr the QuestionnaireResponse
+ * @return a Promise that resolves if the form is successfully shown.
+ */
+function showSavedQQR(q, qr) {
+  // merge the QuestionnaireResponse into the form
+  var fhirVersion = fhirService.fhirVersion;
+  var mergedFormData;
+  let rtn = Promise.reject();
+  try {
+    // In case the Questionnaire came from LForms, run the updater.
+    var q = lformsUpdater.update(q);
+    var formData = LForms.Util.convertFHIRQuestionnaireToLForms(
+       q, fhirVersion);
+    var newFormData = (new LForms.LFormsData(formData));
+    mergedFormData = LForms.Util.mergeFHIRDataIntoLForms(
+      'QuestionnaireResponse', qr, newFormData,
+      fhirVersion);
+  }
+  catch (e) {
+    formPane.showError('Sorry.  Could not process that '+
+      'QuestionnaireResponse.  See the console for details.', e);
+  }
+  if (mergedFormData) {
+    // Load FHIR resources, but don't prepopulate
+    rtn = formPane.showForm(mergedFormData, {prepopulate: false} );
+  }
+  return rtn;
+};
+
 
 
 // TBD - below this line code should be removed or updated
@@ -66,16 +290,6 @@ angular.module('lformsApp')
             }
           }
         ];
-
-        /**
-         *  Deletes all messages from userMessages.
-         */
-/*
-        function removeMessages() {
-          var keys = Object.keys(userMessages);
-          for (var i=0, len=keys.length; i<len; ++i)
-            delete userMessages[keys[i]];
-        }
 
 
         /**
@@ -230,70 +444,6 @@ angular.module('lformsApp')
 
 
         /**
-         * Show a saved QuestionnaireResponse
-         * @param formIndex form index in the list
-         * @param qrInfo info of a QuestionnaireResponse
-         */
-/*
-        $scope.showSavedQQR = function(formIndex, qrInfo) {
-          // ResId, ResType, ResName
-          if (qrInfo && qrInfo.resType === "QuestionnaireResponse") {
-            $('.spinner').show();
-            removeMessages();
-            selectedFormData.setFormData(null);
-
-            $scope.formSelected = {
-              groupIndex: 1,
-              formIndex: formIndex
-            };
-            // merge the QuestionnaireResponse into the form
-            var fhirVersion = fhirService.fhirVersion;
-            var mergedFormData;
-            try {
-              // In case the Questionnaire came from LForms, run the updater.
-              var q = lformsUpdater.update(qrInfo.questionnaire);
-              var formData = LForms.Util.convertFHIRQuestionnaireToLForms(
-                 q, fhirVersion);
-              //var newFormData = (new LForms.LFormsData(formData)).getFormData();
-              // TBD -- getFormData() results in _ variables (including FHIR
-              // extensions) being thrown away.  Not sure yet if it is needed
-              // for something else.
-              var newFormData = (new LForms.LFormsData(formData));
-              mergedFormData = LForms.Util.mergeFHIRDataIntoLForms(
-                'QuestionnaireResponse', qrInfo.questionnaireresponse, newFormData,
-                fhirVersion);
-            }
-            catch (e) {
-              console.error(e);
-              userMessages.error = 'Sorry.  Could not process that '+
-                'QuestionnaireResponse.  See the console for details.'
-            }
-            if (mergedFormData) {
-              var fhirResInfo = {
-                resId : qrInfo.resId,
-                resType : qrInfo.resType,
-                resTypeDisplay : qrInfo.resTypeDisplay,
-                extensionType : qrInfo.extensionType,
-                questionnaireResId : qrInfo.questionnaire.id,
-                questionnaireName : qrInfo.questionnaire.name
-              };
-              // Load FHIR resources, but don't prepopulate
-              mergedFormData = new LForms.LFormsData(mergedFormData);
-              $('.spinner').show();
-              mergedFormData.loadFHIRResources(false).then(function() {
-                $('.spinner').hide();
-                $scope.$apply(function() {
-                  // set the form data to be displayed
-                  selectedFormData.setFormData(mergedFormData, fhirResInfo);
-                  fhirService.setCurrentQuestionnaire(qrInfo.questionnaire);
-                });
-              });
-            }
-          }
-        };
-
-
-        /**
          * Show a Questionnaire
          * @param formIndex form index in the list
          * @param qInfo info of a Questionnaire
@@ -430,30 +580,6 @@ angular.module('lformsApp')
           return $scope.getSectionPanelClass(listIndex) === 'in' ? '' : 'collapsed';
         };
 
-
-        /**
-         *  Returns a display name for a Questionnaire resource.
-         * @param q the Questionnaire resource
-         */
-/*
-        function getQName(q) {
-          var title = q.title || q.name || (q.code && q.code.length && q.code[0].display);
-          // For LOINC only, add the code to title
-          if (q.code && q.code.length) {
-            var firstCode = q.code[0];
-            if (firstCode.system == "http://loinc.org" && firstCode.code) {
-              if (!title)
-                title = '';
-              title += ' ['+firstCode.code+']';
-            }
-          }
-          if (!title)
-            title = 'Untitled, #'+q.id;
-          return title;
-        }
-
-        // The format for showing the update date/time strings.
-        var dateTimeFormat = "MM/dd/yyyy HH:mm:ss";
 
         /**
          * Update the saved QuestionnaireResponse list when the data is returned

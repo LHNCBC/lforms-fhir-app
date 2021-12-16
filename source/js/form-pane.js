@@ -1,6 +1,6 @@
 import {config} from './config.js';
 import { announce } from './announcer'; // for a screen reader
-
+import * as util from './util'
 
 /**
  *  A reference to the element into which the form will be placed.
@@ -33,25 +33,32 @@ const formDataControls_ = document.getElementById('formDataControls');
 /**
  *  Renders the given form definition, replacing any previously shown form.
  * @param formDef either an LForms or FHIR Questionnaire form definition.
+ * @param addOptions the options object for LForms.Util.addFormToPage.
+ * @return a Promise that resolves when the form is successfully shown.
  */
-export function showForm(formDef) {
-  hide(initialMsgElem_);
+export function showForm(formDef, addOptions) {
+  util.hide(initialMsgElem_);
   removeErrMsg();
   removeForm();
-  show(spinner_);
-  try {
-    LForms.Util.addFormToPage(formDef, formContainer_).then(() => {
-      hide(spinner_);
-      show(formDataControls_);
-      announce('A form is now displayed in the main content area, '+
-        ' along with a save button and a menu for showing the form data.');
-    }, (error)=>{
-      console.log(error);
-      showError('Could not display the form.', error);
-    });
-  } catch (e) {
-    showError('Could not process the file.', e);
-  };
+  util.show(spinner_);
+  return new Promise((resolve, reject)=> {
+    try {
+      LForms.Util.addFormToPage(formDef, formContainer_, addOptions).then(() => {
+        util.hide(spinner_);
+        util.show(formDataControls_);
+        announce('A form is now displayed in the main content area, '+
+          ' along with a save button and a menu for showing the form data.');
+        resolve();
+      }, (error)=>{
+        console.log(error);
+        showError('Could not display the form.', error);
+        reject();
+      });
+    } catch (e) {
+      showError('Could not process the file.', e);
+      reject();
+    };
+  });
 }
 
 
@@ -72,8 +79,8 @@ export function showError(msg, error) {
     errMsgElem_.appendChild(details);
     announce(detailMsg);
   }
-  show(errMsgElem_);
-  hide(spinner_);
+  util.show(errMsgElem_);
+  util.hide(spinner_);
 }
 
 
@@ -81,7 +88,7 @@ export function showError(msg, error) {
  *  Removes the error message displayed (if any).
  */
 function removeErrMsg() {
-  hide(errMsgElem_);
+  util.hide(errMsgElem_);
   errMsgElem_.textContent = '';
 }
 
@@ -90,30 +97,6 @@ function removeErrMsg() {
  *  Removes the form displayed (if any)
  */
 function removeForm() {
-  hide(formDataControls_);
+  util.hide(formDataControls_);
   formContainer_.textContent = '';
 }
-
-
-
-/**
- *  Hides an element.
- * @param elem the element to hide.
- */
-function hide(elem) {
-  elem.style.display = 'none';
-}
-
-
-/**
- *  Shows a element (by setting display to block, unless the second parameter is
- *  provided.
- * @param elem the element to show.
- * @param displaySetting (optional, default 'block') the setting for 'display'
- */
-function show(elem, displaySetting) {
-  displaySetting ||= 'block';
-  elem.style.display = displaySetting;
-}
-
-

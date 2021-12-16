@@ -1,0 +1,9 @@
+/* Styles for the left side bar */
+
+#savedQRListMsg {
+  display: none;
+}
+
+#qrList {
+  display: none;
+}

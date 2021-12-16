@@ -6,3 +6,23 @@ export function copyToClipboard(elementId) {
   document.execCommand("Copy");
 }
 
+
+/**
+ *  Hides an element.
+ * @param elem the element to hide.
+ */
+export function hide(elem) {
+  elem.style.display = 'none';
+}
+
+
+/**
+ *  Shows a element (by setting display to block, unless the second parameter is
+ *  provided.
+ * @param elem the element to show.
+ * @param displaySetting (optional, default 'block') the setting for 'display'
+ */
+export function show(elem, displaySetting) {
+  displaySetting ||= 'block';
+  elem.style.display = displaySetting;
+}

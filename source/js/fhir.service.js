@@ -279,31 +279,6 @@ thisService.getPatientPhoneNumber = function(patient) {
 
 
 /**
- *  Build a FHIR search query and returns a promise with the result.
- * @param searchConfig an object with the following sub-keys for configuring the search.
- *  type: (required) the Resource type to search for
- *  query: An object of key/value pairs for the query part of the URL to be constructed.
- *  headers: An object containing HTTP headers to be added to the request.
- */
-function fhirSearch(searchConfig) {
-  var searchParams = new URLSearchParams();
-  if (searchConfig.query) {
-    var queryVars = searchConfig.query;
-    var queryVarKeys = Object.keys(queryVars);
-    var key;
-    for (var i=0, len=queryVarKeys.length; i<len; ++i) {
-      key = queryVarKeys[i];
-      searchParams.append(key, queryVars[key]);
-    }
-  }
-  return thisService.fhir.request({
-    url: searchConfig.type + '?' + searchParams,
-    headers: searchConfig.headers
-  });
-}
-
-
-/**
  * Search patients by name
  * @param searchText the search text for patient names
  * @param resultCount the requested number of results
@@ -313,18 +288,18 @@ thisService.searchPatientByName = function(searchText, resultCount) {
   // md-autocomplete directive requires a promise to be returned
   return fhirSearch({
     type: "Patient",
-    query: {name: searchText, _count: resultCount},
+    query: {name: searchText.split(/\s+/), _count: resultCount},
     headers: {'Cache-Control': 'no-cache'}
   }).then(function(response) {
     // Return reults in autocomplete-lhc format
     const rtn = [response.total];
+    const ids = [];
+    const resources=[];
+    const display = [];
+    rtn.push(ids);
+    rtn.push({resource: resources});
+    rtn.push(display);
     if (response.entry) {
-      const ids = [];
-      const resources=[];
-      const display = [];
-      rtn.push(ids);
-      rtn.push({resource: resources});
-      rtn.push(display);
       for (var i=0, iLen=response.entry.length; i<iLen; i++) {
         var patient = response.entry[i].resource;
         ids.push(patient.id);
@@ -355,6 +330,60 @@ thisService.setQRRefToQ = function(qrData, qData) {
     qrData.questionnaire = "Questionnaire/" + qID;
 };
 
+
+/**
+ *  Build a FHIR search query and returns a promise with the result.
+ * @param searchConfig an object with the following sub-keys for configuring the search.
+ *  type: (required) the Resource type to search for
+ *  query: An object of key/value pairs for the query part of the URL to be constructed.
+ *  headers: An object containing HTTP headers to be added to the request.
+ */
+function fhirSearch(searchConfig) {
+  var searchParams = new URLSearchParams();
+  if (searchConfig.query) {
+    var queryVars = searchConfig.query;
+    var queryVarKeys = Object.keys(queryVars);
+    var key, val;
+    for (var i=0, len=queryVarKeys.length; i<len; ++i) {
+      key = queryVarKeys[i];
+      val =  queryVars[key];
+      if (Array.isArray(val)) {
+        // For multiple values, repeat the search parameter name, so that the
+        // effect is an AND (e.g., if the user is searching on a Patient name,
+        // and has typed both a first and a last name).
+        for (let j=0, jLen=val.length; j<jLen; ++j)
+          searchParams.append(key, val[j]);
+      }
+      else
+        searchParams.append(key, val);
+    }
+  }
+  return thisService.fhir.request({
+    url: searchConfig.type + '?' + searchParams,
+    headers: searchConfig.headers
+  });
+}
+
+
+/**
+ *  Get all QuestionnaireResponse resources of a patient
+ *  Returns a promise that resolves to the response from the FHIR server.
+ * @param pId the current patient's ID
+ */
+thisService.getAllQRByPatientId = function(pId) {
+  return fhirSearch({
+    type: 'QuestionnaireResponse',
+    query: {
+      subject: 'Patient/' + pId,
+      _include: 'QuestionnaireResponse:questionnaire',
+      _sort: '-_lastUpdated',
+      _count: 5
+    },
+    headers: {
+      'Cache-Control': 'no-cache'
+    }
+  });
+};
 
 
 
@@ -943,28 +972,6 @@ thisService.handleTransactionBundle = function(bundle) {
       reportError('Bundle', 'create', error);
     }
   )
-};
-*/
-
-/**
- * Get all QuestionnaireResponse resources of a patient
- *  Returns a promise that resolves to the response from the FHIR server.
- * @param pId the current patient's ID
- */
-/*
-thisService.getAllQRByPatientId = function(pId) {
-  return fhirSearch({
-    type: 'QuestionnaireResponse',
-    query: {
-      subject: 'Patient/' + pId,
-      _include: 'QuestionnaireResponse:questionnaire',
-      _sort: '-_lastUpdated',
-      _count: 5
-    },
-    headers: {
-      'Cache-Control': 'no-cache'
-    }
-  });
 };
 */
 
