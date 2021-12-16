@@ -134,7 +134,7 @@ export const Dialogs = {
       });
     }
     $('#serverSelectDialog').modal('show');
-    util.announce('A dialog for selecting a server is being opened');
+    announce('A dialog for selecting a server is being opened');
   },
 
 
