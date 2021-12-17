@@ -76,6 +76,7 @@ loadFileInput.addEventListener('change', ()=>{
   loadFileInput.value = ''; // so the same file can be selected again
 });
 
+
 /**
  *  Initializes the lists of resources in the nav bar after the server
  *  connection has been established and the patient has been selected.
@@ -602,68 +603,6 @@ angular.module('lformsApp')
           return $scope.getSectionPanelClass(listIndex) === 'in' ? '' : 'collapsed';
         };
 
-
-        /**
-         * Update the saved QuestionnaireResponse list when the data is returned
-         */
-/*
-        $scope.$on('LF_FHIR_QUESTIONNAIRERESPONSE_LIST', function(event, arg, error) {
-          $scope.listSavedQR = [];
-          $scope.listSavedQRError = error;
-          if (arg && arg.resourceType=="Bundle" && arg.type=="searchset" &&
-              arg.entry) {  // searchset bundle
-            for (var i=0, iLen=arg.entry.length; i< iLen; i++) {
-              var qr = arg.entry[i].resource;
-              if (qr.resourceType === "QuestionnaireResponse") {
-                var updated;
-                if (qr.meta && qr.meta.lastUpdated) {
-                  updated = new Date(qr.meta.lastUpdated).toString(dateTimeFormat);
-                }
-                else if (qr.authored) {
-                  updated = new Date(qr.authored).toString(dateTimeFormat);
-                }
-                var q = null, qName = null;
-                var qRefURL =  (qr.questionnaire && qr.questionnaire.reference) ?
-                  qr.questionnaire.reference : // STU3
-                  qr.questionnaire; // R4+
-                if (qRefURL) {
-                  var qId = qRefURL.slice("Questionnaire".length+1);
-                  var q = fhirService.findQuestionnaire(arg, qId);
-                }
-
-                // if the questionnaire resource is included/found in the searchset
-                if (q) {
-                  qName = getQName(q);
-                  var sdcPattern =
-                    new RegExp('http://hl7.org/fhir/u./sdc/StructureDefinition/sdc-questionnaire\\|(\\d+\.?\\d+)');
-                  var extension = null;
-                  if (qr.meta && qr.meta.profile) {
-                    for (var j=0, jLen=qr.meta.profile.length; j<jLen; j++) {
-                      if (qr.meta.profile[j].match(sdcPattern)) {
-                        extension = "SDC"
-                      }
-                    }
-                  }
-
-                  $scope.listSavedQR.push({
-                    resId: qr.id,
-                    resName: qName,
-                    updatedAt: updated,
-                    resType: "QuestionnaireResponse",
-                    questionnaire: q,
-                    questionnaireresponse: qr,
-                    extensionType: extension,
-                    resTypeDisplay: extension ? "QuestionnaireResponse (SDC)" : "QuestionnaireResponse"
-                  });
-                }
-              }
-
-            }
-            $scope.processPagingLinks("QuestionnaireResponse", arg.link);
-            $('.spinner').hide();
-          }
-          $scope.$apply();
-        });
 
 
         /**
