@@ -13,11 +13,6 @@ import lformsUpdater from 'lforms-updater';
 var dateTimeFormat_ = "MM/dd/yyyy HH:mm:ss";
 
 /**
- *  A list of saved QuestionnaireResponses about the current patient.
- */
-let savedQRList_;
-
-/**
  *  An element that is the template for the saved QuestionnaireResponse list
  *  items.
  */
