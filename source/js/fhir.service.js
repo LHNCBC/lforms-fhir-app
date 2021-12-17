@@ -389,15 +389,10 @@ thisService.getAllQRByPatientId = function(pId) {
 /**
  * Get FHIR pagination results using a link url in the current bundle
  *
- * @param resType - The FHIR bundle from which to extract the relation url.
  * @param url - the URL for getting the next or previous page.
  * @returns A Promise that resolves to the FHIR Bundle for the next page.
  */
-thisService.getPage = function(resType, relation, url) {
-  // TBD - what was this doing?
-//  var baseUrl = $window.location.origin + '/fhir-api?';
-//  var url = url.replace(/^.*\/baseDstu3\?/, baseUrl);
-
+thisService.getPage = function(url) {
   return thisService.fhir.request(url);
 };
 

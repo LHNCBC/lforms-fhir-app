@@ -301,7 +301,9 @@ function showSavedQQR(q, qr) {
 function getPage(resType, relation) {
   var link = pagingLinks_[resType][relation];
   if (link) {
-    fhirService.getPage(link);
+    fhirService.getPage(link).then((bundle) => {
+      setSavedQRList(bundle);
+    });
   }
 };
 
