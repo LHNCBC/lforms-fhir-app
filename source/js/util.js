@@ -17,7 +17,7 @@ export function hide(elem) {
 
 
 /**
- *  Shows a element (by setting display to block, unless the second parameter is
+ *  Shows an element by setting display to block, unless the second parameter is
  *  provided.
  * @param elem the element to show.
  * @param displaySetting (optional, default 'block') the setting for 'display'

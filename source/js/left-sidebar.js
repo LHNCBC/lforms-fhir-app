@@ -9,16 +9,6 @@ import lformsUpdater from 'lforms-updater';
 import {spinner} from './spinner.js';
 
 /**
- *  The date time format used in the list items.
- */
-var dateTimeFormat_ = "MM/dd/yyyy HH:mm:ss";
-
-/**
- *  A list of saved QuestionnaireResponses about the current patient.
- */
-let savedQRList_;
-
-/**
  *  An element that is the template for the saved QuestionnaireResponse list
  *  items.
  */
@@ -130,15 +120,15 @@ function loadSavedQRList() {
   catch(e) {
     savedQRListMsg.innerText = 'Unable to retrieve saved QuestionnaireResponses.';
     rtn = Promise.reject(e);
-  };
+  }
   return rtn;
-};
+}
 
 
 /**
  *  Sets the list of saved QuestionnaireResponses to contain the given
  *  QuestionnaireResponses, but does not change the state of the side bar.
- * @param bundle a bundle of QuetionnaireResponses and their Questionnaires.
+ * @param bundle a bundle of QuestionnaireResponses and their Questionnaires.
  * @return the number of QuestionnaireResponses added to the list (which could
  *  be less than the number in the bundle)
  */
@@ -187,10 +177,10 @@ function setSavedQRList(bundle) {
         const qrUpdated = itemChildren.item(1);
         var updated;
         if (res.meta && res.meta.lastUpdated) {
-          updated = new Date(res.meta.lastUpdated).toString(dateTimeFormat_);
+          updated = new Date(res.meta.lastUpdated).toString();
         }
         else if (res.authored) {
-          updated = new Date(res.authored).toString(dateTimeFormat_);
+          updated = new Date(res.authored).toString();
         }
         qrUpdated.innerText = updated;
         listItemDiv.appendChild(qrItemElem);
@@ -307,7 +297,7 @@ function showSavedQQR(q, qr) {
   let rtn = Promise.reject();
   try {
     // In case the Questionnaire came from LForms, run the updater.
-    var q = lformsUpdater.update(q);
+    q = lformsUpdater.update(q);
     var formData = LForms.Util.convertFHIRQuestionnaireToLForms(
        q, fhirVersion);
     var newFormData = (new LForms.LFormsData(formData));
@@ -324,7 +314,7 @@ function showSavedQQR(q, qr) {
     rtn = formPane.showForm(mergedFormData, {prepopulate: false} );
   }
   return rtn;
-};
+}
 
 
 
