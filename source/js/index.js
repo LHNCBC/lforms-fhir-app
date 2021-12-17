@@ -1,6 +1,6 @@
 import {fhirService} from './fhir.service.js';
 import {Dialogs} from './dialogs.js';
-import './left-sidebar.js';
+import * as leftSideBar from './left-sidebar.js';
 
 /**
  * Get the connection to FHIR server and the selected patient
@@ -21,8 +21,7 @@ function establishFHIRContext() {
           var smart = fhirService.getSmartConnection();
           const patientPromise = smart.patient.read().then(function (pt) {
             fhirService.setCurrentPatient(pt);
-            fhirService.getAllQRByPatientId(pt.id);
-            fhirService.getAllQ();
+            leftSideBar.initSideBarLists();
           });
           const userPromise = smart.user.read().then(function(user) {
             fhirService.setCurrentUser(user);
@@ -104,6 +103,8 @@ function setServerAndPickPatient(fhirServer, callback) {
       Dialogs.showPatientPicker(function(patientResource) {
         if (patientResource) {
           fhirService.setCurrentPatient(patientResource);
+          fhirService.setNonSmartServerPatient(patientResource.id);
+          leftSideBar.initSideBarLists();
           updateUserAndPatientBanner();
         }
       });

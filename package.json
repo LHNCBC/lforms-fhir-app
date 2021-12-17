@@ -68,6 +68,6 @@
   "dependencies": {
     "bootstrap": "^3.4.1",
     "fhirclient": "^2.3.11",
-    "lforms-updater": "^29.0.0"
+    "lforms-updater": "^29.0.2"
   }
 }

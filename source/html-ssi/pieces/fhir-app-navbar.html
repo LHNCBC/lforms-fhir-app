@@ -20,27 +20,28 @@
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="heading-one">
       <div class="panel-title">
-        <a role="button" class="{{getSectionTitleClass(1)}}" data-toggle="collapse" data-target="#collapse-one"
-           data-parent="#listAccordion" aria-expanded="false" aria-controls="collapse-one">
+        <a id="toggleQRList" role="button" class="collapsed" data-toggle="collapse"
+         data-target="#collapse-one" data-parent="#listAccordion" aria-expanded="false"
+         aria-controls="collapse-one">
           Saved QuestionnaireResponses
         </a>
       </div>
     </div>
-    <div class="panel-collapse collapse {{getSectionPanelClass(1)}}" id="collapse-one" role="tabpanel"
+    <div class="panel-collapse collapse" id="collapse-one" role="tabpanel"
          aria-labelledby="heading-one">
-      <div ng-if="listSavedQRError">Unable to retrieve saved QuestionnaireResponses.</div>
-      <div ng-if="!listSavedQRError && !listSavedQR">Loading QuestionnaireResponses from server...</div>
-      <div ng-if="!listSavedQRError && listSavedQR && listSavedQR.length==0">No saved
-        QuestionnaireResponse resources were found for this patient.</div>
-      <div ng-if="listSavedQR && listSavedQR.length>0" id="qrList" class="list-group">
-        <a href="#" class="list-group-item {{isSelected(1, $index)}}" ng-repeat="p in listSavedQR" role="presentation" id="{{p.resId}}" ng-click="showSavedQQR($index, p)">
-          <p class="form-name">{{p.resName}}</p>
-          <p class="res-type" ng-if="p.extensionType">{{p.resTypeDisplay}}</p>
-          <p class="last-updated">{{p.updatedAt}}</p>
-        </a>
+      <div id="savedQRListMsg"></div>
+      <div id="qrList" class="list-group">
+        <div id="qrListItems">
+          <a href="javascript:void(0)" class="list-group-item" style="display: none" role="presentation">
+            <p class="form-name">{{p.resName}}</p>
+            <p class="last-updated">{{p.updatedAt}}</p>
+          </a>
+        </div>
         <div class="btn-group btn-group-justified" role="group">
-          <a role="button" type="button" class="btn btn-default btn-sm glyphicon glyphicon-chevron-left" ng-disabled="!hasPagingLink('QuestionnaireResponse','previous')" ng-click="getPage('QuestionnaireResponse', 'previous')"></a>
-          <a role="button" type="button" class="btn btn-default btn-sm glyphicon glyphicon-chevron-right" ng-disabled="!hasPagingLink('QuestionnaireResponse','next')" ng-click="getPage('QuestionnaireResponse', 'next')"></a>
+          <a id="qrPrevPage" role="button" type="button"
+           class="btn btn-default btn-sm glyphicon glyphicon-chevron-left"></a>
+          <a id="qrNextPage" role="button" type="button"
+           class="btn btn-default btn-sm glyphicon glyphicon-chevron-right"></a>
         </div>
       </div>
     </div>
@@ -49,13 +50,13 @@
   <div ng-if="listFeaturedQ" class="panel panel-default">
     <div class="panel-heading" role="tab" id="heading-two">
       <div class="panel-title">
-        <a role="button" class="{{getSectionTitleClass(0)}}" data-toggle="collapse" data-target="#collapse-two"
+        <a role="button" class="collapsed" data-toggle="collapse" data-target="#collapse-two"
            data-parent="#listAccordion" aria-expanded="false" aria-controls="collapse-two">
           Featured Questionnaires:
         </a>
       </div>
     </div>
-    <div class="panel-collapse collapse {{getSectionPanelClass(0)}}" id="collapse-two" role="tabpanel"
+    <div class="panel-collapse collapse" id="collapse-two" role="tabpanel"
          aria-labelledby="heading-two">
       <div ng-if="listFeaturedQ && listFeaturedQ.length>0" id="fqList" class="list-group">
         <a href="#" class="list-group-item {{isSelected(0, $index)}}" ng-repeat="p in listFeaturedQ" role="presentation" id="{{p.id}}" ng-click="showFeaturedQ($index, p)">
@@ -68,14 +69,14 @@
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="heading-three">
       <div class="panel-title">
-          <a role="button" class="{{getSectionTitleClass(2)}}" data-toggle="collapse" data-target="#collapse-three"
+          <a role="button" class="collapsed" data-toggle="collapse" data-target="#collapse-three"
              data-parent="#listAccordion" aria-expanded="false" aria-controls="collapse-three">
           Available Questionnaires:
           </a>
         <span class=showDate><label><input type=checkbox ng-model=showQDate> Show Date</input></label></span>
       </div>
     </div>
-    <div class="panel-collapse collapse {{getSectionPanelClass(2)}}" id="collapse-three" role="tabpanel"
+    <div class="panel-collapse collapse" id="collapse-three" role="tabpanel"
          aria-labelledby="heading-three">
       <div ng-if="listSavedQError">Unable to retrieve saved Questionnaires.</div>
       <div ng-if="!listSavedQError && !listSavedQ">Loading Questionnaires from server...</div>
