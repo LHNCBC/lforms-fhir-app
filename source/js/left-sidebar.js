@@ -6,6 +6,7 @@ import * as util from './util';
 import * as formPane from './form-pane';
 import {fhirService} from './fhir.service.js';
 import lformsUpdater from 'lforms-updater';
+import {spinner} from './spinner.js';
 
 /**
  *  The date time format used in the list items.
@@ -37,6 +38,12 @@ const qrPrevPage_ = document.getElementById('qrPrevPage');
  *  Next page button for the QuestionnaireResponse list
  */
 const qrNextPage_ = document.getElementById('qrNextPage');
+
+/**
+ *  A list of featured Questionnaire data for the current FHIR server (pulled
+ *  from fhir-server-config.js).
+ */
+let listFeaturedQ_;
 
 /**
  *  A structure that keeps track of the links for retrieving the next or
@@ -83,20 +90,15 @@ loadFileInput.addEventListener('change', ()=>{
  *  (It assumes those two things have happened.)
  */
 export function initSideBarLists() {
+  const numFeaturedQs = initFeaturedList();
   loadSavedQRList().then((count) => {
-    if (count) {
-      showSavedQRList();
+    if (numFeaturedQs)
+      document.getElementById('toggleFeaturedList').click();
+    else if (count) {
+      document.getElementById('toggleQRList').click();
     }
   });
   // TBD fhirService.getAllQ();
-  // TBD fhirService.getFeaturedQs();
-}
-
-/**
- *  Expands the saved QuestionnaireResponses section.
- */
-function showSavedQRList() {
-  document.getElementById('toggleQRList').click();
 }
 
 
@@ -206,6 +208,38 @@ function setSavedQRList(bundle) {
   setEnabled(qrNextPage_, !!pagingLinks_.QuestionnaireResponse.next);
 
   return listCount;
+}
+
+
+/**
+ *  Constructs the featured questionnaire list for the current server.
+ * @return the number of features questionnaires
+ */
+function initFeaturedList() {
+  const listFeaturedQ = fhirService.getFeaturedQs();
+  let count = 0;
+  if (listFeaturedQ?.length) {
+    count = listFeaturedQ.length;
+    const listItemDiv = document.getElementById('fqList');
+    let featuredItemTemplate = listItemDiv.firstElementChild;
+    featuredItemTemplate.style.display = '';
+    listItemDiv.removeChild(featuredItemTemplate);
+    listFeaturedQ.forEach((fqData)=>{
+      const featuredItemElem = featuredItemTemplate.cloneNode(true);
+      const itemChildren = featuredItemElem.children;
+      const qName = itemChildren.item(0);
+      let name = fqData.name;
+      if (fqData.code)
+        name += '['+fqData.code+']';
+      qName.innerText = name;
+      listItemDiv.appendChild(featuredItemElem);
+      featuredItemElem.addEventListener('click', () => {
+        selectItemAfterPromise(featuredItemElem, ()=>showFeaturedQ(fqData.id));
+      });
+    });
+    util.show(document.getElementById('featuredQs'));
+  }
+  return count;
 }
 
 /**
@@ -325,6 +359,29 @@ function processPagingLinks(resType, links) {
     }
   }
   pagingLinks_[resType] = pagingLinks;
+};
+
+
+/**
+ *  Show a featured Questionnaire
+ * @param qId The ID of the Questionnaire
+ * @return a promise that resolves when the form is show.
+ */
+function showFeaturedQ(qId) {
+  spinner.show();
+  return fhirService.getFhirResourceById('Questionnaire', qId).then((q)=>{
+    try {
+      q = lformsUpdater.update(q);
+      return formPane.showForm(q);
+    }
+    catch (e) {
+      formPane.showError('Unable to show the selected Questionnaire', e);
+      return Promise.reject(e);
+    }
+  }, (error) => {
+    formPane.showError('Unable to show the selected Questionnaire', error);
+    return Promise.reject(error);
+  });
 };
 
 
@@ -516,32 +573,6 @@ angular.module('lformsApp')
                   });
                 });
               }
-            }, 10);
-          }
-        };
-
-
-        /**
-         * Show a featured Questionnaire
-         * @param formIndex form index in the list
-         * @param qInfo info of a Questionnaire
-         */
-/*
-        $scope.showFeaturedQ = function(formIndex, qInfo) {
-
-          // ResId, ResType, ResName
-          if (qInfo) {
-            $('.spinner').show();
-            removeMessages();
-            selectedFormData.setFormData(null);
-
-            // Allow the page to update
-            $timeout(function() {
-              $scope.formSelected = {
-                groupIndex: 0,
-                formIndex: formIndex
-              };
-              fhirService.getFhirResourceById('Questionnaire', qInfo.id);
             }, 10);
           }
         };

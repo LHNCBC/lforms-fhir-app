@@ -33,33 +33,34 @@
       <div id="qrList" class="list-group">
         <div id="qrListItems">
           <a href="javascript:void(0)" class="list-group-item" style="display: none" role="presentation">
-            <p class="form-name">{{p.resName}}</p>
-            <p class="last-updated">{{p.updatedAt}}</p>
+            <p class="form-name"></p>
+            <p class="last-updated"></p>
           </a>
         </div>
         <div class="btn-group btn-group-justified" role="group">
-          <a id="qrPrevPage" role="button" type="button"
+          <a id="qrPrevPage" role="button" type="button" disabled
            class="btn btn-default btn-sm glyphicon glyphicon-chevron-left"></a>
-          <a id="qrNextPage" role="button" type="button"
+          <a id="qrNextPage" role="button" type="button" disabled
            class="btn btn-default btn-sm glyphicon glyphicon-chevron-right"></a>
         </div>
       </div>
     </div>
   </div>
 
-  <div ng-if="listFeaturedQ" class="panel panel-default">
+  <div id="featuredQs" class="panel panel-default">
     <div class="panel-heading" role="tab" id="heading-two">
       <div class="panel-title">
-        <a role="button" class="collapsed" data-toggle="collapse" data-target="#collapse-two"
-           data-parent="#listAccordion" aria-expanded="false" aria-controls="collapse-two">
+        <a id="toggleFeaturedList" role="button" class="collapsed" data-toggle="collapse"
+         data-target="#collapse-two"
+         data-parent="#listAccordion" aria-expanded="false" aria-controls="collapse-two">
           Featured Questionnaires:
         </a>
       </div>
     </div>
     <div class="panel-collapse collapse" id="collapse-two" role="tabpanel"
          aria-labelledby="heading-two">
-      <div ng-if="listFeaturedQ && listFeaturedQ.length>0" id="fqList" class="list-group">
-        <a href="#" class="list-group-item {{isSelected(0, $index)}}" ng-repeat="p in listFeaturedQ" role="presentation" id="{{p.id}}" ng-click="showFeaturedQ($index, p)">
+      <div id="fqList" class="list-group">
+        <a href="javascript:void(0)" class="list-group-item" role="presentation" ng-click="showFeaturedQ($index, p)">
           <p class="form-name">{{p.name}} <span ng-if="p.code">[{{p.code}}]</span></p>
         </a>
       </div>

@@ -1,6 +1,7 @@
 import {config} from './config.js';
 import { announce } from './announcer'; // for a screen reader
 import * as util from './util'
+import {spinner} from './spinner.js';
 
 /**
  *  A reference to the element into which the form will be placed.
@@ -19,11 +20,6 @@ const errMsgElem_ = document.getElementById('errMsg');
 const initialMsgElem_ = document.getElementById('initialMsg');
 
 /**
- *  A reference to the spinner element.
- */
-const spinner_ = document.getElementById('spinner');
-
-/**
  *  A reference to the buttons and menus avialbale when a form is showing.
  */
 const formDataControls_ = document.getElementById('formDataControls');
@@ -40,11 +36,11 @@ export function showForm(formDef, addOptions) {
   util.hide(initialMsgElem_);
   removeErrMsg();
   removeForm();
-  util.show(spinner_);
+  spinner.show();
   return new Promise((resolve, reject)=> {
     try {
       LForms.Util.addFormToPage(formDef, formContainer_, addOptions).then(() => {
-        util.hide(spinner_);
+        spinner.hide();
         util.show(formDataControls_);
         announce('A form is now displayed in the main content area, '+
           ' along with a save button and a menu for showing the form data.');
@@ -80,7 +76,7 @@ export function showError(msg, error) {
     announce(detailMsg);
   }
   util.show(errMsgElem_);
-  util.hide(spinner_);
+  spinner.hide();
 }
 
 

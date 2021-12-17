@@ -397,6 +397,17 @@ thisService.getPage = function(url) {
 };
 
 
+/**
+ * Get a FHIR resource by resource ID
+ * @param resType FHIR resource type
+ * @param resId FHIR resource ID
+ * @return a promise that resolves to the response from the server
+ */
+thisService.getFhirResourceById = function(resType, resId) {
+  return thisService.fhir.request(resType+'/'+encodeURIComponent(resId));
+};
+
+
 
 
 // TBD - Code below this point has either not been updated yet or will be
@@ -459,25 +470,6 @@ thisService.searchQuestionnaire = function(searchText) {
     });
 };
 */
-
-/**
- * Get a FHIR resource by resource ID
- * Data returned through an angular broadcast event.
- * @param resType FHIR resource type
- * @param resId FHIR resource ID
- */
-/*
-thisService.getFhirResourceById = function(resType, resId) {
-  thisService.fhir.request(resType+'/'+encodeURIComponent(resId))
-    .then(function(response) {
-      $rootScope.$broadcast('LF_FHIR_RESOURCE',
-        {resType: resType, resource: response, resId: resId});
-    }, function(error) {
-      console.log(error);
-    });
-};
-*/
-
 
 /**
  * Get the QuestionnaireResponse resource by id and its related Questionnaire resource
