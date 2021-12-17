@@ -32,14 +32,16 @@
       <div id="savedQRListMsg"></div>
       <div id="qrList" class="list-group">
         <div id="qrListItems">
-          <a href="javascript:void(0)" class="list-group-item" style="display: none" role="presentation" ng-click="showSavedQQR($index, p)">
+          <a href="javascript:void(0)" class="list-group-item" style="display: none" role="presentation">
             <p class="form-name">{{p.resName}}</p>
             <p class="last-updated">{{p.updatedAt}}</p>
           </a>
         </div>
         <div class="btn-group btn-group-justified" role="group">
-          <a role="button" type="button" class="btn btn-default btn-sm glyphicon glyphicon-chevron-left" ng-disabled="!hasPagingLink('QuestionnaireResponse','previous')" ng-click="getPage('QuestionnaireResponse', 'previous')"></a>
-          <a role="button" type="button" class="btn btn-default btn-sm glyphicon glyphicon-chevron-right" ng-disabled="!hasPagingLink('QuestionnaireResponse','next')" ng-click="getPage('QuestionnaireResponse', 'next')"></a>
+          <a id="qrPrevPage" role="button" type="button"
+           class="btn btn-default btn-sm glyphicon glyphicon-chevron-left"></a>
+          <a id="qrNextPage" role="button" type="button"
+           class="btn btn-default btn-sm glyphicon glyphicon-chevron-right"></a>
         </div>
       </div>
     </div>

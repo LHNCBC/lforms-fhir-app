@@ -28,6 +28,28 @@ let savedQRItemTemplate_;
  */
 let selectedItem_;
 
+/**
+ *  Previous page button for the QuestionnaireResponse list
+ */
+const qrPrevPage_ = document.getElementById('qrPrevPage');
+
+/**
+ *  Next page button for the QuestionnaireResponse list
+ */
+const qrNextPage_ = document.getElementById('qrNextPage');
+
+/**
+ *  A structure that keeps track of the links for retrieving the next or
+ *  previous page of results for the next or previous page of results.
+ */
+let pagingLinks_ = {
+  Questionnaire: {previous: null, next: null},
+  QuestionnaireResponse: {previous: null, next: null}
+};
+
+// Set up listeners for the next/prev page buttons
+qrPrevPage_.addEventListener('click', ()=>getPage('QuestionnaireResponse', 'previous'));
+qrNextPage_.addEventListener('click', ()=>getPage('QuestionnaireResponse', 'next'));
 
 // File Upload button
 const loadFileInput = document.getElementById('loadFileInput');
@@ -111,8 +133,8 @@ function loadSavedQRList() {
 
 
 /**
- *  Sets the list of saved QuestionnaireResponses to show the given
- *  QuestionnaireResponses.
+ *  Sets the list of saved QuestionnaireResponses to contain the given
+ *  QuestionnaireResponses, but does not change the state of the side bar.
  * @param bundle a bundle of QuetionnaireResponses and their Questionnaires.
  * @return the number of QuestionnaireResponses added to the list (which could
  *  be less than the number in the bundle)
@@ -176,7 +198,25 @@ function setSavedQRList(bundle) {
       }
     }
   });
+
+  // Set the state of the next/prev page buttons
+  processPagingLinks("QuestionnaireResponse", bundle.link);
+  setEnabled(qrPrevPage_, !!pagingLinks_.QuestionnaireResponse.previous);
+  setEnabled(qrNextPage_, !!pagingLinks_.QuestionnaireResponse.next);
+
   return listCount;
+}
+
+/**
+ *  Sets the enabled state of a button or form control.
+ * @param btn the button to enable/disable
+ * @param enabled true if the button should be enabled.
+ */
+function setEnabled(btn, enabled) {
+  if (enabled)
+    btn.removeAttribute('disabled');
+  else
+    btn.setAttribute('disabled', true);
 }
 
 
@@ -249,6 +289,39 @@ function showSavedQQR(q, qr) {
     rtn = formPane.showForm(mergedFormData, {prepopulate: false} );
   }
   return rtn;
+};
+
+
+
+/**
+ * Get next or previous page of the search result
+ * @param resType FHIR resource type
+ * @param relation 'next' or 'previous' page
+ */
+function getPage(resType, relation) {
+  var link = pagingLinks_[resType][relation];
+  if (link) {
+    fhirService.getPage(link);
+  }
+};
+
+
+/**
+ * Set the links for next/previous pages if there is one.
+ * @param resType FHIR resoruce type
+ * @param links the link field in a searchset bundle
+ */
+function processPagingLinks(resType, links) {
+
+  var pagingLinks = {previous: null, next: null};
+
+  for(var i=0,iLen=links.length; i<iLen; i++) {
+    var link = links[i];
+    if (link.relation === 'previous' || link.relation === 'next') {
+      pagingLinks[link.relation] = link.url;
+    }
+  }
+  pagingLinks_[resType] = pagingLinks;
 };
 
 
@@ -387,59 +460,6 @@ angular.module('lformsApp')
           };
           reader.readAsText(item._file);
           $('#inputAnchor')[0].value = ''; // or we can't re-upload the same file twice in a row
-        };
-
-
-        // Pagination links
-        $scope.pagingLinks = {
-          Questionnaire: {previous: null, next: null},
-          QuestionnaireResponse: {previous: null, next: null}
-        };
-
-
-        /**
-         * Check if there is a link for next or previous page
-         * @param resType FHIR resource type
-         * @param relation 'next' or 'previous' page
-         * @returns {*}
-         */
-/*
-        $scope.hasPagingLink = function(resType, relation) {
-          return $scope.pagingLinks[resType][relation];
-        };
-
-
-        /**
-         * Get next or previous page of the search result
-         * @param resType FHIR resource type
-         * @param relation 'next' or 'previous' page
-         */
-/*
-        $scope.getPage = function(resType, relation) {
-          var link = $scope.pagingLinks[resType][relation];
-          if (link) {
-            fhirService.getPage(resType, relation, link);
-          }
-        };
-
-
-        /**
-         * Set the links for next/previous pages if there is one.
-         * @param resType FHIR resoruce type
-         * @param links the link field in a searchset bundle
-         */
-/*
-        $scope.processPagingLinks = function(resType, links) {
-
-          var pagingLinks = {previous: null, next: null};
-
-          for(var i=0,iLen=links.length; i<iLen; i++) {
-            var link = links[i];
-            if (link.relation === 'previous' || link.relation === 'next') {
-              pagingLinks[link.relation] = link.url;
-            }
-          }
-          $scope.pagingLinks[resType] = pagingLinks;
         };
 
 

@@ -386,6 +386,23 @@ thisService.getAllQRByPatientId = function(pId) {
 };
 
 
+/**
+ * Get FHIR pagination results using a link url in the current bundle
+ *
+ * @param resType - The FHIR bundle from which to extract the relation url.
+ * @param url - the URL for getting the next or previous page.
+ * @returns A Promise that resolves to the FHIR Bundle for the next page.
+ */
+thisService.getPage = function(resType, relation, url) {
+  // TBD - what was this doing?
+//  var baseUrl = $window.location.origin + '/fhir-api?';
+//  var url = url.replace(/^.*\/baseDstu3\?/, baseUrl);
+
+  return thisService.fhir.request(url);
+};
+
+
+
 
 // TBD - Code below this point has either not been updated yet or will be
 // removed.
@@ -411,36 +428,6 @@ thisService.setCurrentQuestionnaire = function(q) {
 thisService.getCurrentQuestionnaire = function() {
   return thisService.currentQuestionnaire;
 };
-
-
-/**
- * Get FHIR pagination results using a link url in the current bundle
- *
- * @param resType - The FHIR bundle from which to extract the relation url.
- * @param url - the URL for getting the next or previous page.
- * @returns {Object} - FHIR resource bundle
- */
-/*
-thisService.getPage = function(resType, relation, url) {
-  var baseUrl = $window.location.origin + '/fhir-api?';
-  var url = url.replace(/^.*\/baseDstu3\?/, baseUrl);
-
-  thisService.fhir.request(url)
-    .then(function(response) {   // response is a searchset bundle
-      if (resType === "Questionnaire") {
-        $rootScope.$broadcast('LF_FHIR_QUESTIONNAIRE_LIST', response);
-      }
-      else if (resType === "QuestionnaireResponse") {
-        $rootScope.$broadcast('LF_FHIR_QUESTIONNAIRERESPONSE_LIST', response);
-      }
-      // else if (resType === "DiagnosticReport") {
-      //   $rootScope.$broadcast('LF_FHIR_DIAGNOSTICREPORT_LIST', response);
-      // }
-    }, function(error) {
-      console.log(error);
-    });
-};
-*/
 
 
 /**
