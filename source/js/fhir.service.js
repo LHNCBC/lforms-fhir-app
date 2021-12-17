@@ -332,7 +332,7 @@ thisService.setQRRefToQ = function(qrData, qData) {
 
 
 /**
- *  Build a FHIR search query and returns a promise with the result.
+ *  Builds a FHIR search query and returns a promise with the result.
  * @param searchConfig an object with the following sub-keys for configuring the search.
  *  type: (required) the Resource type to search for
  *  query: An object of key/value pairs for the query part of the URL to be constructed.
