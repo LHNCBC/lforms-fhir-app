@@ -75,7 +75,7 @@
            data-parent="#listAccordion" aria-expanded="false" aria-controls="collapse-three">
           Available Questionnaires:
           </a>
-        <span class=showDate><label><input id="showDate" type=checkbox> Show Date</input></label></span>
+        <span class=showDate><label><input id="showDate" type=checkbox> Show Date</label></span>
       </div>
     </div>
     <div class="panel-collapse collapse" id="collapse-three" role="tabpanel"
@@ -84,13 +84,14 @@
         <a id="search" role="button" type="button" class="btn btn-default btn-sm btn-success"
          title="Choose a Questionnaire from the FHIR server."><span
          class="glyphicon glyphicon-search"></span><span
-         class="lf-nav-button">Search</span></a> </div>
+         class="lf-nav-button">Search</span></a>
+      </div>
       <div id="savedQListMsg"></div>
       <div id="qList" class="list-group">
         <div id="qListItems">
-          <a href="javascript:void(0)" class="list-group-item" role="presentation"" ng-click="showSavedQuestionnaire($index, p)">
-            <p class="form-name">{{p.resName}}</p>
-            <p class="last-updated" ng-if="showQDate">{{p.updatedAt}}</p>
+          <a href="javascript:void(0)" class="list-group-item" role="presentation">
+            <p class="form-name"></p>
+            <p class="last-updated"></p>
           </a>
         </div>
         <div class="btn-group next-prev-btns" role="group">
@@ -99,10 +100,9 @@
           <button id="qNextPage" title="Next Page" role="button" type="button"
            class="btn btn-default btn-sm glyphicon glyphicon-chevron-right" />
         </div>
-        <div style="display: none" ng-if="formSelected.groupIndex" id="deleteQBtn" class="btn-group btn-group-justified" role="group">
+        <div style="display: none" id="deleteQBtn" class="btn-group btn-group-justified" role="group">
           <a role="button" type="button" class="btn btn-default btn-sm
-           btn-danger" ng-click="deleteQuestionnaire($event)" title="Deletes
-           a Questionnaire and associated QuestionnaireResponses and
+           btn-danger" title="Deletes a Questionnaire and associated QuestionnaireResponses and
            Observations"><span class="glyphicon glyphicon-warning-sign"></span><span
            class="lf-nav-button">Delete Questionnaire and Its Responses</span></a>
         </div>

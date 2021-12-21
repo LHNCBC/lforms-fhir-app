@@ -472,6 +472,7 @@ function showSavedQuestionnaire(q) {
     rtn = formPane.showForm(formData);
   else
     rtn = Promise.reject();
+  return rtn;
 };
 
 
