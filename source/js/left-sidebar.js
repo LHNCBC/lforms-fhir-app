@@ -8,6 +8,7 @@ import * as formPane from './form-pane';
 import {fhirService} from './fhir.service.js';
 import lformsUpdater from 'lforms-updater';
 import {spinner} from './spinner.js';
+import {Dialogs} from './dialogs.js';
 
 /**
  *  An element that is the template for the saved QuestionnaireResponse list
@@ -66,6 +67,14 @@ qrPrevPage_.addEventListener('click', ()=>getPage('QuestionnaireResponse', 'prev
 qrNextPage_.addEventListener('click', ()=>getPage('QuestionnaireResponse', 'next'));
 qPrevPage_.addEventListener('click', ()=>getPage('Questionnaire', 'previous'));
 qNextPage_.addEventListener('click', ()=>getPage('Questionnaire', 'next'));
+
+// Search button
+document.getElementById('search').addEventListener('click', ()=>{
+  Dialogs.showQuestionnairePicker().then((questionnaire)=> {
+    if (questionnaire)
+      formPane.showForm(questionnaire);
+  });
+});
 
 // File Upload button
 const loadFileInput = document.getElementById('loadFileInput');
@@ -836,45 +845,6 @@ angular.module('lformsApp')
         $scope.selectedQuestionnaire = null;
 
         /**
-         * Show a popup window to let user use a search field to choose a Questionnaire from HAPI FHIR server
-         * @param event the click event
-         */
-/*
-        $scope.showQuestionnairePicker = function(event) {
-          $scope.selectedQuestionnaireInDialog = null;
-          $mdDialog.show({
-            scope: $scope,
-            preserveScope: true,
-            templateUrl: 'fhir-app/questionnaire-select-dialog.html',
-            parent: angular.element(document.body),
-            targetEvent: event,
-            controller: function DialogController($scope, $mdDialog) {
-              $scope.dialogTitle = "Questionnaire Picker";
-              $scope.dialogLabel = "Choose a Questionnaire";
-              $scope.dialogHint = "Search for Questionnaires by name";
-              // close the popup without selecting a questionnaire
-              $scope.closeDialog = function () {
-                $scope.selectedQuestionnaireInDialog = null;
-                $mdDialog.hide();
-              };
-
-              // close the popup and select a questionnaire
-              $scope.confirmAndCloseDialog = function () {
-                $scope.selectedQuestionnaire = angular.copy($scope.selectedQuestionnaireInDialog.resource);
-                var formData = LForms.Util.convertFHIRQuestionnaireToLForms($scope.selectedQuestionnaire);
-                formData = lformsUpdater.update(formData); // call before constructing LFormsData
-                // set the form data to be displayed
-                selectedFormData.setFormData(new LForms.LFormsData(formData));
-                fhirService.setCurrentQuestionnaire($scope.selectedQuestionnaire);
-                $scope.selectedQuestionnaireInDialog = null;
-                $mdDialog.hide();
-              };
-            }
-          });
-        };
-
-
-        /**
          *  Shows a confirmation dialog before deleting the current
          *  Questionnaire and its associated responses and observations.
          *  (Perhaps this should not be a part of the user interface normally,
@@ -908,15 +878,6 @@ angular.module('lformsApp')
           return (current && newlySelected && current.id !== newlySelected.id)
         };
 
-        /**
-         * Search Questionnaire by name
-         * @param searchText
-         * @returns {*}
-         */
-/*
-        $scope.searchQuestionnaire = function(searchText) {
-          return fhirService.searchQuestionnaire(searchText);
-        };
       }
   ]);
 */

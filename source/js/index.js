@@ -100,7 +100,7 @@ function setServerAndPickPatient(fhirServer, callback) {
     if (callback)
       callback(success); // "success" is a boolean
     if (success) {
-      Dialogs.showPatientPicker(function(patientResource) {
+      Dialogs.showPatientPicker().then((patientResource) => {
         if (patientResource) {
           fhirService.setCurrentPatient(patientResource);
           fhirService.setNonSmartServerPatient(patientResource.id);

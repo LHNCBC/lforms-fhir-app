@@ -140,43 +140,99 @@ export const Dialogs = {
 
   /**
    *  Shows a popup window to let user use a search field to choose a
-   *  patient from HAPI FHIR server.
-   * @param callback Called when the user has dismissed the dialog.  If the user
-   *  has selected a patient, the callback will be passed the patient resource.
+   *  resource of a given type from HAPI FHIR server.
+   * @param resType the name of the FHIR Resource type
+   * @param autocompOpts options to pass to the autocompleter for the field.
+   *  These should be configured so that "resource" is an extra data field
+   *  returned by the the autocompleter's getSelectedItemData() function.
+   * @return a Promise that resolves when the user has dismissed the dialog.  If
+   *  the user selects a Questionnaire, the Promise will resolve to the
+   *  Questionnaire resource; otherwise it will resolved to undefined.
    */
-  showPatientPicker: function (callback) {
-    this.patientPickerCallback = callback; // the dialog is modal
-    const selectionFieldID = 'patientSelection';
+  showResourcePicker: function (resType, autocompOpts) {
+    const selectionFieldID = 'resSelection';
     const selectionField = document.getElementById(selectionFieldID);
     selectionField.value = '';
-    if (!selectionField.autocomp) {
-      new LForms.Def.Autocompleter.Search(selectionFieldID, null, {
-        tableFormat: true,
-        colHeaders: ['Name', 'Gender', 'Birth Date'],
-        valueCols: [0],
-        search: (fieldVal, resultCount) => {
-          return fhirService.searchPatientByName(fieldVal, resultCount);
+    if (selectionField.autocomp)
+      selectionField.autocomp.destroy();
+    new LForms.Def.Autocompleter.Search(selectionFieldID, null, autocompOpts);
+
+    document.getElementById('resModalTitle').textContent = resType + ' Picker';
+    resType = resType.toLowerCase();
+    document.getElementById('resSelLabel').textContent = 'Choose a '+resType+ ':';
+    document.getElementById('resSelection').placeholder = 'Search for '+resType+'s by name';
+
+    // Set up event listeners for the buttons
+    const dialog = $('#resSelectDialog');
+    this.selectButtonClicked = false;
+    if (!this.resPickerResolve_) { // if we haven't opened this before
+      const selectButton = document.getElementById('resSelectBtn');
+      let selectButtonClicked = false; // whether it was the most recent button clicked
+      selectButton.addEventListener('click', ()=>{selectButtonClicked = true});
+      dialog.on('hide.bs.modal', (e) => {
+        // Only take special action if the "select" button was the cause of the close
+        if (selectButtonClicked) {
+          selectButtonClicked = false; // reset the flag
+          const selectedData = selectionField.autocomp.getSelectedItemData();
+          // Make sure the user has not changed the field to an non-list value
+          if (selectedData?.length && (selectedData[0].text === selectionField.value))
+            this.resPickerResolve_(selectedData[0].data?.resource);
+          else
+            e.preventDefault();
         }
       });
-
-      // The search results list needs to be higher than the modals, so the autocompleter can be
-      // used there.
-      document.getElementById('searchResults').style.zIndex = "1100";
-
-      // Set up event listener for the select button
-      document.getElementById('psSelectBtn').addEventListener('click', ()=> {
-        const selectedData = selectionField.autocomp.getSelectedItemData();
-        if (selectedData?.length) {
-          this.patientPickerCallback(selectedData[0].data?.resource);
-        }
-      });
-
+      const closeBtn = document.getElementById('resCloseBtn');
+      closeBtn.addEventListener('click', ()=>this.resPickerResolve_());
     }
-    this.hideMsgDialog();
-    $('#patientSelectDialog').modal('show');
-    announce('A dialog for selecting a patient is being opened');
-  }
 
+    // The search results list needs to be higher than the modals, so the autocompleter can be
+    // used there.
+    document.getElementById('searchResults').style.zIndex = "1100";
+
+    this.hideMsgDialog();
+    dialog.modal('show');
+    announce('A dialog for selecting a '+resType+' is being opened');
+
+    return new Promise((resolve, reject) => {
+      this.resPickerResolve_ = resolve;
+    });
+  },
+
+
+  /**
+   *  Shows a popup window to let user use a search field to choose a
+   *  patient from HAPI FHIR server.
+   * @return a Promise that resolves when the user has dismissed the dialog.  If
+   *  the user selects a Questionnaire, the Promise will resolve to the
+   *  Questionnaire resource; otherwise it will resolved to undefined.
+   */
+  showPatientPicker: function () {
+    return this.showResourcePicker('Patient', {
+      tableFormat: true,
+      matchListValue: true,
+      colHeaders: ['Name', 'Gender', 'Birth Date'],
+      valueCols: [0],
+      search: (fieldVal, resultCount) => {
+        return fhirService.searchPatientByName(fieldVal, resultCount);
+      }
+    });
+  },
+
+
+  /**
+   * Show a popup window to let user use a search field to choose a Questionnaire from HAPI FHIR server
+   * @return a Promise that resolves when the user has dismissed the dialog.  If
+   *  the user selects a Questionnaire, the Promise will resolve to the
+   *  Questionnaire resource; otherwise it will resolved to undefined.
+   */
+  showQuestionnairePicker: function () {
+    return this.showResourcePicker('Questionnaire', {
+      matchListValue: true,
+      search: (fieldVal, resultCount) => {
+        return fhirService.searchQuestionnaire(fieldVal, resultCount);
+      }
+    });
+  }
 
 }
 

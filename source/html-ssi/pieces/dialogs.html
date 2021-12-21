@@ -36,24 +36,24 @@
   </div>
 </div>
 
-<div class="modal fade" id="patientSelectDialog" tabindex="-1" role="dialog"
- aria-labelledby="psModalTitle">
+<div class="modal fade" id="resSelectDialog" tabindex="-1" role="dialog"
+ aria-labelledby="resModalTitle">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 id="psModalTitle" class="modal-title">Patient Picker</h4>
+        <h4 id="resModalTitle" class="modal-title">Patient Picker</h4>
       </div>
       <div class="modal-body">
-        <div class="fieldLabel"><label for="patientSelection">Choose a
+        <div class="fieldLabel"><label id="resSelLabel" for="resSelection">Choose a
           patient:</label></div>
-        <div class="dialogSelectionList"><input id="patientSelection"
+        <div class="dialogSelectionList"><input id="resSelection"
          type="text" placeholder="Search for patients by name"></div>
       </div>
       <div class="modal-footer">
-        <button id="psSelectBtn" type="button" class="btn btn-primary" data-dismiss="modal"
+        <button id="resSelectBtn" type="button" class="btn btn-primary" data-dismiss="modal"
          >Select</button>
-        <button id="psCloseBtn" type="button" class="btn btn-default" data-dismiss="modal"
+        <button id="resCloseBtn" type="button" class="btn btn-default" data-dismiss="modal"
          >Cancel</button>
       </div>
     </div>
@@ -90,4 +90,5 @@
     </div>
   </div>
 </div>
+
 
