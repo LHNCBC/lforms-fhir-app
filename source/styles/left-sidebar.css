@@ -20,3 +20,7 @@
 .next-prev-btns button {
   width: 50%;
 }
+
+#search {
+  width: 100%;
+}
