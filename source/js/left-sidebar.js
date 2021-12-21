@@ -3,6 +3,7 @@
 
 import 'bootstrap/js/collapse.js';
 import * as util from './util';
+import { announce } from './announcer'; // for a screen reader
 import * as formPane from './form-pane';
 import {fhirService} from './fhir.service.js';
 import lformsUpdater from 'lforms-updater';
@@ -13,6 +14,12 @@ import {spinner} from './spinner.js';
  *  items.
  */
 let savedQRItemTemplate_;
+
+/**
+ *  An element that is the template for the saved Questionnaire list
+ *  items.
+ */
+let savedQItemTemplate_;
 
 /**
  *  The currently selected item in the side bar.
@@ -28,6 +35,16 @@ const qrPrevPage_ = document.getElementById('qrPrevPage');
  *  Next page button for the QuestionnaireResponse list
  */
 const qrNextPage_ = document.getElementById('qrNextPage');
+
+/**
+ *  Previous page button for the Questionnaire list
+ */
+const qPrevPage_ = document.getElementById('qPrevPage');
+
+/**
+ *  Next page button for the Questionnaire list
+ */
+const qNextPage_ = document.getElementById('qNextPage');
 
 /**
  *  A list of featured Questionnaire data for the current FHIR server (pulled
@@ -47,6 +64,8 @@ let pagingLinks_ = {
 // Set up listeners for the next/prev page buttons
 qrPrevPage_.addEventListener('click', ()=>getPage('QuestionnaireResponse', 'previous'));
 qrNextPage_.addEventListener('click', ()=>getPage('QuestionnaireResponse', 'next'));
+qPrevPage_.addEventListener('click', ()=>getPage('Questionnaire', 'previous'));
+qNextPage_.addEventListener('click', ()=>getPage('Questionnaire', 'next'));
 
 // File Upload button
 const loadFileInput = document.getElementById('loadFileInput');
@@ -74,6 +93,21 @@ loadFileInput.addEventListener('change', ()=>{
 });
 
 
+// Show Date checkbox
+const showDate = document.getElementById('showDate');
+showDate.addEventListener('change', ()=>{
+  const listItemDiv = document.getElementById('qListItems');
+  const itemDates = listItemDiv.querySelectorAll('p.last-updated');
+  const checked = showDate.checked;
+  Array.prototype.forEach.call(itemDates, function (dateNode) {
+    if (checked)
+      dateNode.style.display = 'block';
+    else
+      dateNode.style.display = 'none';
+  });
+});
+
+
 /**
  *  Initializes the lists of resources in the nav bar after the server
  *  connection has been established and the patient has been selected.
@@ -81,12 +115,15 @@ loadFileInput.addEventListener('change', ()=>{
  */
 export function initSideBarLists() {
   const numFeaturedQs = initFeaturedList();
-  loadSavedQRList().then((count) => {
-    if (numFeaturedQs)
-      document.getElementById('toggleFeaturedList').click();
-    else if (count) {
-      document.getElementById('toggleQRList').click();
-    }
+  loadSavedQRList().then((qrCount) => {
+    loadSavedQList().then((qCount) => {
+      if (numFeaturedQs)
+        document.getElementById('toggleFeaturedList').click();
+      else if (qrCount)
+        document.getElementById('toggleQRList').click();
+      else if (qCount)
+        document.getElementById('toggleQList').click();
+    });
   });
   // TBD fhirService.getAllQ();
 }
@@ -127,7 +164,8 @@ function loadSavedQRList() {
 
 /**
  *  Sets the list of saved QuestionnaireResponses to contain the given
- *  QuestionnaireResponses, but does not change the state of the side bar.
+ *  QuestionnaireResponses, but does not change the state of the side bar
+ *  visibility.
  * @param bundle a bundle of QuestionnaireResponses and their Questionnaires.
  * @return the number of QuestionnaireResponses added to the list (which could
  *  be less than the number in the bundle)
@@ -182,7 +220,8 @@ function setSavedQRList(bundle) {
         else if (res.authored) {
           updated = new Date(res.authored).toString();
         }
-        qrUpdated.innerText = updated;
+        if (updated)
+          qrUpdated.innerText = updated;
         listItemDiv.appendChild(qrItemElem);
         ++listCount;
         qrItemElem.addEventListener('click', () => {
@@ -196,6 +235,89 @@ function setSavedQRList(bundle) {
   processPagingLinks("QuestionnaireResponse", bundle.link);
   setEnabled(qrPrevPage_, !!pagingLinks_.QuestionnaireResponse.previous);
   setEnabled(qrNextPage_, !!pagingLinks_.QuestionnaireResponse.next);
+
+  return listCount;
+}
+
+
+/**
+ *  Loads (or reloads) the saved Questionnaire list.
+ * @return a Promise that resolves to the number of Questionnaires in
+ *  the list if the attempt to load has completed successfully.
+ */
+function loadSavedQList() {
+  const savedQListMsg = document.getElementById('savedQListMsg');
+  let rtn;
+  try {
+    util.show(savedQListMsg);
+    savedQListMsg.innerText = 'Loading Questionnaires from server...';
+    rtn = fhirService.getAllQ().then((resp) => {
+      let count = 0;
+      if (!resp.entry?.length) {
+        savedQListMsg.innerText =
+          'No saved Questionnaire resources were found.  Try uploading one.';
+      }
+      else {
+        count = setSavedQList(resp);
+      }
+      util.hide(savedQListMsg);
+      return count;
+    });
+  }
+  catch(e) {
+    savedQListMsg.innerText = 'Unable to retrieve saved Questionnaires.';
+    rtn = Promise.reject(e);
+  }
+  return rtn;
+
+}
+
+
+/**
+ *  Sets the list of saved Questionnaires to contain the given
+ *  Questionnaires, but does not change the state of the side bar visibility.
+ * @param bundle a bundle of Questionnaires.
+ * @return the number of Questionnaires added to the list.
+ */
+function setSavedQList(bundle) {
+  const listItemDiv = document.getElementById('qListItems');
+  if (!savedQItemTemplate_) {
+    // Then the template is still sitting in the DOM.
+    savedQItemTemplate_ = listItemDiv.firstElementChild;
+    savedQItemTemplate_.style.display = '';
+    listItemDiv.removeChild(savedQItemTemplate_);
+  }
+  let listCount = 0;
+  listItemDiv.innerText  = ''; // erase current list
+  bundle.entry.forEach((entry) => {
+    const res = entry.resource;
+    if (res.resourceType === 'Questionnaire') {
+      const qItemElem = savedQItemTemplate_.cloneNode(true);
+      const itemChildren = qItemElem.children;
+      const qName = itemChildren.item(0);
+      qName.innerText = getQName(res);
+      const qUpdated = itemChildren.item(1);
+      var updated;
+      if (res.meta && res.meta.lastUpdated) {
+        updated = new Date(res.meta.lastUpdated).toString();
+      }
+      else if (res.authored) {
+        updated = new Date(res.authored).toString();
+      }
+      if (updated)
+        qUpdated.innerText = updated;
+      listItemDiv.appendChild(qItemElem);
+      ++listCount;
+      qItemElem.addEventListener('click', () => {
+        selectItemAfterPromise(qItemElem, ()=>showSavedQuestionnaire(res));
+      });
+    }
+  });
+
+  // Set the state of the next/prev page buttons
+  processPagingLinks("Questionnaire", bundle.link);
+  setEnabled(qPrevPage_, !!pagingLinks_.Questionnaire.previous);
+  setEnabled(qNextPage_, !!pagingLinks_.Questionnaire.next);
 
   return listCount;
 }
@@ -231,6 +353,7 @@ function initFeaturedList() {
   }
   return count;
 }
+
 
 /**
  *  Sets the enabled state of a button or form control.
@@ -294,7 +417,7 @@ function showSavedQQR(q, qr) {
   // merge the QuestionnaireResponse into the form
   var fhirVersion = fhirService.fhirVersion;
   var mergedFormData;
-  let rtn = Promise.reject();
+  let rtn;
   try {
     // In case the Questionnaire came from LForms, run the updater.
     q = lformsUpdater.update(q);
@@ -313,8 +436,35 @@ function showSavedQQR(q, qr) {
     // Load FHIR resources, but don't prepopulate
     rtn = formPane.showForm(mergedFormData, {prepopulate: false} );
   }
+  else
+    rtn = Promise.reject();
   return rtn;
 }
+
+
+/**
+ * Show a Questionnaire
+ * @param q the Questionnaire to show
+ * @return a Promise that resolves if the form is successfully shown.
+ */
+function showSavedQuestionnaire(q) {
+  let formData, rtn;
+  try {
+    // In case the Questionnaire came from LForms, run the updater.
+    q = lformsUpdater.update(q);
+    formData = LForms.Util.convertFHIRQuestionnaireToLForms(
+      q, fhirService.fhirVersion);
+  }
+  catch(e) {
+    formPane.showError('Sorry.  Could not process that '+
+      'Questionnaire.  See the console for details.', e);
+  }
+  if (formData)
+    rtn = formPane.showForm(formData);
+  else
+    rtn = Promise.reject();
+  return rtn;
+};
 
 
 
@@ -327,7 +477,11 @@ function getPage(resType, relation) {
   var link = pagingLinks_[resType][relation];
   if (link) {
     fhirService.getPage(link).then((bundle) => {
-      setSavedQRList(bundle);
+      if (resType === "QuestionnaireResponse")
+        setSavedQRList(bundle);
+      else
+        setSavedQList(bundle);
+      announce('Updated list of '+resType+'s');
     });
   }
 };
@@ -510,61 +664,6 @@ angular.module('lformsApp')
           };
           reader.readAsText(item._file);
           $('#inputAnchor')[0].value = ''; // or we can't re-upload the same file twice in a row
-        };
-
-
-        /**
-         * Show a Questionnaire
-         * @param formIndex form index in the list
-         * @param qInfo info of a Questionnaire
-         */
-/*
-        $scope.showSavedQuestionnaire = function(formIndex, qInfo) {
-
-          // ResId, ResType, ResName
-          if (qInfo && qInfo.resType === "Questionnaire") {
-            $('.spinner').show();
-            removeMessages();
-            selectedFormData.setFormData(null);
-
-            // Allow the page to update
-            $timeout(function() {
-              $scope.formSelected = {
-                groupIndex: 2,
-                formIndex: formIndex
-              };
-              try {
-                // In case the Questionnaire came from LForms, run the updater.
-                var q = lformsUpdater.update(qInfo.questionnaire);
-                var formData = LForms.Util.convertFHIRQuestionnaireToLForms(
-                  q, fhirService.fhirVersion);
-              }
-              catch(e) {
-                userMessages.error = e;
-              }
-              if (!userMessages.error) {
-                //var newFormData = (new LForms.LFormsData(formData)).getFormData();
-                var fhirResInfo = {
-                  resId: null,
-                  resType: null,
-                  resTypeDisplay: null,
-                  extensionType: null,
-                  questionnaireResId: qInfo.resId,
-                  questionnaireName: qInfo.questionnaire.name
-                };
-                // set the form data to be displayed
-                var newFormData = new LForms.LFormsData(formData);
-                $('.spinner').show();
-                newFormData.loadFHIRResources(true).then(function() {
-                  $('.spinner').hide();
-                  $scope.$apply(function() {
-                    selectedFormData.setFormData(newFormData, fhirResInfo);
-                    fhirService.setCurrentQuestionnaire(qInfo.questionnaire);
-                  });
-                });
-              }
-            }, 10);
-          }
         };
 
 

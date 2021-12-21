@@ -337,6 +337,7 @@ thisService.setQRRefToQ = function(qrData, qData) {
  *  type: (required) the Resource type to search for
  *  query: An object of key/value pairs for the query part of the URL to be constructed.
  *  headers: An object containing HTTP headers to be added to the request.
+ * @return a Promise that resolves to the FHIR Batch containing the results.
  */
 function fhirSearch(searchConfig) {
   var searchParams = new URLSearchParams();
@@ -369,6 +370,7 @@ function fhirSearch(searchConfig) {
  *  Get all QuestionnaireResponse resources of a patient
  *  Returns a promise that resolves to the response from the FHIR server.
  * @param pId the current patient's ID
+ * @return a Promise that resolves to the FHIR Batch containing the QRs.
  */
 thisService.getAllQRByPatientId = function(pId) {
   return fhirSearch({
@@ -408,6 +410,22 @@ thisService.getFhirResourceById = function(resType, resId) {
 };
 
 
+/**
+ *  Gets (a first page of) all Questionnaire resources
+ * @return a Promise that resolves to the FHIR Batch containing the Qs.
+ */
+thisService.getAllQ = function() {
+  return fhirSearch({
+    type: 'Questionnaire',
+    query: {
+      _sort: '-_lastUpdated',
+      _count: 10
+    },
+    headers: {
+      'Cache-Control': 'no-cache'
+    }
+  });
+};
 
 
 // TBD - Code below this point has either not been updated yet or will be
@@ -972,22 +990,4 @@ thisService.findQuestionnaire = function(searchSet, qId) {
 };
 */
 
-/**
- *  Get all Questionnaire resources
- *  Returns a promise that resolves to the response from the server.
- */
-/*
-thisService.getAllQ = function() {
 
-  fhirSearch({
-    type: 'Questionnaire',
-    query: {
-      _sort: '-_lastUpdated',
-      _count: 10
-    },
-    headers: {
-      'Cache-Control': 'no-cache'
-    }
-  });
-};
-*/

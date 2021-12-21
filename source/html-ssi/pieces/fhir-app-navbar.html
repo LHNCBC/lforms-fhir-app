@@ -22,7 +22,7 @@
       <div class="panel-title">
         <a id="toggleQRList" role="button" class="collapsed" data-toggle="collapse"
          data-target="#collapse-one" data-parent="#listAccordion" aria-expanded="false"
-         aria-controls="collapse-one">
+         aria-controls="collapse-one" href="javascript:void(0)">
           Saved QuestionnaireResponses
         </a>
       </div>
@@ -37,11 +37,11 @@
             <p class="last-updated"></p>
           </a>
         </div>
-        <div class="btn-group btn-group-justified" role="group">
-          <a id="qrPrevPage" role="button" type="button" disabled
-           class="btn btn-default btn-sm glyphicon glyphicon-chevron-left"></a>
-          <a id="qrNextPage" role="button" type="button" disabled
-           class="btn btn-default btn-sm glyphicon glyphicon-chevron-right"></a>
+        <div class="btn-group next-prev-btns" role="group">
+          <button id="qrPrevPage" title="Previous Page" role="button" type="button" disabled
+           class="btn btn-default btn-sm glyphicon glyphicon-chevron-left" />
+          <button id="qrNextPage" title="Next Page" role="button" type="button" disabled
+           class="btn btn-default btn-sm glyphicon glyphicon-chevron-right" />
         </div>
       </div>
     </div>
@@ -51,7 +51,7 @@
     <div class="panel-heading" role="tab" id="heading-two">
       <div class="panel-title">
         <a id="toggleFeaturedList" role="button" class="collapsed" data-toggle="collapse"
-         data-target="#collapse-two"
+         data-target="#collapse-two" href="javascript:void(0)"
          data-parent="#listAccordion" aria-expanded="false" aria-controls="collapse-two">
           Featured Questionnaires:
         </a>
@@ -70,37 +70,36 @@
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="heading-three">
       <div class="panel-title">
-          <a role="button" class="collapsed" data-toggle="collapse" data-target="#collapse-three"
-             data-parent="#listAccordion" aria-expanded="false" aria-controls="collapse-three">
+          <a href="javascript:void(0)" id="toggleQList" role="button" class="collapsed" data-toggle="collapse"
+           data-target="#collapse-three"
+           data-parent="#listAccordion" aria-expanded="false" aria-controls="collapse-three">
           Available Questionnaires:
           </a>
-        <span class=showDate><label><input type=checkbox ng-model=showQDate> Show Date</input></label></span>
+        <span class=showDate><label><input id="showDate" type=checkbox> Show Date</label></span>
       </div>
     </div>
     <div class="panel-collapse collapse" id="collapse-three" role="tabpanel"
          aria-labelledby="heading-three">
-      <div ng-if="listSavedQError">Unable to retrieve saved Questionnaires.</div>
-      <div ng-if="!listSavedQError && !listSavedQ">Loading Questionnaires from server...</div>
-      <div ng-if="!listSavedQError && listSavedQ && listSavedQ.length==0">No saved
-        Questionnaire resources were found.  Try uploading one.</div>
-      <div ng-if="listSavedQ && listSavedQ.length>0"  id="qList" class="list-group">
-        <div class="btn-group btn-group-justified" role="group">
-          <a id="search" role="button" type="button" class="btn btn-default btn-sm btn-success " ng-click="showQuestionnairePicker($event)" title="Choose a Questionnaire from the FHIR server."><span class="glyphicon glyphicon-search"></span><span class="lf-nav-button">Search</span></a>
+      <div class="btn-group btn-group-justified" role="group">
+        <a id="search" role="button" type="button" class="btn btn-default btn-sm btn-success" title="Choose a Questionnaire from the FHIR server."><span class="glyphicon glyphicon-search"></span><span class="lf-nav-button">Search</span></a>
+      </div>
+      <div id="savedQListMsg"></div>
+      <div id="qList" class="list-group">
+        <div id="qListItems">
+          <a href="javascript:void(0)" class="list-group-item" role="presentation">
+            <p class="form-name"></p>
+            <p class="last-updated"></p>
+          </a>
         </div>
-        <a href="#" class="list-group-item {{isSelected(2, $index)}}" ng-repeat="p in listSavedQ" role="presentation" id="{{p.resId}}" ng-click="showSavedQuestionnaire($index, p)">
-          <p class="form-name">{{p.resName}}</p>
-          <p class="last-updated" ng-if="showQDate">{{p.updatedAt}}</p>
-        </a>
-        <div class="btn-group btn-group-justified" role="group">
-          <a id=prevQPage role="button" type="button" class="btn btn-default btn-sm glyphicon glyphicon-chevron-left"
-           ng-disabled="!hasPagingLink('Questionnaire','previous')" ng-click="getPage('Questionnaire', 'previous')"></a>
-          <a id=nextQPage role="button" type="button" class="btn btn-default btn-sm glyphicon glyphicon-chevron-right"
-           ng-disabled="!hasPagingLink('Questionnaire','next')" ng-click="getPage('Questionnaire', 'next')"></a>
+        <div class="btn-group next-prev-btns" role="group">
+          <button id="qPrevPage" title="Previous Page" role="button" type="button"
+           class="btn btn-default btn-sm glyphicon glyphicon-chevron-left" />
+          <button id="qNextPage" title="Next Page" role="button" type="button"
+           class="btn btn-default btn-sm glyphicon glyphicon-chevron-right" />
         </div>
-        <div style="display: none" ng-if="formSelected.groupIndex" id="deleteQBtn" class="btn-group btn-group-justified" role="group">
+        <div style="display: none" id="deleteQBtn" class="btn-group btn-group-justified" role="group">
           <a role="button" type="button" class="btn btn-default btn-sm
-           btn-danger" ng-click="deleteQuestionnaire($event)" title="Deletes
-           a Questionnaire and associated QuestionnaireResponses and
+           btn-danger" title="Deletes a Questionnaire and associated QuestionnaireResponses and
            Observations"><span class="glyphicon glyphicon-warning-sign"></span><span
            class="lf-nav-button">Delete Questionnaire and Its Responses</span></a>
         </div>
