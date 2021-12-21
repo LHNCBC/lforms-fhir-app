@@ -81,7 +81,7 @@ loadFileInput.addEventListener('change', ()=>{
         var importedData = JSON.parse(event.target.result);
         // Update it to the current version of LForms
         importedData = lformsUpdater.update(importedData);
-        formPane.showForm(importedData);
+        formPane.showForm(importedData, undefined, true);
       }
       catch (e) {
         formPane.showError('Could not process the file.', e);
