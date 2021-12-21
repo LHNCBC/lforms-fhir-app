@@ -846,29 +846,6 @@ angular.module('lformsApp')
         $scope.selectedQuestionnaire = null;
 
         /**
-         *  Shows a confirmation dialog before deleting the current
-         *  Questionnaire and its associated responses and observations.
-         *  (Perhaps this should not be a part of the user interface normally,
-         *  but it is useful for testing.)
-         */
-/*
-        $scope.deleteQuestionnaire = function(event) {
-          var confirmDialog = $mdDialog.confirm().title('Warning').
-            textContent('This will delete the selected Questionnaire, all ' +
-             'its saved QuestionnaireResponses, '+
-             'and all Observations extracted from those QuestionnaireResponses.').
-            ok('Delete').cancel('Cancel').theme('warn');
-          $mdDialog.show(confirmDialog).then(function() {
-            fhirService.deleteQAndQRespAndObs(fhirService.currentQuestionnaire.id).then(function() {
-              var resultDialog = $mdDialog.alert().title('Deletion Completed').
-                textContent('The questionnaire and its associated resources were deleted successfully.').
-                ok('OK');
-              $mdDialog.show(resultDialog);
-            });
-          });
-        }
-
-        /**
          * Check if the newly selected Questionnaire is different that the current Questionnaire
          * @param current the current Questionnaire
          * @param newlySelected the newly selected Questionnaire

@@ -866,54 +866,6 @@ thisService.deleteQRespAndObs = function(resId, reportSuccess) {
 */
 
 /**
- * Delete a Questionnaire, any saved QuestionnaireResponses for that
- * Questionnaire, and associated Observations (if any).  Status returned
- * through an angular broadcast event.
- * @param resId FHIR resource ID
- * @return a promise that resolves when all of the deletion is finished.
- */
-/*
-thisService.deleteQAndQRespAndObs = function(resId) {
-  return fhirSearch({
-    type: 'QuestionnaireResponse',
-    query: {
-      'questionnaire': 'Questionnaire/'+resId,
-    },
-    headers: {
-      'Cache-Control': 'no-cache'
-    }
-  }).then(function(response) {   // response is a searchset bundle
-    var thenPromise;
-    var bundle = response;
-    var entries = bundle.entry;
-    if (entries && entries.length > 0) {
-      var pendingDeletions = 0;
-      var qRespDelPromises = [];
-      for (var i=0, len=entries.length; i<len; ++i) {
-        var qResId = entries[i].resource.id;
-        qRespDelPromises.push(thisService.deleteQRespAndObs(qResId, false));
-      }
-      thenPromise = Promise.all(qRespDelPromises).then(
-        function success(response) {
-          thisService.deleteFhirResource('Questionnaire', resId);
-        },
-        function error(response) {
-          console.log(response);
-          reportError('QuestionnaireResponse', 'delete', response);
-        }
-      );
-    }
-    else // no QuestionnaireResponses to delete
-      thenPromise = thisService.deleteFhirResource('Questionnaire', resId);
-    return thenPromise;
-  }, function(error) {
-    console.log(error);
-    reportError('QuestionnaireResponse', 'delete', error);
-  });
-};
-*/
-
-/**
  *  Deletes an FHIR resource, and reports the result.
  *  Status returned through an angular broadcast event.
  * @param resType FHIR resource type
