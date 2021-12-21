@@ -39,7 +39,7 @@ const deleteButton_ = document.getElementById('btn-delete');
  *  Renders the given form definition, replacing any previously shown form.
  * @param formDef either an LForms or FHIR Questionnaire form definition.
  * @param addOptions the options object for LForms.Util.addFormToPage.
- * @param hideSaveDelete hide the save and delete buttons.
+ * @param hideSaveDelete if true, hide the save and delete buttons.
  * @return a Promise that resolves when the form is successfully shown.
  */
 export function showForm(formDef, addOptions, hideSaveDelete) {
