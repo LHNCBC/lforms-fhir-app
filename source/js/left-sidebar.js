@@ -82,7 +82,7 @@ loadFileInput.addEventListener('change', ()=>{
         // Update it to the current version of LForms
         importedData = lformsUpdater.update(importedData);
         formPane.saveDeleteVisibility(false);
-        formPane.showForm(importedData, undefined);
+        formPane.showForm(importedData);
       }
       catch (e) {
         formPane.showError('Could not process the file.', e);
