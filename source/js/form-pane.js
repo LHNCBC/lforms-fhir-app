@@ -39,10 +39,9 @@ const deleteButton_ = document.getElementById('btn-delete');
  *  Renders the given form definition, replacing any previously shown form.
  * @param formDef either an LForms or FHIR Questionnaire form definition.
  * @param addOptions the options object for LForms.Util.addFormToPage.
- * @param hideSaveDelete if true, hide the save and delete buttons.
  * @return a Promise that resolves when the form is successfully shown.
  */
-export function showForm(formDef, addOptions, hideSaveDelete) {
+export function showForm(formDef, addOptions) {
   util.hide(initialMsgElem_);
   removeErrMsg();
   removeForm();
@@ -53,13 +52,6 @@ export function showForm(formDef, addOptions, hideSaveDelete) {
         spinner.hide();
         util.show(formDataControls_);
 
-        if (hideSaveDelete) {
-          util.hide(saveButton_);
-          util.hide(deleteButton_);
-        } else {
-          util.show(saveButton_);
-          util.show(deleteButton_);
-        }
         announce('A form is now displayed in the main content area, '+
           ' along with a save button and a menu for showing the form data.');
         resolve();
@@ -113,4 +105,19 @@ function removeErrMsg() {
 function removeForm() {
   util.hide(formDataControls_);
   formContainer_.textContent = '';
+}
+
+
+/**
+ * Set the visibility of the save and delete buttons.
+ * @param visibility - If true show the save and delete buttons.
+ */
+export function saveDeleteVisibility(visibility) {
+  if (visibility) {
+    util.show(saveButton_);
+    util.show(deleteButton_);
+  } else {
+    util.hide(saveButton_);
+    util.hide(deleteButton_);
+  }
 }

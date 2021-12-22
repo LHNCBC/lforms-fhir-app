@@ -81,7 +81,8 @@ loadFileInput.addEventListener('change', ()=>{
         var importedData = JSON.parse(event.target.result);
         // Update it to the current version of LForms
         importedData = lformsUpdater.update(importedData);
-        formPane.showForm(importedData, undefined, true);
+        formPane.saveDeleteVisibility(false);
+        formPane.showForm(importedData, undefined);
       }
       catch (e) {
         formPane.showError('Could not process the file.', e);
@@ -433,10 +434,10 @@ function showSavedQQR(q, qr) {
       'QuestionnaireResponse.  See the console for details.', e);
   }
   if (mergedFormData) {
+    formPane.saveDeleteVisibility(true);
     // Load FHIR resources, but don't prepopulate
-    rtn = formPane.showForm(mergedFormData, {prepopulate: false} );
-  }
-  else
+    rtn = formPane.showForm(mergedFormData, {prepopulate: false});
+  } else
     rtn = Promise.reject();
   return rtn;
 }
@@ -459,9 +460,10 @@ function showSavedQuestionnaire(q) {
     formPane.showError('Sorry.  Could not process that '+
       'Questionnaire.  See the console for details.', e);
   }
-  if (formData)
+  if (formData) {
+    formPane.saveDeleteVisibility(false);
     rtn = formPane.showForm(formData);
-  else
+  } else
     rtn = Promise.reject();
 };
 
@@ -515,6 +517,7 @@ function showFeaturedQ(qId) {
   return fhirService.getFhirResourceById('Questionnaire', qId).then((q)=>{
     try {
       q = lformsUpdater.update(q);
+      formPane.saveDeleteVisibility(false);
       return formPane.showForm(q);
     }
     catch (e) {
