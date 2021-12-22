@@ -39,13 +39,12 @@
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu">
-        <li ng-if="fhirResInfo.questionnaireResId"><a id="show-q-from-server" href="#"
-         class="" ng-click="showOrigFHIRQuestionnaire()">FHIR Questionnaire from
+        <li id="showFromServerItem"><a id="showOrigFHIRQuestionnaire"
+        href="javascript:void(0)">FHIR Questionnaire from
          Server</a></li>
-        <li ng-if="fhirResInfo.questionnaireResId" role="separator" class="divider"></li>
-        <!--<li role="separator" class="divider"></li>-->
-        <li><a id="show-sdc-q" href="#" class="" ng-click="showFHIRSDCQuestionnaire()">FHIR Questionnaire (SDC)</a></li>
-        <li><a id="show-sdc-qr" href="#" class="" ng-click="showFHIRSDCQuestionnaireResponse()">FHIR QuestionnaireResponse (SDC)</a></li>
+        <li role="separator" class="divider"></li>
+        <li><a id="showFHIRSDCQuestionnaire" href="#" class="" ng-click="showFHIRSDCQuestionnaire()">FHIR Questionnaire (SDC)</a></li>
+        <li><a id="showFHIRSDCQuestionnaireResponse" href="#" class="" ng-click="showFHIRSDCQuestionnaireResponse()">FHIR QuestionnaireResponse (SDC)</a></li>
       </ul>
     </div>
   </div>

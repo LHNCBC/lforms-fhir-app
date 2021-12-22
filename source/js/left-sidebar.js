@@ -90,7 +90,8 @@ loadFileInput.addEventListener('change', ()=>{
         var importedData = JSON.parse(event.target.result);
         // Update it to the current version of LForms
         importedData = lformsUpdater.update(importedData);
-        formPane.showForm(importedData);
+        // Unset (any) selected item after showForm attempt
+        selectItemAfterPromise(null, ()=>formPane.showForm(importedData));
       }
       catch (e) {
         formPane.showError('Could not process the file.', e);
@@ -429,9 +430,9 @@ function showSavedQQR(q, qr) {
   let rtn;
   try {
     // In case the Questionnaire came from LForms, run the updater.
-    q = lformsUpdater.update(q);
+    let updatedQ = lformsUpdater.update(q);
     var formData = LForms.Util.convertFHIRQuestionnaireToLForms(
-       q, fhirVersion);
+       updatedQ, fhirVersion);
     var newFormData = (new LForms.LFormsData(formData));
     mergedFormData = LForms.Util.mergeFHIRDataIntoLForms(
       'QuestionnaireResponse', qr, newFormData,
@@ -443,7 +444,7 @@ function showSavedQQR(q, qr) {
   }
   if (mergedFormData) {
     // Load FHIR resources, but don't prepopulate
-    rtn = formPane.showForm(mergedFormData, {prepopulate: false} );
+    rtn = formPane.showForm(mergedFormData, {prepopulate: false}, q);
   }
   else
     rtn = Promise.reject();
@@ -452,7 +453,7 @@ function showSavedQQR(q, qr) {
 
 
 /**
- * Show a Questionnaire
+ *  Show a Questionnaire retrieved from the server.
  * @param q the Questionnaire to show
  * @return a Promise that resolves if the form is successfully shown.
  */
@@ -460,16 +461,16 @@ function showSavedQuestionnaire(q) {
   let formData, rtn;
   try {
     // In case the Questionnaire came from LForms, run the updater.
-    q = lformsUpdater.update(q);
+    let updatedQ = lformsUpdater.update(q);
     formData = LForms.Util.convertFHIRQuestionnaireToLForms(
-      q, fhirService.fhirVersion);
+      updatedQ, fhirService.fhirVersion);
   }
   catch(e) {
     formPane.showError('Sorry.  Could not process that '+
       'Questionnaire.  See the console for details.', e);
   }
   if (formData)
-    rtn = formPane.showForm(formData);
+    rtn = formPane.showForm(formData, null, q);
   else
     rtn = Promise.reject();
   return rtn;
@@ -523,14 +524,7 @@ function processPagingLinks(resType, links) {
 function showFeaturedQ(qId) {
   spinner.show();
   return fhirService.getFhirResourceById('Questionnaire', qId).then((q)=>{
-    try {
-      q = lformsUpdater.update(q);
-      return formPane.showForm(q);
-    }
-    catch (e) {
-      formPane.showError('Unable to show the selected Questionnaire', e);
-      return Promise.reject(e);
-    }
+    showSavedQuestionnaire(q);
   }, (error) => {
     formPane.showError('Unable to show the selected Questionnaire', error);
     return Promise.reject(error);
