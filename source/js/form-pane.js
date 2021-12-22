@@ -2,6 +2,7 @@ import {config} from './config.js';
 import { announce } from './announcer'; // for a screen reader
 import * as util from './util'
 import {spinner} from './spinner.js';
+import 'bootstrap/js/dropdown.js';
 
 /**
  *  A reference to the element into which the form will be placed.
@@ -20,10 +21,19 @@ const errMsgElem_ = document.getElementById('errMsg');
 const initialMsgElem_ = document.getElementById('initialMsg');
 
 /**
- *  A reference to the buttons and menus avialbale when a form is showing.
+ *  A reference to the buttons and menus available when a form is showing.
  */
 const formDataControls_ = document.getElementById('formDataControls');
 
+/**
+ * A reference to the save button.
+ */
+const saveButton_ = document.getElementById('btn-save');
+
+/**
+ * A reference to the delete button.
+ */
+const deleteButton_ = document.getElementById('btn-delete');
 
 
 /**
@@ -95,4 +105,19 @@ function removeErrMsg() {
 function removeForm() {
   util.hide(formDataControls_);
   formContainer_.textContent = '';
+}
+
+
+/**
+ * Set the visibility of the save and delete buttons.
+ * @param visibility - If true show the save and delete buttons.
+ */
+export function saveDeleteVisibility(visibility) {
+  if (visibility) {
+    util.show(saveButton_);
+    util.show(deleteButton_);
+  } else {
+    util.hide(saveButton_);
+    util.hide(deleteButton_);
+  }
 }
