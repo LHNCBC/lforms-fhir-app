@@ -300,7 +300,7 @@ thisService.searchPatientByName = function(searchText, resultCount) {
     rtn.push({resource: resources});
     rtn.push(display);
     if (response.entry) {
-      for (var i=0, iLen=response.entry.length; i<iLen; i++) {
+      for (let i=0, iLen=response.entry.length; i<iLen; i++) {
         var patient = response.entry[i].resource;
         ids.push(patient.id);
         resources.push(patient);
@@ -325,7 +325,7 @@ thisService.searchPatientByName = function(searchText, resultCount) {
 thisService.searchQuestionnaire = function(searchText, resultCount) {
   return fhirSearch({
     type: "Questionnaire",
-    query: {title: searchText.split(/\s+/), _count: resultCount},
+    query: {title: searchText, _count: resultCount},
     headers: {'Cache-Control': 'no-cache'}
   }).then(function(response) {
     // Return results in autocomplete-lhc format
@@ -337,7 +337,7 @@ thisService.searchQuestionnaire = function(searchText, resultCount) {
     rtn.push({resource: resources});
     rtn.push(display);
     if (response.entry) {
-      for (var i=0, iLen=response.entry.length; i<iLen; i++) {
+      for (let i=0, iLen=response.entry.length; i<iLen; i++) {
         const q = response.entry[i].resource;
         ids.push(q.id);
         resources.push(q);

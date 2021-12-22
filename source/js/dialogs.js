@@ -144,10 +144,10 @@ export const Dialogs = {
    * @param resType the name of the FHIR Resource type
    * @param autocompOpts options to pass to the autocompleter for the field.
    *  These should be configured so that "resource" is an extra data field
-   *  returned by the the autocompleter's getSelectedItemData() function.
+   *  returned by the autocompleter's getSelectedItemData() function.
    * @return a Promise that resolves when the user has dismissed the dialog.  If
    *  the user selects a Questionnaire, the Promise will resolve to the
-   *  Questionnaire resource; otherwise it will resolved to undefined.
+   *  Questionnaire resource; otherwise it will resolve to undefined.
    */
   showResourcePicker: function (resType, autocompOpts) {
     const selectionFieldID = 'resSelection';
@@ -204,7 +204,7 @@ export const Dialogs = {
    *  patient from HAPI FHIR server.
    * @return a Promise that resolves when the user has dismissed the dialog.  If
    *  the user selects a Questionnaire, the Promise will resolve to the
-   *  Questionnaire resource; otherwise it will resolved to undefined.
+   *  Questionnaire resource; otherwise it will resolve to undefined.
    */
   showPatientPicker: function () {
     return this.showResourcePicker('Patient', {
@@ -223,7 +223,7 @@ export const Dialogs = {
    * Show a popup window to let user use a search field to choose a Questionnaire from HAPI FHIR server
    * @return a Promise that resolves when the user has dismissed the dialog.  If
    *  the user selects a Questionnaire, the Promise will resolve to the
-   *  Questionnaire resource; otherwise it will resolved to undefined.
+   *  Questionnaire resource; otherwise it will resolve to undefined.
    */
   showQuestionnairePicker: function () {
     return this.showResourcePicker('Questionnaire', {
