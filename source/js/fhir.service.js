@@ -291,7 +291,7 @@ thisService.searchPatientByName = function(searchText, resultCount) {
     query: {name: searchText.split(/\s+/), _count: resultCount},
     headers: {'Cache-Control': 'no-cache'}
   }).then(function(response) {
-    // Return reults in autocomplete-lhc format
+    // Return results in autocomplete-lhc format
     const rtn = [response.total];
     const ids = [];
     const resources=[];
@@ -300,13 +300,48 @@ thisService.searchPatientByName = function(searchText, resultCount) {
     rtn.push({resource: resources});
     rtn.push(display);
     if (response.entry) {
-      for (var i=0, iLen=response.entry.length; i<iLen; i++) {
+      for (let i=0, iLen=response.entry.length; i<iLen; i++) {
         var patient = response.entry[i].resource;
         ids.push(patient.id);
         resources.push(patient);
         display.push([thisService.getPatientName(patient),
           patient.gender,
           patient.birthDate]);
+      }
+    }
+    return rtn;
+  }, function(error) {
+    console.log(error);
+  });
+};
+
+
+/**
+ * Search questionnaires by title
+ * @param searchText the search text for the questionnaire's title
+ * @param resultCount the requested number of results
+ * @returns A promise that resolves the patient data in autocomplete-lhc format.
+ */
+thisService.searchQuestionnaire = function(searchText, resultCount) {
+  return fhirSearch({
+    type: "Questionnaire",
+    query: {title: searchText, _count: resultCount},
+    headers: {'Cache-Control': 'no-cache'}
+  }).then(function(response) {
+    // Return results in autocomplete-lhc format
+    const rtn = [response.total];
+    const ids = [];
+    const resources=[];
+    const display = [];
+    rtn.push(ids);
+    rtn.push({resource: resources});
+    rtn.push(display);
+    if (response.entry) {
+      for (let i=0, iLen=response.entry.length; i<iLen; i++) {
+        const q = response.entry[i].resource;
+        ids.push(q.id);
+        resources.push(q);
+        display.push([q.title]);
       }
     }
     return rtn;
@@ -454,40 +489,6 @@ thisService.getCurrentQuestionnaire = function() {
 };
 
 
-/**
- * Search questionnaires by title
- * Data returned through an angular broadcast event.
- * @param searchText the search text for the questionnaire's title
- * @returns {*}
- */
-/*
-thisService.searchQuestionnaire = function(searchText) {
-  // md-autocomplete directive requires a promise to be returned
-  return fhirSearch({
-    type: "Questionnaire",
-    query: {title: searchText},
-    headers: {'Cache-Control': 'no-cache'}
-  })
-    .then(function(response) {
-      // process data for md-autocomplete
-      var qList = [];
-      if (response && response.entry) {
-        for (var i=0, iLen=response.entry.length; i<iLen; i++) {
-          var q = response.entry[i].resource;
-          qList.push({
-            title: q.title,
-            status: q.status,
-            id: q.id,
-            resource: q
-          })
-        }
-      }
-      return qList;
-    }, function(error) {
-      console.log(error);
-    });
-};
-*/
 
 /**
  * Get the QuestionnaireResponse resource by id and its related Questionnaire resource
@@ -861,54 +862,6 @@ thisService.deleteQRespAndObs = function(resId, reportSuccess) {
     });
   }
   return rtnPromise;
-};
-*/
-
-/**
- * Delete a Questionnaire, any saved QuestionnaireResponses for that
- * Questionnaire, and associated Observations (if any).  Status returned
- * through an angular broadcast event.
- * @param resId FHIR resource ID
- * @return a promise that resolves when all of the deletion is finished.
- */
-/*
-thisService.deleteQAndQRespAndObs = function(resId) {
-  return fhirSearch({
-    type: 'QuestionnaireResponse',
-    query: {
-      'questionnaire': 'Questionnaire/'+resId,
-    },
-    headers: {
-      'Cache-Control': 'no-cache'
-    }
-  }).then(function(response) {   // response is a searchset bundle
-    var thenPromise;
-    var bundle = response;
-    var entries = bundle.entry;
-    if (entries && entries.length > 0) {
-      var pendingDeletions = 0;
-      var qRespDelPromises = [];
-      for (var i=0, len=entries.length; i<len; ++i) {
-        var qResId = entries[i].resource.id;
-        qRespDelPromises.push(thisService.deleteQRespAndObs(qResId, false));
-      }
-      thenPromise = Promise.all(qRespDelPromises).then(
-        function success(response) {
-          thisService.deleteFhirResource('Questionnaire', resId);
-        },
-        function error(response) {
-          console.log(response);
-          reportError('QuestionnaireResponse', 'delete', response);
-        }
-      );
-    }
-    else // no QuestionnaireResponses to delete
-      thenPromise = thisService.deleteFhirResource('Questionnaire', resId);
-    return thenPromise;
-  }, function(error) {
-    console.log(error);
-    reportError('QuestionnaireResponse', 'delete', error);
-  });
 };
 */
 
