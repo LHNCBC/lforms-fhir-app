@@ -529,7 +529,7 @@ function processPagingLinks(resType, links) {
 function showFeaturedQ(qId) {
   spinner.show();
   return fhirService.getFhirResourceById('Questionnaire', qId).then((q)=>{
-    showSavedQuestionnaire(q);
+    return showSavedQuestionnaire(q);
   }, (error) => {
     formPane.showError('Unable to show the selected Questionnaire', error);
     return Promise.reject(error);
