@@ -150,3 +150,6 @@
   cursor: pointer;
 }
 
+#upload, #search {
+  width: 100%;
+}

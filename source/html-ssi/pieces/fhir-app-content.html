@@ -1,19 +1,17 @@
 <div class="demo-app">
   <div id="formDataControls">
-    <div class="btn-group btn-group-sm" role="group" ng-if="formData">
-      <button ng-if="formData && fhirResInfo.resId" type="button" class="btn btn-primary" ng-click="saveQRToFhir()" id="btn-save"
+    <div id="saveDeleteGroup" class="btn-group btn-group-sm" role="group">
+      <button type="button" class="btn btn-primary" id="btn-save"
               data-toggle="tooltip" data-placement="bottom" title="Save/Update the form data as a FHIR resource to the selected FHIR server.">
         <span class="glyphicon glyphicon-cloud-upload"></span>
         <span>Save</span>
       </button>
-      <button ng-if="formData && fhirResInfo.resId" type="button" class="btn btn-primary" ng-click="deleteFromFhir()" id="btn-delete"
+      <button type="button" class="btn btn-primary" id="btn-delete"
               data-toggle="tooltip" data-placement="bottom" title="Delete the FHIR resource from the selected FHIR server.">
         <span class="glyphicon glyphicon-trash"></span>
         <span>Delete</span>
       </button>
-    </div>
-
-    <div class="btn-group btn-group-sm" role="group" ng-if="formData">
+    </div><div id="saveAsMenu" class="btn-group btn-group-sm" role="group">
       <button type="button" class="btn dropdown-toggle btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="btn-save-as"
               data-toggle="tooltip" data-placement="bottom" title="Save the form data as a 'new' FHIR resource to the selected FHIR server.">
         <span class="glyphicon glyphicon-share"></span>
@@ -21,15 +19,12 @@
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu">
-        <!--<li><a href="#" class="" id="btn-save-qr" ng-click="saveAsToFhir('QR')">FHIR QuestionnaireResponse</a></li>-->
         <li><a href="#" class="" id="btn-save-sdc-qr" ng-click="saveAsToFhir('SDC-QR')">FHIR QuestionnaireResponse (SDC)</a></li>
         <li><a href="#" class="" id="btn-save-sdc-qr-obs" ng-click="saveAsQRExtracted()"
          >FHIR QuestionnaireResponse (SDC) &amp; Observations</a></li>
         <!--<li><a href="#" class="" ng-click="saveAsToFhir('DR')">FHIR DiagnosticReport</a></li>-->
       </ul>
-    </div>
-
-    <div class="btn-group btn-group-sm" role="group"">
+    </div><div class="btn-group btn-group-sm" role="group"">
       <button type="button" class="btn dropdown-toggle btn-primary"
        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
        id="btn-show-as" data-toggle="tooltip" data-placement="bottom" title="Show

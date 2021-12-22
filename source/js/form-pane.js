@@ -4,7 +4,6 @@ import * as util from './util'
 import {spinner} from './spinner.js';
 import 'bootstrap/js/dropdown.js';
 import {Dialogs} from './dialogs.js';
-const escapeHtml = require('escape-html');
 
 /**
  *  A reference to the element into which the form will be placed.
@@ -23,7 +22,7 @@ const errMsgElem_ = document.getElementById('errMsg');
 const initialMsgElem_ = document.getElementById('initialMsg');
 
 /**
- *  A reference to the buttons and menus avialbale when a form is showing.
+ *  A reference to the buttons and menus available when a form is showing.
  */
 const formDataControls_ = document.getElementById('formDataControls');
 
@@ -134,3 +133,16 @@ function setFromServerMenuItemVisibility() {
   menuItem.nextElementSibling.style.display = display;
 };
 
+
+/*
+ * Set the visibility of the save and delete buttons.
+ * @param visibility - If true show the save and delete buttons.
+ */
+export function saveDeleteVisibility(visibility) {
+  const saveDeleteGroup = document.getElementById('saveDeleteGroup');
+  if (visibility) {
+    util.show(saveDeleteGroup);
+  } else {
+    util.hide(saveDeleteGroup);
+  }
+}

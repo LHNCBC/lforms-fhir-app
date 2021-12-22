@@ -91,6 +91,7 @@ loadFileInput.addEventListener('change', ()=>{
         // Update it to the current version of LForms
         importedData = lformsUpdater.update(importedData);
         // Unset (any) selected item after showForm attempt
+        formPane.saveDeleteVisibility(false);
         selectItemAfterPromise(null, ()=>formPane.showForm(importedData));
       }
       catch (e) {
@@ -443,6 +444,7 @@ function showSavedQQR(q, qr) {
       'QuestionnaireResponse.  See the console for details.', e);
   }
   if (mergedFormData) {
+    formPane.saveDeleteVisibility(true);
     // Load FHIR resources, but don't prepopulate
     rtn = formPane.showForm(mergedFormData, {prepopulate: false}, q);
   }
@@ -469,8 +471,10 @@ function showSavedQuestionnaire(q) {
     formPane.showError('Sorry.  Could not process that '+
       'Questionnaire.  See the console for details.', e);
   }
-  if (formData)
+  if (formData) {
+    formPane.saveDeleteVisibility(false);
     rtn = formPane.showForm(formData, null, q);
+  }
   else
     rtn = Promise.reject();
   return rtn;
