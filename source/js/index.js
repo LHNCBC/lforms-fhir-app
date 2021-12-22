@@ -2,6 +2,9 @@ import {fhirService} from './fhir.service.js';
 import {Dialogs} from './dialogs.js';
 import * as leftSideBar from './left-sidebar.js';
 
+// Temporary patch for LForms 30.0.0.beta.1:
+LForms.lformsVersion = LForms.version; // should be fixed in later LForms.
+
 /**
  * Get the connection to FHIR server and the selected patient
  * and retrieve all the DiagosticReport resources for this patient
