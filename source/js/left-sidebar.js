@@ -391,7 +391,8 @@ function selectItemAfterPromise(newItem, p) {
   if (p) {
     p().then(()=>{
       selectedItem_ = newItem;
-      selectedItem_.classList.add("active");
+      if (selectedItem_)
+        selectedItem_.classList.add("active");
     });
   }
 }
