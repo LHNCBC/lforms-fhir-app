@@ -6,7 +6,6 @@ import { config } from './config.js';
 import {fhirService} from './fhir.service.js';
 import * as util from './util.js';
 import 'bootstrap/js/modal.js';
-import 'bootstrap/js/dropdown.js';
 import { fhirServerConfig } from './fhir-server-config';
 
 /**

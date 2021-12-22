@@ -2,6 +2,7 @@ import {config} from './config.js';
 import { announce } from './announcer'; // for a screen reader
 import * as util from './util'
 import {spinner} from './spinner.js';
+import 'bootstrap/js/dropdown.js';
 
 /**
  *  A reference to the element into which the form will be placed.
