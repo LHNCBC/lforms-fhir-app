@@ -52,7 +52,6 @@ export function showForm(formDef, addOptions) {
       LForms.Util.addFormToPage(formDef, formContainer_, addOptions).then(() => {
         spinner.hide();
         util.show(formDataControls_);
-
         announce('A form is now displayed in the main content area, '+
           ' along with a save button and a menu for showing the form data.');
         resolve();
