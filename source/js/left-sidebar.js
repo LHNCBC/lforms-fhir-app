@@ -68,6 +68,11 @@ qrNextPage_.addEventListener('click', ()=>getPage('QuestionnaireResponse', 'next
 qPrevPage_.addEventListener('click', ()=>getPage('Questionnaire', 'previous'));
 qNextPage_.addEventListener('click', ()=>getPage('Questionnaire', 'next'));
 
+// Set up listeners for updates to the list of saved QuestionnaireResponses and
+// Questionnaires.
+formPane.listenForQRSaveOrDelete(()=>loadSavedQRList());
+formPane.listenForQSave(()=>loadSavedQList());
+
 // Search button
 document.getElementById('search').addEventListener('click', ()=>{
   Dialogs.showQuestionnairePicker().then((questionnaire)=> {
