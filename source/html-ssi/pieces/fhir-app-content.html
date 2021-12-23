@@ -19,10 +19,9 @@
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu">
-        <li><a href="#" class="" id="btn-save-sdc-qr" ng-click="saveAsToFhir('SDC-QR')">FHIR QuestionnaireResponse (SDC)</a></li>
-        <li><a href="#" class="" id="btn-save-sdc-qr-obs" ng-click="saveAsQRExtracted()"
+        <li><a href="javascript:void(0)" id="createQRToFhir">FHIR QuestionnaireResponse (SDC)</a></li>
+        <li><a href="javascript:void(0)" id="saveAsQRExtracted"
          >FHIR QuestionnaireResponse (SDC) &amp; Observations</a></li>
-        <!--<li><a href="#" class="" ng-click="saveAsToFhir('DR')">FHIR DiagnosticReport</a></li>-->
       </ul>
     </div><div class="btn-group btn-group-sm" role="group"">
       <button type="button" class="btn dropdown-toggle btn-primary"
@@ -38,8 +37,10 @@
         href="javascript:void(0)">FHIR Questionnaire from
          Server</a></li>
         <li role="separator" class="divider"></li>
-        <li><a id="showFHIRSDCQuestionnaire" href="#" class="" ng-click="showFHIRSDCQuestionnaire()">FHIR Questionnaire (SDC)</a></li>
-        <li><a id="showFHIRSDCQuestionnaireResponse" href="#" class="" ng-click="showFHIRSDCQuestionnaireResponse()">FHIR QuestionnaireResponse (SDC)</a></li>
+        <li><a id="showFHIRSDCQuestionnaire" href="javascript:void(0)"
+         >FHIR Questionnaire (SDC)</a></li>
+        <li><a id="showFHIRSDCQuestionnaireResponse" href="javascript:void(0)"
+         >FHIR QuestionnaireResponse (SDC)</a></li>
       </ul>
     </div>
   </div>

@@ -26,3 +26,13 @@ export function show(elem, displaySetting) {
   displaySetting ||= 'block';
   elem.style.display = displaySetting;
 }
+
+
+/**
+ *  Toggles the visiblity of the given element by setting display to 'none'
+ *  or ''.
+ * @return the new display setting
+ */
+export function toggleDisplay(elem) {
+  return elem.style.display = !elem.style.display ? 'none' : '';
+}

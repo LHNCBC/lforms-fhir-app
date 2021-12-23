@@ -188,7 +188,7 @@ function setSavedQRList(bundle) {
     const res = entry.resource;
     if (res.resourceType === 'Questionnaire') {
       if (res.url)
-        urlToQ[url] = res;
+        urlToQ[res.url] = res;
       qIdToQ[res.id] = res;
     }
   });

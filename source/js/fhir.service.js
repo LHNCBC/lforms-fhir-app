@@ -463,125 +463,6 @@ thisService.getAllQ = function() {
 };
 
 
-// TBD - Code below this point has either not been updated yet or will be
-// removed.
-
-/**
- * Set the current Questionnaire resource
- * Data returned through an angular broadcast event.
- * @param q the selected Questionnaire resource
- */
-/*
-thisService.setCurrentQuestionnaire = function(q) {
-  // reset current Questionnaire resource
-  thisService.currentQuestionnaire = q;
-  $rootScope.$broadcast('LF_FHIR_QUESTIONNAIRE_SELECTED', {resource: q});
-};
-
-
-/**
- * Get the current selected Questionnaire resource
- * @returns {null}
- */
-/*
-thisService.getCurrentQuestionnaire = function() {
-  return thisService.currentQuestionnaire;
-};
-
-
-
-/**
- * Get the QuestionnaireResponse resource by id and its related Questionnaire resource
- * Data returned through an angular broadcast event.
- * @param resType FHIR resource type
- * @param resId FHIR resource ID
- */
-/*
-thisService.getMergedQQR = function(resType, resId) {
-  fhirSearch(
-    {
-      type: resType,
-      query: {_id: resId, _include: 'QuestionnaireResponse:questionnaire'},
-      headers: {'Cache-Control': 'no-cache'}
-  })
-    .then(function(response) {
-      var result = {qResource: null, qrResource: null};
-
-      // not found, might be deleted from FHIR server by other apps
-      var resNum = response.entry.length;
-      if (resNum === 0) {
-      }
-      // one or two resource found
-      else if (resNum === 1 || resNum === 2) {
-        for (var i=0; i<resNum; i++) {
-          var res = response.entry[i].resource;
-          if (res.resourceType === 'QuestionnaireResponse') {
-            result.qrResource = res;
-          }
-          else if (res.resourceType === 'Questionnaire') {
-            result.qResource = res;
-          }
-        }
-      }
-      $rootScope.$broadcast('LF_FHIR_MERGED_QQR', result);
-    }, function(error) {
-      console.log(error);
-    });
-};
-*/
-
-/**
- *  Creates a QuestionnairResponse.
- * @param qrData the QuestionnaireResponse to be created.
- * @param qData the Questionnaire resource, or at least the ID and name
- *  fields.
- */
-/*
-thisService.createQR = function (qrData, qData) {
-  // Set the questionnaire reference in the response
-  thisService.setQRRefToQ(qrData, qData);
-
-  // create QuestionnaireResponse
-  thisService.fhir.create(qrData).then(
-    function success(resp) {
-      $rootScope.$broadcast('LF_FHIR_QR_CREATED',
-        { resType: "QuestionnaireResponse",
-          resource: resp,
-          resId: resp.id,
-          qResId: qData.id,
-          qName: qData.name,
-          extensionType: 'SDC'
-        });
-      _collectedResults.push(resp);
-      reportResults();
-    },
-    function error(error) {
-      console.log(error);
-      _terminatingError = error;
-      reportResults();
-    }
-  );
-};
-*/
-
-
-/**
- *  Broadcasts information about a failed operation.  The application should listen for 'OP_FAILED' broadcasts.
- * @param resourceType the type of the resource involved
- * @param opName the name of the operation (e.g. "create")
- * @param errInfo the error structure returned by the FHIR client.
- */
-/*
-function reportError(resourceType, opName, errInfo) {
-  $rootScope.$broadcast('OP_FAILED',
-    { resType: resourceType,
-      operation: opName,
-      errInfo: errInfo
-    });
-}
-*/
-
-
 /**
  * Create Questionnaire if it does not exist, and QuestionnaireResponse and
  * its extracted observations.
@@ -589,13 +470,13 @@ function reportError(resourceType, opName, errInfo) {
  * @param q the Questionnaire resource
  * @param qr the QuestionnaireResponse resource
  * @param obsArray the array of Observations extracted from qr
- * @param qExists true if the questionnaire is known to exist (in which case
- * we skip the lookup)
+ * @param qExists true if the questionnaire already exists and does not need to
+ * be created.
+ * @return a Promise that will resolve to an array of the promises for creating
+ *  the Questionnaire (if !qExists) and the result of the bundle to create the QR
+ *  and the Observations.
  */
-/*
-thisService.createQQRObs = function(q, qr, obsArray, qExists) {
-  _terminatingError = null;
-
+thisService.createQQRObs = function (q, qr, obsArray, qExists) {
   // Build a FHIR transaction bundle to create these resources.
   var bundle = {
     resourceType:"Bundle",
@@ -630,62 +511,21 @@ thisService.createQQRObs = function(q, qr, obsArray, qExists) {
     else
       qr.questionnaire = qRef;
 
-    thisService.fhir.request({url: '', method: 'POST',
+    return thisService.fhir.request({url: '', method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(bundle)}).then(
-
-      function success(resp) {
-        _collectedResults.push(resp);
-        reportResults();
-        // Look through the bundle for the QuestionnaireResource ID
-        var entries = resp.entry;
-        var qrID = null;
-        for (var i=0, len=entries.length; i<len && !qrID; ++i) {
-          var entry = entries[i];
-          var matchData = entry.response && entry.response.location
-            && entry.response.location.match(/^QuestionnaireResponse\/(\d+)/);
-          if (matchData)
-            qrID = matchData[1];
-        }
-        $rootScope.$broadcast('LF_FHIR_QR_CREATED', {
-          resType: "QuestionnaireResponse",
-          resource: qr,
-          resId: qrID,
-          qResId: q.id,
-          qName: q.name,
-          extensionType: 'SDC'
-        });
-      },
-      function error(err) {
-        _terminatingError = {resType: 'Bundle', operation: 'create', errInfo: err};
-        reportResults();
-      }
-    );
+      body: JSON.stringify(bundle)});
   }
+
   if (qExists)
-    withQuestionnaire(q);
-  else
-    createOrFindAndCall(q, withQuestionnaire);
+    return withQuestionnaire(q);
+  else {
+    return thisService.fhir.create(q).then((qResp)=>{
+      return withQuestionnaire(q).then((bundleResp)=>[qResp, bundleResp],
+        (error)=>[qResp, error]);
+    });
+  }
 };
-*/
 
-
-/**
- *  Reports the results of one or more operations (which might have
- *  terminated in an error.
- */
-/*
-function reportResults() {
-  $rootScope.$broadcast('OP_RESULTS',
-    {
-      successfulResults: JSON.parse(JSON.stringify(_collectedResults)),
-      error: JSON.parse(JSON.stringify(_terminatingError))
-    }
-  );
-  _collectedResults = [];
-  _terminatingError = null;
-}
-*/
 
 
 /**
@@ -769,17 +609,136 @@ function createOrFindAndCall(q, withQuestionnaire) {
  * Data returned through an angular broadcast event.
  * @param q the Questionnaire resource
  * @param qr the QuestionnaireResponse resource
- * @param extenstionType optional, for Questionnaire/QuestionnaireResponse it could be "SDC"
+ * @return a promise the resolves to an array containing the responses of
+ *  Questionnaire and QR creation requests.
+ */
+thisService.createQQR = function(q, qr, extensionType) {
+  return thisService.fhir.create(q).then((qResp)=>{
+    return thisService.createQR(qr, q).then((qrResp)=>[qResp, qrResp],
+      (error)=>[qResp, error]);
+  });
+};
+
+/**
+ *  Creates a QuestionnairResponse.
+ * @param qrData the QuestionnaireResponse to be created.
+ * @param qData the Questionnaire resource, or at least the ID field
+ * @return a promise the resolves to the response of QR creation request.
+ */
+thisService.createQR = function (qrData, qData) {
+  // Set the questionnaire reference in the response
+  thisService.setQRRefToQ(qrData, qData);
+
+  // create QuestionnaireResponse
+  return thisService.fhir.create(qrData);
+};
+
+
+
+
+// TBD - Code below this point has either not been updated yet or will be
+// removed.
+
+/**
+ * Set the current Questionnaire resource
+ * Data returned through an angular broadcast event.
+ * @param q the selected Questionnaire resource
  */
 /*
-thisService.createQQR = function(q, qr, extensionType) {
-  function withQuestionnaire(q) {
-    thisService.createQR(qr, q);
-  }
+thisService.setCurrentQuestionnaire = function(q) {
+  // reset current Questionnaire resource
+  thisService.currentQuestionnaire = q;
+  $rootScope.$broadcast('LF_FHIR_QUESTIONNAIRE_SELECTED', {resource: q});
+};
 
-  createOrFindAndCall(q, withQuestionnaire);
+
+/**
+ * Get the current selected Questionnaire resource
+ * @returns {null}
+ */
+/*
+thisService.getCurrentQuestionnaire = function() {
+  return thisService.currentQuestionnaire;
+};
+
+
+
+/**
+ * Get the QuestionnaireResponse resource by id and its related Questionnaire resource
+ * Data returned through an angular broadcast event.
+ * @param resType FHIR resource type
+ * @param resId FHIR resource ID
+ */
+/*
+thisService.getMergedQQR = function(resType, resId) {
+  fhirSearch(
+    {
+      type: resType,
+      query: {_id: resId, _include: 'QuestionnaireResponse:questionnaire'},
+      headers: {'Cache-Control': 'no-cache'}
+  })
+    .then(function(response) {
+      var result = {qResource: null, qrResource: null};
+
+      // not found, might be deleted from FHIR server by other apps
+      var resNum = response.entry.length;
+      if (resNum === 0) {
+      }
+      // one or two resource found
+      else if (resNum === 1 || resNum === 2) {
+        for (var i=0; i<resNum; i++) {
+          var res = response.entry[i].resource;
+          if (res.resourceType === 'QuestionnaireResponse') {
+            result.qrResource = res;
+          }
+          else if (res.resourceType === 'Questionnaire') {
+            result.qResource = res;
+          }
+        }
+      }
+      $rootScope.$broadcast('LF_FHIR_MERGED_QQR', result);
+    }, function(error) {
+      console.log(error);
+    });
 };
 */
+
+
+/**
+ *  Broadcasts information about a failed operation.  The application should listen for 'OP_FAILED' broadcasts.
+ * @param resourceType the type of the resource involved
+ * @param opName the name of the operation (e.g. "create")
+ * @param errInfo the error structure returned by the FHIR client.
+ */
+/*
+function reportError(resourceType, opName, errInfo) {
+  $rootScope.$broadcast('OP_FAILED',
+    { resType: resourceType,
+      operation: opName,
+      errInfo: errInfo
+    });
+}
+*/
+
+
+
+/**
+ *  Reports the results of one or more operations (which might have
+ *  terminated in an error.
+ */
+/*
+function reportResults() {
+  $rootScope.$broadcast('OP_RESULTS',
+    {
+      successfulResults: JSON.parse(JSON.stringify(_collectedResults)),
+      error: JSON.parse(JSON.stringify(_terminatingError))
+    }
+  );
+  _collectedResults = [];
+  _terminatingError = null;
+}
+*/
+
 
 
 /**
