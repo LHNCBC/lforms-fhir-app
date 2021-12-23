@@ -7,3 +7,11 @@
   width: 100%;
 }
 
+#messageBody { /* in #dataDialog */
+  height: calc(100vh - 200px);
+  overflow: auto;
+}
+
+#dataDialog .modal-dialog {
+  width: 80%;
+}

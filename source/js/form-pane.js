@@ -3,6 +3,7 @@ import { announce } from './announcer'; // for a screen reader
 import * as util from './util'
 import {spinner} from './spinner.js';
 import 'bootstrap/js/dropdown.js';
+import {Dialogs} from './dialogs.js';
 
 /**
  *  A reference to the element into which the form will be placed.
@@ -26,27 +27,39 @@ const initialMsgElem_ = document.getElementById('initialMsg');
 const formDataControls_ = document.getElementById('formDataControls');
 
 /**
- * A reference to the save button.
+ *  The unmodified Questionnaire definition from the server for the current form (if it
+ *  came from the server).
  */
-const saveButton_ = document.getElementById('btn-save');
+let originalQDef_;
 
-/**
- * A reference to the delete button.
- */
-const deleteButton_ = document.getElementById('btn-delete');
+
+// Set up the "show data" menu items
+['showFHIRSDCQuestionnaire', 'showFHIRSDCQuestionnaireResponse',
+ 'showOrigFHIRQuestionnaire'].forEach((menuID)=>{
+  document.getElementById(menuID).addEventListener('click', ()=>{
+    if (menuID === 'showOrigFHIRQuestionnaire')
+      Dialogs[menuID](originalQDef_);
+    else
+      Dialogs[menuID]();
+  });
+});
 
 
 /**
  *  Renders the given form definition, replacing any previously shown form.
  * @param formDef either an LForms or FHIR Questionnaire form definition.
  * @param addOptions the options object for LForms.Util.addFormToPage.
+ * @param originalQ the unmodified Questionnaire definition if it was retrieved
+ *  from the server, or undefined.
  * @return a Promise that resolves when the form is successfully shown.
  */
-export function showForm(formDef, addOptions) {
+export function showForm(formDef, addOptions, originalQ) {
   util.hide(initialMsgElem_);
   removeErrMsg();
   removeForm();
   spinner.show();
+  originalQDef_ = originalQ;
+  setFromServerMenuItemVisibility();
   return new Promise((resolve, reject)=> {
     try {
       LForms.Util.addFormToPage(formDef, formContainer_, addOptions).then(() => {
@@ -109,15 +122,27 @@ function removeForm() {
 
 
 /**
+ *  Sets the visibility of the menu item "Show Questionnaire from Server"
+ */
+function setFromServerMenuItemVisibility() {
+  // Show the item only if we have a Questionnaire definition from the server.
+  let display = originalQDef_ ? '' : 'none';
+  const menuItem = document.getElementById('showFromServerItem');
+  menuItem.style.display = display;
+  // Also show/hide the separator following the item
+  menuItem.nextElementSibling.style.display = display;
+};
+
+
+/*
  * Set the visibility of the save and delete buttons.
  * @param visibility - If true show the save and delete buttons.
  */
 export function saveDeleteVisibility(visibility) {
+  const saveDeleteGroup = document.getElementById('saveDeleteGroup');
   if (visibility) {
-    util.show(saveButton_);
-    util.show(deleteButton_);
+    util.show(saveDeleteGroup);
   } else {
-    util.hide(saveButton_);
-    util.hide(deleteButton_);
+    util.hide(saveDeleteGroup);
   }
 }

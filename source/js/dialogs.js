@@ -7,6 +7,7 @@ import {fhirService} from './fhir.service.js';
 import * as util from './util.js';
 import 'bootstrap/js/modal.js';
 import { fhirServerConfig } from './fhir-server-config';
+const escapeHtml = require('escape-html');
 
 /**
  *  The version of FHIR output by this app (in the "show" dialogs).
@@ -19,27 +20,15 @@ const outputFHIRVersion_ = 'R4';
 const formContainer_ = document.getElementById(config.formContainer);
 
 
-
 export const Dialogs = {
   /**
    *  Initialization, to set up event handlers for showing dialogs.
-   * @param formContainer a reference to the element containing the form.
    */
-  init: function(formContainer) {
-    this.formContainer_ = formContainer;
-
+  init: function() {
     // Handle the copy button on the dialog
     document.getElementById('copyToClipboardBtn').addEventListener('click', ()=>{
-      util.copyToClipboard('message-body');
+      util.copyToClipboard('messageBody');
       announce('The data from the dialog has been copied to the clipboard.');
-    });
-
-    // Set up the "show data" menu items
-    ['showFHIRSDCQuestionnaire', 'showFHIRSDCQuestionnaireResponse',
-     'showFHIRDiagnosticReport', 'showHL7Segments'].forEach((menuID)=>{
-      document.getElementById(menuID).addEventListener('click', ()=>{
-        Dialogs[menuID]();
-      });
     });
   },
 
@@ -51,9 +40,9 @@ export const Dialogs = {
    * @param note (optional) a note to show over the data
    */
   showDataDialog: function (title, data, note) {
-    document.getElementById('modal-title').textContent = title;
-    document.getElementById('message-note').textContent = note || '';
-    document.getElementById('message-body').textContent = data;
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('messageNote').textContent = note || '';
+    document.getElementById('messageBody').textContent = data;
     // $: Bootstrap's plugins are based on jQuery
     $('#dataDialog').modal('show');
   },
@@ -232,7 +221,39 @@ export const Dialogs = {
         return fhirService.searchQuestionnaire(fieldVal, resultCount);
       }
     });
+  },
+
+
+  /**
+   * Show the original FHIR Questionnaire data from FHIR server in a dialog
+   * @param qFromServer the unmodified Questionnaire definition from the server for the current form
+   */
+  showOrigFHIRQuestionnaire: function (qFromServer) {
+    var fhirString = JSON.stringify(qFromServer, null, 2);
+    const dialogTitle = "Questionnaire Resource from FHIR Server";
+
+    // Insert a link (safely) to the server URL for the resource
+    var serverBaseURL = fhirService.getServerServiceURL();
+    const fhirParts = fhirString.split(/(\n  "id": ")([^"]+)(")/);
+    if (fhirParts.length === 1) {
+      // In this case we couldn't find the ID line.  Give up on the link.
+      this.showDataDialog(dialogTitle, fhirString);
+    }
+    else {
+      this.showDataDialog(dialogTitle, '');
+      const fhirResElem = document.getElementById('messageBody')
+      fhirResElem.innerHTML='<span></span><span></span><span></span>';
+      const spans = fhirResElem.children;
+      spans[0].textContent = fhirParts[0] + fhirParts[1];
+      const resID=fhirParts[2];
+      spans[1].innerHTML = '<a href="'+serverBaseURL+'/Questionnaire/'+
+        encodeURIComponent(resID)+'" target=_blank rel="noopener noreferrer">'+
+        escapeHtml(resID)+'</a>';
+      spans[2].textContent=fhirParts[3] + fhirParts[4];
+    }
   }
 
-}
+};
+
+Dialogs.init();
 

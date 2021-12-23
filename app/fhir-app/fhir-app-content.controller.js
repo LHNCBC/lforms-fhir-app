@@ -124,7 +124,7 @@ angular.module('lformsApp')
             qExists = false;
           }
           var qr = resArray.shift();
-          
+
           // add an author if in SMART environment
           if (fhirService.getCurrentUser() && !qr.author) {
             qr.author = fhirService.getCurrentUserReference();
@@ -257,31 +257,6 @@ angular.module('lformsApp')
             var fhirString = JSON.stringify(dr, null, 2);
             $scope.fhirResourceString = fhirString;
             $scope.fhirResourceTitle = "FHIR DiagnosticReport Resource";
-
-            $mdDialog.show({
-              scope: $scope,
-              preserveScope: true,
-              templateUrl: 'fhir-app/fhir-resource-dialog.html',
-              parent: angular.element(document.body),
-              targetEvent: event
-            });
-          }
-        };
-
-
-        /**
-         * Show the original FHIR Questionnaire data from FHIR server in a dialog
-         * @param event
-         */
-        $scope.showOrigFHIRQuestionnaire = function (event) {
-          var q = fhirService.getCurrentQuestionnaire();
-          if (q) {
-            var fhirString = JSON.stringify(q, null, 2);
-            var serverBaseURL = fhirService.getServerServiceURL();
-            fhirString = fhirString.replace(/"id": "([^\s"]+)"/, '"id": "<a href="'+
-              serverBaseURL+'/Questionnaire/$1" target=_blank>$1</a>"');
-            $scope.fhirResourceString = fhirString;
-            $scope.fhirResourceTitle = "Questionnaire Resource from FHIR Server";
 
             $mdDialog.show({
               scope: $scope,

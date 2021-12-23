@@ -23,3 +23,7 @@
   margin: 1em;
   color: red;
 }
+
+#btn-delete, #saveAsMenu {
+  margin-right: 10px;
+}
