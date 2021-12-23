@@ -290,13 +290,13 @@ export const Dialogs = {
         foundSuccess = true;
         for (let entry of result.entry) {
           let status = entry.response.status;
-          if (/^\d\d\d /.test(entry))
+          if (/^\d\d\d /.test(status))
             status = status.slice(4); // remove numeric code from status string
           summary.push(escapeHtml(status) + ' <a href="'+serverBaseURL+'/'+
-            encodeURIComponent(entry.response.location)+
+            encodeURI(entry.response.location)+
             '" target=_blank rel="noopener noreferrer">'+
             escapeHtml(entry.response.location)+'</a>');
-          details.push(escapeHtml(entry));
+          details.push(entry);
         }
       }
       else if (resourceType) {
@@ -319,14 +319,14 @@ export const Dialogs = {
       else { // Unknown.  Treat as an error
         foundError = true;
         summary.push('Unknown error.  See the details section');
-        details.push(escapeHtml(result.toString()));
+        details.push(result.toString());
       }
     };
 
     document.getElementById('saveResultsStatus').textContent =
         'Save ' + (foundError && foundSuccess ? 'partially ' : '')+
            (foundError ? 'failed.' : 'succeeded.');
-    var summaryHTML = summary.length ?  '<li>'+summary.join('</li></li>')+'</li>' : '';
+    var summaryHTML = summary.length ?  '<li>'+summary.join('</li><li>')+'</li>' : '';
     document.getElementById('saveResultsList').innerHTML = summaryHTML;
     document.getElementById('saveResultsDetails').innerText = JSON.stringify(details, null, 2);
     spinner.hide();

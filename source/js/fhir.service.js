@@ -472,7 +472,7 @@ thisService.getAllQ = function() {
  * @param obsArray the array of Observations extracted from qr
  * @param qExists true if the questionnaire already exists and does not need to
  * be created.
- * @return a Promise that will resolve to an array of the promises for creating
+ * @return a Promise that will resolve to an array of the responses for creating
  *  the Questionnaire (if !qExists) and the result of the bundle to create the QR
  *  and the Observations.
  */
@@ -505,11 +505,7 @@ thisService.createQQRObs = function (q, qr, obsArray, qExists) {
   function withQuestionnaire(q) {
     // Set the questionnaire reference in the response
     var qr = bundle.entry[0].resource;
-    var qRef = 'Questionnaire/'+q.id;
-    if (thisService.fhirVersion == 'STU3')
-      qr.questionnaire = {reference: qRef};
-    else
-      qr.questionnaire = qRef;
+    thisService.setQRRefToQ(qr, q);
 
     return thisService.fhir.request({url: '', method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -517,91 +513,16 @@ thisService.createQQRObs = function (q, qr, obsArray, qExists) {
   }
 
   if (qExists)
-    return withQuestionnaire(q);
+    return withQuestionnaire(q).then((bundleResp)=>[bundleResp], (error)=>[error]);
   else {
     return thisService.fhir.create(q).then((qResp)=>{
-      return withQuestionnaire(q).then((bundleResp)=>[qResp, bundleResp],
+      return withQuestionnaire(qResp).then((bundleResp)=>[qResp, bundleResp],
         (error)=>[qResp, error]);
     });
   }
 };
 
 
-
-/**
- *  Checks the server to see if questionnaire q is already there, creates it
- *  if needed, and then calls function withQuestionnaire.
- * @param q A questionnaire that needs to exist prior to withQuestionnaire
- *  being created.
- * @param withQuestionnaire a function to be called with the questionnaire
- *  resource from the server.
- */
-/*
-function createOrFindAndCall(q, withQuestionnaire) {
-  function createQAndCall() {
-    thisService.fhir.create(q).then(function success(resp) {
-      $rootScope.$broadcast('LF_FHIR_Q_CREATED',
-        { resType: "Questionnaire",
-          resource: resp,
-          resId: resp.id,
-          extensionType: 'SDC'
-        });
-      thisService.currentQuestionnaire = resp;
-      withQuestionnaire(resp);
-    },
-    function error(error) {
-      _terminatingError = {resType: 'Questionnaire', operation: 'create', errInfo: error};
-      reportResults();
-    });
-  }
-
-  // check if a related Questionnaire exists
-  var queryJson;
-  // It was decided that in the current UI, which only allows introduction
-  // of forms via an "upload", that it would be better to always create a
-  // new Questionnaire, to allow for repeated cycles of editing.  So, for
-  // now, I am disbling the search for an existing questionnaire here.
-  if (false) { // disabling (for now) the search for existing Qustionnaire
-    if (q.url)
-      queryJson = {url: q.url}
-    else if (q.identifier && q.identifier[0])
-      queryJson = {identifier: q.identifier[0].system+'|' + q.identifier[0].value}
-    else if (q.code && q.code[0])
-      queryJson = {code: q.code[0].system+'|' + q.code[0].value};
-    else if (q.name)
-      queryJson = {name: q.name}
-    else if (q.title)
-      queryJson = {title: q.title}
-  }
-  if (!queryJson) {
-    // Can't form a query, so just make a new one
-    createQAndCall();
-  }
-  else {
-    fhirSearch({
-      type: "Questionnaire",
-      query: queryJson,
-      headers: {'Cache-Control': 'no-cache'}
-    }).then(function success(resp) {
-      var bundle = resp;
-      var count = (bundle.entry && bundle.entry.length) || 0;
-      // found existing Questionnaires
-      if (count > 0 ) {
-        var oneQuestionnaireResource = bundle.entry[0].resource;
-        withQuestionnaire(oneQuestionnaireResource);
-      }
-      // no Questionnaire found, create a new Questionnaire first
-      else {
-        createQAndCall();
-      }
-    },
-    function error(error) {
-      _terminatingError = {resType: 'Questionnaire', operation: 'search', errInfo: error};
-      reportResults();
-    });
-  }
-};
-*/
 
 
 /**
@@ -612,12 +533,13 @@ function createOrFindAndCall(q, withQuestionnaire) {
  * @return a promise the resolves to an array containing the responses of
  *  Questionnaire and QR creation requests.
  */
-thisService.createQQR = function(q, qr, extensionType) {
+thisService.createQQR = function(q, qr) {
   return thisService.fhir.create(q).then((qResp)=>{
-    return thisService.createQR(qr, q).then((qrResp)=>[qResp, qrResp],
+    return thisService.createQR(qr, qResp).then((qrResp)=>[qResp, qrResp],
       (error)=>[qResp, error]);
   });
 };
+
 
 /**
  *  Creates a QuestionnairResponse.

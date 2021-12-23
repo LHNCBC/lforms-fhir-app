@@ -7,12 +7,12 @@
   width: 100%;
 }
 
-#messageBody { /* in #dataDialog */
-  height: calc(100vh - 200px);
+#messageBody, #saveResultsBody { /* in #dataDialog, #saveResultsDialog */
+  max-height: calc(100vh - 200px);
   overflow: auto;
 }
 
-#dataDialog .modal-dialog {
-  width: 80%;
+#dataDialog .modal-dialog, #saveResultsDialog .modal-dialog {
+  width: 70%;
 }
 

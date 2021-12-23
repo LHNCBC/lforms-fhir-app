@@ -222,14 +222,23 @@ async function createQRToFhir() {
       var q = LForms.Util.getFormFHIRData('Questionnaire',
         fhirService.fhirVersion, formContainer_)
       delete q.id;
-      saveResults = await fhirService.createQQR(q, qr);
+      try {
+        saveResults = await fhirService.createQQR(q, qr);
+        if (saveResults[0].resourceType === 'Questionnaire')
+          originalQDef_ = saveResults[0];
+      }
+      catch(qqrError) {
+        console.log(qqrError);
+        Dialogs.showSaveResultsDialog([qqrError]);
+      }
       notifyQRSaveOrDelete();
-      notifyQSave();
+      notifyQSaveOrDelete();
     }
     Dialogs.showSaveResultsDialog(saveResults);
   }
   catch(error) {
-    showError('Unable to complete the save.', error);
+    console.log(error);
+    Dialogs.showSaveResultsDialog([error]);
   }
 };
 
@@ -261,17 +270,23 @@ async function saveAsQRExtracted() {
     qr.author = fhirService.getCurrentUserReference();
   }
 
+  let saveResults;
   try {
-    const results = await fhirService.createQQRObs(qData, qr, resArray, qExists);
+    saveResults = await fhirService.createQQRObs(qData, qr, resArray, qExists);
+    if (saveResults[0].resourceType === 'Questionnaire')
+      originalQDef_ = saveResults[0];
   }
   catch(error) {
-    showError('Unable to complete the save.', error);
+    console.log(error);
+    saveResults = [error];
   }
   // Notify regarding updates to the QR & Q saved lists, though if there was an
   // error there might not be an update.
   notifyQRSaveOrDelete();
   if (!qExists)
-    notifyQSave();
+    notifyQSaveOrDelete();
+
+  Dialogs.showSaveResultsDialog(saveResults);
 };
 
 

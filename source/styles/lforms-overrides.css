@@ -13,6 +13,9 @@
 .panel-body p a, .modal-body a {
   color: #337ab7;
 }
+.panel-body p a:hover, .modal-body a:hover {
+  color: #23527c;
+}
 
 #listAccordion .panel-title a:hover {
   color: inherit;
