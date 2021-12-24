@@ -556,6 +556,66 @@ thisService.createQR = function (qrData, qData) {
 };
 
 
+/**
+ * Delete a QuestionnaireResponse and its associated Observations (if any).
+ * Status returned through an angular broadcast event.
+ * @param resId FHIR resource ID for the QuestionnaireResponse
+ * @return a promise that resolves when the deletion has finished.
+ */
+thisService.deleteQRespAndObs = function(resId) {
+  var rtnPromise;
+  if (thisService.fhirVersion === 'STU3') {
+    // STU3 does not have the derivedFrom field in Observation which links
+    // them to QuestionnaireResponse.
+    rtnPromise = thisService.deleteFhirResource('QuestionnaireResponse',
+      resId);
+  }
+  else {
+    rtnPromise = fhirSearch({
+      type: 'Observation',
+      query: {
+        'derived-from': 'QuestionnaireResponse/'+resId,
+      },
+      headers: {
+        'Cache-Control': 'no-cache'
+      }
+    }).then(function(response) {   // response is a searchset bundle
+      var thenPromise;
+      var bundle = response;
+      var entries = bundle.entry;
+      if (entries && entries.length > 0) {
+        var errorReported = false;
+        var obsDelPromises = [];
+        for (var i=0, len=entries.length; i<len; ++i) {
+          var obsId = entries[i].resource.id;
+          obsDelPromises.push(thisService.fhir.delete('Observation/' + obsId));
+        }
+        thenPromise = Promise.all(obsDelPromises).then(()=> {
+          return thisService.deleteFhirResource('QuestionnaireResponse', resId);
+        });
+      }
+      else { // no observations to delete
+        thenPromise = thisService.deleteFhirResource('QuestionnaireResponse',
+          resId);
+      }
+      return thenPromise;
+    });
+  }
+  return rtnPromise;
+};
+
+
+/**
+ *  Deletes an FHIR resource, and reports the result.
+ *  Status returned through an angular broadcast event.
+ * @param resType FHIR resource type
+ * @param resId FHIR resource ID
+ * @return a promise that resolves when the resource is deleted
+ */
+thisService.deleteFhirResource = function(resType, resId) {
+  return thisService.fhir.delete(resType + "/" + resId);
+};
+
 
 
 // TBD - Code below this point has either not been updated yet or will be
@@ -679,97 +739,6 @@ thisService.updateFhirResource = function(resType, resource) {
     function error(response) {
       console.log(response);
       reportError(resType, 'update', response);
-    });
-};
-*/
-
-/**
- * Delete a QuestionnaireResponse and its associated Observations (if any).
- * Status returned through an angular broadcast event.
- * @param resId FHIR resource ID
- * @param reportSuccess Whether the report successful results (default
- *  true).
- * @return a promise that resolves when the deletion has finished.
- */
-/*
-thisService.deleteQRespAndObs = function(resId, reportSuccess) {
-  var rtnPromise;;
-  if (thisService.fhirVersion === 'STU3') {
-    // STU3 does not have the derivedFrom field in Observation which links
-    // them to QuestionnaireResponse.
-    rtnPromise = thisService.deleteFhirResource('QuestionnaireResponse',
-      resId, reportSuccess);
-  }
-  else {
-    rtnPromise = fhirSearch({
-      type: 'Observation',
-      query: {
-        'derived-from': 'QuestionnaireResponse/'+resId,
-      },
-      headers: {
-        'Cache-Control': 'no-cache'
-      }
-    }).then(function(response) {   // response is a searchset bundle
-      var thenPromise;
-      var bundle = response;
-      var entries = bundle.entry;
-      if (entries && entries.length > 0) {
-        var errorReported = false;
-        var obsDelPromises = [];
-        for (var i=0, len=entries.length; i<len; ++i) {
-          var obsId = entries[i].resource.id;
-          obsDelPromises.push(thisService.fhir.delete('Observation/' + obsId));
-        }
-        thenPromise = Promise.all(obsDelPromises).then(
-          function success(response) {
-            return thisService.deleteFhirResource('QuestionnaireResponse', resId, reportSuccess);
-          }, function error(response) {
-            if (!errorReported) { // just report the first
-              errorReported = true;
-              console.log(response);
-              reportError('QuestionnaireResponse', 'delete', response);
-            }
-          }
-        );
-      }
-      else { // no observations to delete
-        thenPromise = thisService.deleteFhirResource('QuestionnaireResponse',
-          resId, reportSuccess);
-      }
-      return thenPromise;
-    }, function(error) {
-      console.log(error);
-      reportError('QuestionnaireResponse', 'delete', error);
-    });
-  }
-  return rtnPromise;
-};
-*/
-
-/**
- *  Deletes an FHIR resource, and reports the result.
- *  Status returned through an angular broadcast event.
- * @param resType FHIR resource type
- * @param resId FHIR resource ID
- * @param reportSuccess Whether the report successful results (default
- *  true).
- * @return a promise that resolves when the resource is deleted
- */
-/*
-thisService.deleteFhirResource = function(resType, resId, reportSuccess) {
-  if (reportSuccess === undefined)
-    reportSuccess = true;
-  return thisService.fhir.delete(resType + "/" + resId)
-    .then(function success(response) {
-      // response === "OK"
-      if (reportSuccess) {
-        $rootScope.$broadcast('LF_FHIR_RESOURCE_DELETED',
-          {resType: resType, resource: null, resId: resId});
-      }
-    },
-    function error(response) {
-      console.log(response);
-      reportError(resType, 'delete', response);
     });
 };
 */

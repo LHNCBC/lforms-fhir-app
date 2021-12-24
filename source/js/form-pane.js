@@ -50,7 +50,7 @@ let lastSavedQR_;
 // Set up the "show data" menu items
 ['showFHIRSDCQuestionnaire', 'showFHIRSDCQuestionnaireResponse',
  'showOrigFHIRQuestionnaire'].forEach((menuID)=>{
-   document.getElementById(menuID).addEventListener('click', ()=>{
+  document.getElementById(menuID).addEventListener('click', ()=>{
     if (menuID === 'showOrigFHIRQuestionnaire')
       Dialogs[menuID](originalQDef_);
     else
@@ -67,6 +67,10 @@ document.getElementById('saveAsQRExtracted').addEventListener('click',
 // "Save" button
 document.getElementById('btn-save').addEventListener('click',
   ()=>updateQRToFhir());
+
+// "Delete" button
+document.getElementById('btn-delete').addEventListener('click',
+  ()=>deleteQRObs());
 
 
 /**
@@ -146,6 +150,8 @@ export function showForm(formDef, addOptions, onServer, savedQR) {
  */
 export function showError(msg, error) {
   removeForm();
+  originalQDef_ = null;
+  lastSavedQR_ = null;
   errMsgElem_.textContent = msg;
   announce(msg);
   if (error) {
@@ -378,15 +384,23 @@ function updateQRToFhir() {
 
 
 /**
- * Delete the currently selected FHIR resource
+ * Delete the currently selected QuestionnaireResponse and any extracted
+ * Observations.
  */
-function deleteFromFhir() {
-  $('.spinner').show();
-  if ($scope.fhirResInfo.resId) {
-   // fhirService.deleteFhirResource($scope.fhirResInfo.resType, $scope.fhirResInfo.resId);
-    fhirService.deleteQRespAndObs($scope.fhirResInfo.resId);
+function deleteQRObs() {
+  if (lastSavedQR_) { // The questionnaire should be already saved
+    let confirmMsg = "Are you sure you want to delete the currently displayed QuestionnaireResponse, and "+
+      "any Observations that were extracted from it?";
+    if (window.confirm(confirmMsg)) {
+      spinner.show();
+      removeForm();
+      fhirService.deleteQRespAndObs(lastSavedQR_.id).then(()=>{
+        announce('Deletion succeeded');
+        spinner.hide();
+        util.show(initialMsgElem_);
+      }, (error)=>showError('Some or all of the resources to delete could not be deleted.', error));
+      originalQDef_ = null;
+      lastSavedQR_ = null;
+    }
   }
 };
-
-
-
