@@ -5,6 +5,7 @@ import {spinner} from './spinner.js';
 import 'bootstrap/js/dropdown.js';
 import {Dialogs} from './dialogs.js';
 import {fhirService} from './fhir.service.js';
+import lformsUpdater from 'lforms-updater';
 
 /**
  *  A reference to the element into which the form will be placed.
@@ -38,6 +39,13 @@ const formPane_ = document.querySelector('.form-content');
  */
 let originalQDef_;
 
+/**
+ *  The QuestionnaireResponse last saved for the current form in originalQDef_,
+ *  or null/undefined.  This should always point to originalQDef_ via its
+ *  questionnaire propety.
+ */
+let lastSavedQR_;
+
 
 // Set up the "show data" menu items
 ['showFHIRSDCQuestionnaire', 'showFHIRSDCQuestionnaireResponse',
@@ -52,45 +60,82 @@ let originalQDef_;
 
 // Set up the "save as" menu items
 document.getElementById('createQRToFhir').addEventListener('click',
-  ()=>{createQRToFhir()});
+  ()=>createQRToFhir());
 document.getElementById('saveAsQRExtracted').addEventListener('click',
-  ()=>{saveAsQRExtracted()});
+  ()=>saveAsQRExtracted());
 
+// "Save" button
+document.getElementById('btn-save').addEventListener('click',
+  ()=>updateQRToFhir());
 
 
 /**
  *  Renders the given form definition, replacing any previously shown form.
- * @param formDef either an LForms or FHIR Questionnaire form definition.
+ * @param formDef either an LForms or FHIR Questionnaire form definition.  If
+ *  onServer is true, this should be the copy from the server.
  * @param addOptions the options object for LForms.Util.addFormToPage.
- * @param originalQ the unmodified Questionnaire definition if it was retrieved
- *  from the server, or undefined.
+ * @param onServer true if the Questionnaire definition is on the current FHIR
+ *  server. (Default: false)
+ * @param savedQR (optional) A QuestionnaireResponse to show using the form.
  * @return a Promise that resolves when the form is successfully shown.
  */
-export function showForm(formDef, addOptions, originalQ) {
+export function showForm(formDef, addOptions, onServer, savedQR) {
   util.hide(initialMsgElem_);
   removeErrMsg();
   removeForm();
+  originalQDef_ = null;
+  lastSavedQR_ = null;
   spinner.show();
-  originalQDef_ = originalQ;
-  setFromServerMenuItemVisibility();
-  return new Promise((resolve, reject)=> {
-    try {
-      LForms.Util.addFormToPage(formDef, formContainer_, addOptions).then(() => {
-        spinner.hide();
-        util.show(formDataControls_);
-        announce('A form is now displayed in the main content area, '+
-          ' along with a save button and a menu for showing the form data.');
-        resolve();
-      }, (error)=>{
-        console.log(error);
-        showError('Could not display the form.', error);
-        reject();
-      });
-    } catch (e) {
-      showError('Could not process the file.', e);
-      reject();
-    };
-  });
+  const formDefParam = formDef;
+  formDef = lformsUpdater.update(formDef);
+
+  let rtn;
+  if (formDef.resourceType === 'Questionnaire') {
+    // Convert it to the LForms format
+    const fhirVersion = fhirService.fhirVersion;
+    formDef = LForms.Util.convertFHIRQuestionnaireToLForms(
+      formDef, fhirVersion);
+    if (savedQR) {
+      var newFormData = (new LForms.LFormsData(formDef));
+      try {
+        formDef = LForms.Util.mergeFHIRDataIntoLForms(
+          'QuestionnaireResponse', savedQR, newFormData, fhirVersion);
+      }
+      catch (e) {
+        showError('Sorry.  Could not process that '+
+          'QuestionnaireResponse.  See the console for details.', e);
+        formDef = null;
+        rtn = Promise.reject(e);
+      }
+    }
+  }
+  if (formDef) {
+    if (onServer) {
+      originalQDef_ = formDefParam;
+      lastSavedQR_ = savedQR;
+    }
+    saveDeleteVisibility(!!savedQR);
+    setFromServerMenuItemVisibility();
+    return new Promise((resolve, reject)=> {
+      try {
+        LForms.Util.addFormToPage(formDef, formContainer_, addOptions).then(() => {
+          spinner.hide();
+          util.show(formDataControls_);
+          announce('A form is now displayed in the main content area, '+
+            ' along with a save button and a menu for showing the form data.');
+          resolve();
+        }, (error)=>{
+          console.log(error);
+          showError('Could not display the form.', error);
+          reject(error);
+        });
+      } catch (e) {
+        showError('Could not display the form.', e);
+        reject(e);
+      };
+    });
+  }
+  return
 }
 
 
@@ -217,6 +262,7 @@ async function createQRToFhir() {
     if (originalQDef_) { // Questionnaire is already on server
       saveResults = [await fhirService.createQR(qr, originalQDef_)];
       notifyQRSaveOrDelete();
+      saveDeleteVisibility(true);
     }
     else {
       var q = LForms.Util.getFormFHIRData('Questionnaire',
@@ -226,14 +272,16 @@ async function createQRToFhir() {
         saveResults = await fhirService.createQQR(q, qr);
         if (saveResults[0].resourceType === 'Questionnaire')
           originalQDef_ = saveResults[0];
+        saveDeleteVisibility(true);
       }
       catch(qqrError) {
         console.log(qqrError);
-        Dialogs.showSaveResultsDialog([qqrError]);
+        saveeResults = [qqrError];
       }
       notifyQRSaveOrDelete();
       notifyQSaveOrDelete();
     }
+    updateCurrentQQRRefs(saveResults);
     Dialogs.showSaveResultsDialog(saveResults);
   }
   catch(error) {
@@ -273,8 +321,8 @@ async function saveAsQRExtracted() {
   let saveResults;
   try {
     saveResults = await fhirService.createQQRObs(qData, qr, resArray, qExists);
-    if (saveResults[0].resourceType === 'Questionnaire')
-      originalQDef_ = saveResults[0];
+    updateCurrentQQRRefs(saveResults);
+    saveDeleteVisibility(true);
   }
   catch(error) {
     console.log(error);
@@ -287,55 +335,44 @@ async function saveAsQRExtracted() {
     notifyQSaveOrDelete();
 
   Dialogs.showSaveResultsDialog(saveResults);
-};
+}
 
 
 /**
- * Save or update the data as a QuestionnaireResponse resource
+ *  Updates the references to the current Questionnaire and
+ *  QuestionnaireReferences.
+ * @param saveResults An array of save results, which might contain the saved
+ *  Questionnaire and/or saved QuestionnaireResponse.
  */
-function saveQRToFhir () {
-  $('.spinner').show();
-
-  // QuestionnaireResponse
-  if ($scope.fhirResInfo.resType === "QuestionnaireResponse") {
-    // existing resource
-    if ($scope.fhirResInfo.resId) {
-      $scope.updateQRToFhir($scope.fhirResInfo.extensionType);
-    }
-    // new resource
-    else {
-      $scope.createQRToFhir($scope.fhirResInfo.extensionType);
+function updateCurrentQQRRefs(saveResults) {
+  const resType0 = saveResults[0].resourceType;
+  if (resType0 === 'Questionnaire') {
+    originalQDef_ = saveResults[0];
+    if (saveResults[1].resourceType === 'QuestionnaireResponse') {
+      lastSavedQR_ = saveResults[1];
     }
   }
-};
+  else if (resType0 === 'QuestionnaireResponse') {
+    lastSavedQR_ = saveResults[0];
+  }
+}
 
 
 /**
  * Update the form data as a QuestionnaireResponse on the selected FHIR server
- * @param extensionType a flag indicate if it is a SDC type of QuestionnaireResponse
  */
-function updateQRToFhir(extensionType) {
-  $('.spinner').show();
-  var noExtensions = extensionType === "SDC" ? false : true;
-  if ($scope.fhirResInfo.resId && $scope.fhirResInfo.questionnaireResId) {
+function updateQRToFhir() {
+  if (lastSavedQR_) { // The questionnaire should be already saved
+    spinner.show();
     var qr = LForms.Util.getFormFHIRData('QuestionnaireResponse',
-      fhirService.fhirVersion, $scope.formData, {noExtensions: noExtensions})
-    if (qr) {
-      // patient data
-      var patient = fhirService.getCurrentPatient();
-      if (patient) {
-        qr["subject"] = {
-          "reference": "Patient/" + patient.id,
-          "display": patient.name
-        }
-      }
-      fhirService.setQRRefToQ(qr, {id: $scope.fhirResInfo.questionnaireResId});
-      qr.id = $scope.fhirResInfo.resId; // id must be same
-      fhirService.updateFhirResource("QuestionnaireResponse", qr);
-    }
-    else {
-      console.log("Failed to update a QuestionnaireResponse. " + JSON.stringify($scope.formData));
-    }
+      fhirService.fhirVersion, formContainer_, {subject: fhirService.getCurrentPatient()});
+    fhirService.setQRRefToQ(qr, originalQDef_);
+    qr.id = lastSavedQR_.id; // id must be stay the same
+    fhirService.fhir.update(qr).then((saveResults)=>{
+      updateCurrentQQRRefs([saveResults]);
+      notifyQRSaveOrDelete();
+      Dialogs.showSaveResultsDialog([saveResults]);
+    }, (error)=>Dialogs.showSaveResultsDialog([error]));
   }
 };
 

@@ -6,7 +6,6 @@ import * as util from './util';
 import { announce } from './announcer'; // for a screen reader
 import * as formPane from './form-pane';
 import {fhirService} from './fhir.service.js';
-import lformsUpdater from 'lforms-updater';
 import {spinner} from './spinner.js';
 import {Dialogs} from './dialogs.js';
 
@@ -77,7 +76,7 @@ formPane.listenForQSave(()=>loadSavedQList());
 document.getElementById('search').addEventListener('click', ()=>{
   Dialogs.showQuestionnairePicker().then((questionnaire)=> {
     if (questionnaire)
-      formPane.showForm(questionnaire);
+      formPane.showForm(questionnaire, null, true);
   });
 });
 
@@ -94,9 +93,7 @@ loadFileInput.addEventListener('change', ()=>{
       try {
         var importedData = JSON.parse(event.target.result);
         // Update it to the current version of LForms
-        importedData = lformsUpdater.update(importedData);
         // Unset (any) selected item after showForm attempt
-        formPane.saveDeleteVisibility(false);
         selectItemAfterPromise(null, ()=>formPane.showForm(importedData));
       }
       catch (e) {
@@ -431,32 +428,7 @@ function getQName(q) {
  * @return a Promise that resolves if the form is successfully shown.
  */
 function showSavedQQR(q, qr) {
-  // merge the QuestionnaireResponse into the form
-  var fhirVersion = fhirService.fhirVersion;
-  var mergedFormData;
-  let rtn;
-  try {
-    // In case the Questionnaire came from LForms, run the updater.
-    let updatedQ = lformsUpdater.update(q);
-    var formData = LForms.Util.convertFHIRQuestionnaireToLForms(
-       updatedQ, fhirVersion);
-    var newFormData = (new LForms.LFormsData(formData));
-    mergedFormData = LForms.Util.mergeFHIRDataIntoLForms(
-      'QuestionnaireResponse', qr, newFormData,
-      fhirVersion);
-  }
-  catch (e) {
-    formPane.showError('Sorry.  Could not process that '+
-      'QuestionnaireResponse.  See the console for details.', e);
-  }
-  if (mergedFormData) {
-    formPane.saveDeleteVisibility(true);
-    // Load FHIR resources, but don't prepopulate
-    rtn = formPane.showForm(mergedFormData, {prepopulate: false}, q);
-  }
-  else
-    rtn = Promise.reject();
-  return rtn;
+  return formPane.showForm(q, {prepopulate: false}, true, qr);
 }
 
 
@@ -466,24 +438,7 @@ function showSavedQQR(q, qr) {
  * @return a Promise that resolves if the form is successfully shown.
  */
 function showSavedQuestionnaire(q) {
-  let formData, rtn;
-  try {
-    // In case the Questionnaire came from LForms, run the updater.
-    let updatedQ = lformsUpdater.update(q);
-    formData = LForms.Util.convertFHIRQuestionnaireToLForms(
-      updatedQ, fhirService.fhirVersion);
-  }
-  catch(e) {
-    formPane.showError('Sorry.  Could not process that '+
-      'Questionnaire.  See the console for details.', e);
-  }
-  if (formData) {
-    formPane.saveDeleteVisibility(false);
-    rtn = formPane.showForm(formData, null, q);
-  }
-  else
-    rtn = Promise.reject();
-  return rtn;
+  return formPane.showForm(q, null, true);
 };
 
 
