@@ -1,16 +1,15 @@
 /* Patient info banner */
 .lf-patient {
-  /*background-color: rgb(139, 150, 225) !important;*/
   background-color: #458ac5 !important;
   color: white;
   font-size: 20px;
+  padding: 0 16px;
 }
 .lf-patient-info {
   font-size: 70%;
 }
 .lf-patient table {
   width: 100%;
-  margin: 0 16px;
   height: 2.2em;
   visibility: hidden;
 }
