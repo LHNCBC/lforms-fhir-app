@@ -290,18 +290,18 @@ thisService.searchPatientByName = function(searchText, resultCount) {
     type: "Patient",
     query: {name: searchText.split(/\s+/), _count: resultCount},
     headers: {'Cache-Control': 'no-cache'}
-  }).then(function(response) {
+  }).then(function(bundle) {
     // Return results in autocomplete-lhc format
-    const rtn = [response.total];
+    const rtn = [bundle.total];
     const ids = [];
     const resources=[];
     const display = [];
     rtn.push(ids);
     rtn.push({resource: resources});
     rtn.push(display);
-    if (response.entry) {
-      for (let i=0, iLen=response.entry.length; i<iLen; i++) {
-        var patient = response.entry[i].resource;
+    if (bundle.entry) {
+      for (let i=0, iLen=bundle.entry.length; i<iLen; i++) {
+        var patient = bundle.entry[i].resource;
         ids.push(patient.id);
         resources.push(patient);
         display.push([thisService.getPatientName(patient),
@@ -327,18 +327,18 @@ thisService.searchQuestionnaire = function(searchText, resultCount) {
     type: "Questionnaire",
     query: {title: searchText, _count: resultCount},
     headers: {'Cache-Control': 'no-cache'}
-  }).then(function(response) {
+  }).then(function(bundle) {
     // Return results in autocomplete-lhc format
-    const rtn = [response.total];
+    const rtn = [bundle.total];
     const ids = [];
     const resources=[];
     const display = [];
     rtn.push(ids);
     rtn.push({resource: resources});
     rtn.push(display);
-    if (response.entry) {
-      for (let i=0, iLen=response.entry.length; i<iLen; i++) {
-        const q = response.entry[i].resource;
+    if (bundle.entry) {
+      for (let i=0, iLen=bundle.entry.length; i<iLen; i++) {
+        const q = bundle.entry[i].resource;
         ids.push(q.id);
         resources.push(q);
         display.push([q.title]);
@@ -463,6 +463,158 @@ thisService.getAllQ = function() {
 };
 
 
+/**
+ * Create Questionnaire if it does not exist, and QuestionnaireResponse and
+ * its extracted observations.
+ * Data returned through an angular broadcast event.
+ * @param q the Questionnaire resource
+ * @param qr the QuestionnaireResponse resource
+ * @param obsArray the array of Observations extracted from qr
+ * @param qExists true if the questionnaire already exists and does not need to
+ * be created.
+ * @return a Promise that will resolve to an array of the responses for creating
+ *  the Questionnaire (if !qExists) and the result of the bundle to create the QR
+ *  and the Observations.
+ */
+thisService.createQQRObs = function (q, qr, obsArray, qExists) {
+  // Build a FHIR transaction bundle to create these resources.
+  var bundle = {
+    resourceType:"Bundle",
+    type: "transaction",
+    entry: []
+  };
+
+  bundle.entry.push({
+    resource: qr,
+    request: {
+      method: "POST",
+      url: "QuestionnaireResponse"
+    }
+  });
+
+  for (var i=0, len=obsArray.length; i<len; ++i) {
+    bundle.entry.push({
+      resource: obsArray[i],
+      request: {
+        method: "POST",
+        url: "Observation"
+      }
+    });
+  }
+
+  function withQuestionnaire(q) {
+    // Set the questionnaire reference in the response
+    thisService.setQRRefToQ(qr, q);
+
+    return thisService.fhir.request({url: '', method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(bundle)});
+  }
+
+  if (qExists)
+    return withQuestionnaire(q).then((bundleResp)=>[bundleResp], (error)=>[error]);
+  else {
+    return thisService.fhir.create(q).then((qResp)=>{
+      return withQuestionnaire(qResp).then((bundleResp)=>[qResp, bundleResp],
+        (error)=>[qResp, error]);
+    });
+  }
+};
+
+
+
+
+/**
+ * Create the Questionnaire and the QuestionnaireResponse.
+ * Data returned through an angular broadcast event.
+ * @param q the Questionnaire resource
+ * @param qr the QuestionnaireResponse resource
+ * @return a promise the resolves to an array containing the responses of
+ *  Questionnaire and QR creation requests.
+ */
+thisService.createQQR = function(q, qr) {
+  return thisService.fhir.create(q).then((qResp)=>{
+    return thisService.createQR(qr, qResp).then((qrResp)=>[qResp, qrResp],
+      (error)=>[qResp, error]);
+  });
+};
+
+
+/**
+ *  Creates a QuestionnairResponse.
+ * @param qrData the QuestionnaireResponse to be created.
+ * @param qData the Questionnaire resource, or at least the ID field
+ * @return a promise the resolves to the response of QR creation request.
+ */
+thisService.createQR = function (qrData, qData) {
+  // Set the questionnaire reference in the response
+  thisService.setQRRefToQ(qrData, qData);
+
+  // create QuestionnaireResponse
+  return thisService.fhir.create(qrData);
+};
+
+
+/**
+ * Delete a QuestionnaireResponse and its associated Observations (if any).
+ * Status returned through an angular broadcast event.
+ * @param resId FHIR resource ID for the QuestionnaireResponse
+ * @return a promise that resolves when the deletion has finished.
+ */
+thisService.deleteQRespAndObs = function(resId) {
+  var rtnPromise;
+  if (thisService.fhirVersion === 'STU3') {
+    // STU3 does not have the derivedFrom field in Observation which links
+    // them to QuestionnaireResponse.
+    rtnPromise = thisService.deleteFhirResource('QuestionnaireResponse',
+      resId);
+  }
+  else {
+    rtnPromise = fhirSearch({
+      type: 'Observation',
+      query: {
+        'derived-from': 'QuestionnaireResponse/'+resId,
+      },
+      headers: {
+        'Cache-Control': 'no-cache'
+      }
+    }).then(function(bundle) {
+      var thenPromise;
+      var entries = bundle.entry;
+      if (entries && entries.length > 0) {
+        var obsDelPromises = [];
+        for (var i=0, len=entries.length; i<len; ++i) {
+          var obsId = entries[i].resource.id;
+          obsDelPromises.push(thisService.fhir.delete('Observation/' + obsId));
+        }
+        thenPromise = Promise.all(obsDelPromises).then(()=> {
+          return thisService.deleteFhirResource('QuestionnaireResponse', resId);
+        });
+      }
+      else { // no observations to delete
+        thenPromise = thisService.deleteFhirResource('QuestionnaireResponse',
+          resId);
+      }
+      return thenPromise;
+    });
+  }
+  return rtnPromise;
+};
+
+
+/**
+ *  Deletes an FHIR resource, and reports the result.
+ *  Status returned through an angular broadcast event.
+ * @param resType FHIR resource type
+ * @param resId FHIR resource ID
+ * @return a promise that resolves when the resource is deleted
+ */
+thisService.deleteFhirResource = function(resType, resId) {
+  return thisService.fhir.delete(resType + "/" + resId);
+};
+
+
+
 // TBD - Code below this point has either not been updated yet or will be
 // removed.
 
@@ -530,40 +682,6 @@ thisService.getMergedQQR = function(resType, resId) {
 };
 */
 
-/**
- *  Creates a QuestionnairResponse.
- * @param qrData the QuestionnaireResponse to be created.
- * @param qData the Questionnaire resource, or at least the ID and name
- *  fields.
- */
-/*
-thisService.createQR = function (qrData, qData) {
-  // Set the questionnaire reference in the response
-  thisService.setQRRefToQ(qrData, qData);
-
-  // create QuestionnaireResponse
-  thisService.fhir.create(qrData).then(
-    function success(resp) {
-      $rootScope.$broadcast('LF_FHIR_QR_CREATED',
-        { resType: "QuestionnaireResponse",
-          resource: resp,
-          resId: resp.id,
-          qResId: qData.id,
-          qName: qData.name,
-          extensionType: 'SDC'
-        });
-      _collectedResults.push(resp);
-      reportResults();
-    },
-    function error(error) {
-      console.log(error);
-      _terminatingError = error;
-      reportResults();
-    }
-  );
-};
-*/
-
 
 /**
  *  Broadcasts information about a failed operation.  The application should listen for 'OP_FAILED' broadcasts.
@@ -581,93 +699,6 @@ function reportError(resourceType, opName, errInfo) {
 }
 */
 
-
-/**
- * Create Questionnaire if it does not exist, and QuestionnaireResponse and
- * its extracted observations.
- * Data returned through an angular broadcast event.
- * @param q the Questionnaire resource
- * @param qr the QuestionnaireResponse resource
- * @param obsArray the array of Observations extracted from qr
- * @param qExists true if the questionnaire is known to exist (in which case
- * we skip the lookup)
- */
-/*
-thisService.createQQRObs = function(q, qr, obsArray, qExists) {
-  _terminatingError = null;
-
-  // Build a FHIR transaction bundle to create these resources.
-  var bundle = {
-    resourceType:"Bundle",
-    type: "transaction",
-    entry: []
-  };
-
-  bundle.entry.push({
-    resource: qr,
-    request: {
-      method: "POST",
-      url: "QuestionnaireResponse"
-    }
-  });
-
-  for (var i=0, len=obsArray.length; i<len; ++i) {
-    bundle.entry.push({
-      resource: obsArray[i],
-      request: {
-        method: "POST",
-        url: "Observation"
-      }
-    });
-  }
-
-  function withQuestionnaire(q) {
-    // Set the questionnaire reference in the response
-    var qr = bundle.entry[0].resource;
-    var qRef = 'Questionnaire/'+q.id;
-    if (thisService.fhirVersion == 'STU3')
-      qr.questionnaire = {reference: qRef};
-    else
-      qr.questionnaire = qRef;
-
-    thisService.fhir.request({url: '', method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(bundle)}).then(
-
-      function success(resp) {
-        _collectedResults.push(resp);
-        reportResults();
-        // Look through the bundle for the QuestionnaireResource ID
-        var entries = resp.entry;
-        var qrID = null;
-        for (var i=0, len=entries.length; i<len && !qrID; ++i) {
-          var entry = entries[i];
-          var matchData = entry.response && entry.response.location
-            && entry.response.location.match(/^QuestionnaireResponse\/(\d+)/);
-          if (matchData)
-            qrID = matchData[1];
-        }
-        $rootScope.$broadcast('LF_FHIR_QR_CREATED', {
-          resType: "QuestionnaireResponse",
-          resource: qr,
-          resId: qrID,
-          qResId: q.id,
-          qName: q.name,
-          extensionType: 'SDC'
-        });
-      },
-      function error(err) {
-        _terminatingError = {resType: 'Bundle', operation: 'create', errInfo: err};
-        reportResults();
-      }
-    );
-  }
-  if (qExists)
-    withQuestionnaire(q);
-  else
-    createOrFindAndCall(q, withQuestionnaire);
-};
-*/
 
 
 /**
@@ -688,99 +719,6 @@ function reportResults() {
 */
 
 
-/**
- *  Checks the server to see if questionnaire q is already there, creates it
- *  if needed, and then calls function withQuestionnaire.
- * @param q A questionnaire that needs to exist prior to withQuestionnaire
- *  being created.
- * @param withQuestionnaire a function to be called with the questionnaire
- *  resource from the server.
- */
-/*
-function createOrFindAndCall(q, withQuestionnaire) {
-  function createQAndCall() {
-    thisService.fhir.create(q).then(function success(resp) {
-      $rootScope.$broadcast('LF_FHIR_Q_CREATED',
-        { resType: "Questionnaire",
-          resource: resp,
-          resId: resp.id,
-          extensionType: 'SDC'
-        });
-      thisService.currentQuestionnaire = resp;
-      withQuestionnaire(resp);
-    },
-    function error(error) {
-      _terminatingError = {resType: 'Questionnaire', operation: 'create', errInfo: error};
-      reportResults();
-    });
-  }
-
-  // check if a related Questionnaire exists
-  var queryJson;
-  // It was decided that in the current UI, which only allows introduction
-  // of forms via an "upload", that it would be better to always create a
-  // new Questionnaire, to allow for repeated cycles of editing.  So, for
-  // now, I am disbling the search for an existing questionnaire here.
-  if (false) { // disabling (for now) the search for existing Qustionnaire
-    if (q.url)
-      queryJson = {url: q.url}
-    else if (q.identifier && q.identifier[0])
-      queryJson = {identifier: q.identifier[0].system+'|' + q.identifier[0].value}
-    else if (q.code && q.code[0])
-      queryJson = {code: q.code[0].system+'|' + q.code[0].value};
-    else if (q.name)
-      queryJson = {name: q.name}
-    else if (q.title)
-      queryJson = {title: q.title}
-  }
-  if (!queryJson) {
-    // Can't form a query, so just make a new one
-    createQAndCall();
-  }
-  else {
-    fhirSearch({
-      type: "Questionnaire",
-      query: queryJson,
-      headers: {'Cache-Control': 'no-cache'}
-    }).then(function success(resp) {
-      var bundle = resp;
-      var count = (bundle.entry && bundle.entry.length) || 0;
-      // found existing Questionnaires
-      if (count > 0 ) {
-        var oneQuestionnaireResource = bundle.entry[0].resource;
-        withQuestionnaire(oneQuestionnaireResource);
-      }
-      // no Questionnaire found, create a new Questionnaire first
-      else {
-        createQAndCall();
-      }
-    },
-    function error(error) {
-      _terminatingError = {resType: 'Questionnaire', operation: 'search', errInfo: error};
-      reportResults();
-    });
-  }
-};
-*/
-
-
-/**
- * Create Questionnaire if it does not exist, and QuestionnaireResponse
- * Data returned through an angular broadcast event.
- * @param q the Questionnaire resource
- * @param qr the QuestionnaireResponse resource
- * @param extenstionType optional, for Questionnaire/QuestionnaireResponse it could be "SDC"
- */
-/*
-thisService.createQQR = function(q, qr, extensionType) {
-  function withQuestionnaire(q) {
-    thisService.createQR(qr, q);
-  }
-
-  createOrFindAndCall(q, withQuestionnaire);
-};
-*/
-
 
 /**
  * Update an FHIR resource
@@ -798,97 +736,6 @@ thisService.updateFhirResource = function(resType, resource) {
     function error(response) {
       console.log(response);
       reportError(resType, 'update', response);
-    });
-};
-*/
-
-/**
- * Delete a QuestionnaireResponse and its associated Observations (if any).
- * Status returned through an angular broadcast event.
- * @param resId FHIR resource ID
- * @param reportSuccess Whether the report successful results (default
- *  true).
- * @return a promise that resolves when the deletion has finished.
- */
-/*
-thisService.deleteQRespAndObs = function(resId, reportSuccess) {
-  var rtnPromise;;
-  if (thisService.fhirVersion === 'STU3') {
-    // STU3 does not have the derivedFrom field in Observation which links
-    // them to QuestionnaireResponse.
-    rtnPromise = thisService.deleteFhirResource('QuestionnaireResponse',
-      resId, reportSuccess);
-  }
-  else {
-    rtnPromise = fhirSearch({
-      type: 'Observation',
-      query: {
-        'derived-from': 'QuestionnaireResponse/'+resId,
-      },
-      headers: {
-        'Cache-Control': 'no-cache'
-      }
-    }).then(function(response) {   // response is a searchset bundle
-      var thenPromise;
-      var bundle = response;
-      var entries = bundle.entry;
-      if (entries && entries.length > 0) {
-        var errorReported = false;
-        var obsDelPromises = [];
-        for (var i=0, len=entries.length; i<len; ++i) {
-          var obsId = entries[i].resource.id;
-          obsDelPromises.push(thisService.fhir.delete('Observation/' + obsId));
-        }
-        thenPromise = Promise.all(obsDelPromises).then(
-          function success(response) {
-            return thisService.deleteFhirResource('QuestionnaireResponse', resId, reportSuccess);
-          }, function error(response) {
-            if (!errorReported) { // just report the first
-              errorReported = true;
-              console.log(response);
-              reportError('QuestionnaireResponse', 'delete', response);
-            }
-          }
-        );
-      }
-      else { // no observations to delete
-        thenPromise = thisService.deleteFhirResource('QuestionnaireResponse',
-          resId, reportSuccess);
-      }
-      return thenPromise;
-    }, function(error) {
-      console.log(error);
-      reportError('QuestionnaireResponse', 'delete', error);
-    });
-  }
-  return rtnPromise;
-};
-*/
-
-/**
- *  Deletes an FHIR resource, and reports the result.
- *  Status returned through an angular broadcast event.
- * @param resType FHIR resource type
- * @param resId FHIR resource ID
- * @param reportSuccess Whether the report successful results (default
- *  true).
- * @return a promise that resolves when the resource is deleted
- */
-/*
-thisService.deleteFhirResource = function(resType, resId, reportSuccess) {
-  if (reportSuccess === undefined)
-    reportSuccess = true;
-  return thisService.fhir.delete(resType + "/" + resId)
-    .then(function success(response) {
-      // response === "OK"
-      if (reportSuccess) {
-        $rootScope.$broadcast('LF_FHIR_RESOURCE_DELETED',
-          {resType: resType, resource: null, resId: resId});
-      }
-    },
-    function error(response) {
-      console.log(response);
-      reportError(resType, 'delete', response);
     });
 };
 */

@@ -7,28 +7,27 @@
         <span>Save</span>
       </button>
       <button type="button" class="btn btn-primary" id="btn-delete"
-              data-toggle="tooltip" data-placement="bottom" title="Delete the FHIR resource from the selected FHIR server.">
+       data-toggle="tooltip" data-placement="bottom"
+       title="Delete the displayed QuestionnaireResponse and any extracted Observations.">
         <span class="glyphicon glyphicon-trash"></span>
         <span>Delete</span>
       </button>
     </div><div id="saveAsMenu" class="btn-group btn-group-sm" role="group">
       <button type="button" class="btn dropdown-toggle btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="btn-save-as"
-              data-toggle="tooltip" data-placement="bottom" title="Save the form data as a 'new' FHIR resource to the selected FHIR server.">
+              title="Save the form data as a 'new' FHIR resource to the selected FHIR server.">
         <span class="glyphicon glyphicon-share"></span>
         <span>Save As ... </span>
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu">
-        <li><a href="#" class="" id="btn-save-sdc-qr" ng-click="saveAsToFhir('SDC-QR')">FHIR QuestionnaireResponse (SDC)</a></li>
-        <li><a href="#" class="" id="btn-save-sdc-qr-obs" ng-click="saveAsQRExtracted()"
+        <li><a href="javascript:void(0)" id="createQRToFhir">FHIR QuestionnaireResponse (SDC)</a></li>
+        <li><a href="javascript:void(0)" id="saveAsQRExtracted"
          >FHIR QuestionnaireResponse (SDC) &amp; Observations</a></li>
-        <!--<li><a href="#" class="" ng-click="saveAsToFhir('DR')">FHIR DiagnosticReport</a></li>-->
       </ul>
-    </div><div class="btn-group btn-group-sm" role="group"">
+    </div><div class="btn-group btn-group-sm" role="group">
       <button type="button" class="btn dropdown-toggle btn-primary"
        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-       id="btn-show-as" data-toggle="tooltip" data-placement="bottom" title="Show
-       the form data as a FHIR resource in a popup window.">
+       id="btn-show-as" title="Show the form data as a FHIR resource in a popup window.">
         <span class="glyphicon glyphicon-modal-window"></span>
         <span>Show As ... </span>
         <span class="caret"></span>
@@ -38,15 +37,17 @@
         href="javascript:void(0)">FHIR Questionnaire from
          Server</a></li>
         <li role="separator" class="divider"></li>
-        <li><a id="showFHIRSDCQuestionnaire" href="#" class="" ng-click="showFHIRSDCQuestionnaire()">FHIR Questionnaire (SDC)</a></li>
-        <li><a id="showFHIRSDCQuestionnaireResponse" href="#" class="" ng-click="showFHIRSDCQuestionnaireResponse()">FHIR QuestionnaireResponse (SDC)</a></li>
+        <li><a id="showFHIRSDCQuestionnaire" href="javascript:void(0)"
+         >FHIR Questionnaire (SDC)</a></li>
+        <li><a id="showFHIRSDCQuestionnaireResponse" href="javascript:void(0)"
+         >FHIR QuestionnaireResponse (SDC)</a></li>
       </ul>
     </div>
   </div>
 
   <div class="error" id="errMsg"></div>
 
-  <div id="formContainer"></formContainer>
+  <div id="formContainer"></div>
 
   <div id="initialMsg" class="initial">
     <span>Please select a Questionnaire or QuestionnaireResponse or upload a Questionnaire from a file.</span>

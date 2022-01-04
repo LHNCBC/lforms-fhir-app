@@ -7,7 +7,9 @@ import {fhirService} from './fhir.service.js';
 import * as util from './util.js';
 import 'bootstrap/js/modal.js';
 import { fhirServerConfig } from './fhir-server-config';
-const escapeHtml = require('escape-html');
+import escapeHtml from 'escape-html';
+//const escapeHtml = require('escape-html');
+import {spinner} from './spinner.js';
 
 /**
  *  The version of FHIR output by this app (in the "show" dialogs).
@@ -25,10 +27,22 @@ export const Dialogs = {
    *  Initialization, to set up event handlers for showing dialogs.
    */
   init: function() {
-    // Handle the copy button on the dialog
+    // Handle the copy button on the data dialog
     document.getElementById('copyToClipboardBtn').addEventListener('click', ()=>{
       util.copyToClipboard('messageBody');
       announce('The data from the dialog has been copied to the clipboard.');
+    });
+
+    // Handle the copy button on the "save results" dialog
+    document.getElementById('saveResultsCopyBtn').addEventListener('click', ()=>{
+      util.copyToClipboard('saveResultsDetails');
+      announce('The data from the dialog has been copied to the clipboard.');
+    });
+    // Handle the "details" link on the "save results" dialog
+    document.getElementById('saveResultsDetailsLink').addEventListener('click', ()=>{
+      util.toggleDisplay(document.getElementById('saveResultsDetails'));
+      const newDisplay = util.toggleDisplay(document.getElementById('saveResultsCopyBtn'));
+      announce((newDisplay === '' ? 'Showed' : 'Hid') + ' the results details section');
     });
   },
 
@@ -246,12 +260,93 @@ export const Dialogs = {
       const spans = fhirResElem.children;
       spans[0].textContent = fhirParts[0] + fhirParts[1];
       const resID=fhirParts[2];
-      spans[1].innerHTML = '<a href="'+serverBaseURL+'/Questionnaire/'+
+      spans[1].innerHTML = '<a href="'+encodeURI(serverBaseURL)+'/Questionnaire/'+
         encodeURIComponent(resID)+'" target=_blank rel="noopener noreferrer">'+
         escapeHtml(resID)+'</a>';
       spans[2].textContent=fhirParts[3] + fhirParts[4];
     }
+  },
+
+
+  /**
+   *  Show a dialog with the results from a "save as" operation.
+   * @param results An array of the responses from
+   *  the FHIR server for whatever save requests were sent.  The responses could
+   *  be reponses for bundles of requests, responses for individual requests, or
+   *  Errors.
+   */
+  showSaveResultsDialog: function (results) {
+    const summary = [];
+    const details = [];
+    let foundError = false;
+    let foundSuccess = false;
+    const serverBaseURL = encodeURI(fhirService.getServerServiceURL());
+    for (let result of results) {
+      const resourceType = result.resourceType;
+      if (resourceType === 'Bundle') {
+        // The bundles we are submitting are transaction bundles, so all
+        // requests in the bundle should have succeeded (or the whole thing
+        // would have failed, and we would not get a Bundle back).
+        foundSuccess = true;
+        for (let entry of result.entry) {
+          let status = entry.response.status;
+          if (/^\d\d\d /.test(status))
+            status = status.slice(4); // remove numeric code from status string
+          summary.push(escapeHtml(status) + ' <a href="'+serverBaseURL+'/'+
+            encodeURI(entry.response.location)+
+            '" target=_blank rel="noopener noreferrer">'+
+            escapeHtml(entry.response.location)+'</a>');
+          details.push(entry);
+        }
+      }
+      else if (resourceType === 'OperationOutcome') {
+        // This is a failed save, though it most likely indicates a bug in this
+        // program, or possibly a bug in the server, because the resources we
+        // generate and the endpoints we use should be correct.
+        // Also this case usually occasions a 404 response which results in an
+        // Error being generated, so I am not it is necessary to handle this
+        // here.
+        foundError = true;
+        summary.push('The server reported an error when trying to save.  See the details section.');
+        let detailMsg = 'The server reported an error when trying to save.';
+        if (result.issue?.diagnostics)
+          detailMsg += '  ' + result.issue?.diagnostics;
+        details.push(detailMsg);
+      }
+      else if (resourceType) {
+        // This should also be a successful save, but for an individual
+        // resource.
+        foundSuccess = true;
+        summary.push((result.meta?.versionId != '1' ?  'Updated': 'Created')+
+            ' <a href="'+serverBaseURL+'/'+ encodeURIComponent(result.resourceType)+
+            '/' + encodeURIComponent(result.id)+
+            '" target=_blank rel="noopener noreferrer">'+
+            escapeHtml(result.resourceType)+'/'+escapeHtml(result.id)+'</a>');
+        details.push(result);
+      }
+      else if (result instanceof Error) {
+        foundError = true;
+        let message = 'Server request failed: '+escapeHtml(result.message);
+        summary.push(message);
+        details.push(message);
+      }
+      else { // Unknown.  Treat as an error
+        foundError = true;
+        summary.push('Unknown error.  See the details section');
+        details.push(result.toString());
+      }
+    };
+
+    document.getElementById('saveResultsStatus').textContent =
+        'Save ' + (foundError && foundSuccess ? 'partially ' : '')+
+           (foundError ? 'failed.' : 'succeeded.');
+    var summaryHTML = summary.length ?  '<li>'+summary.join('</li><li>')+'</li>' : '';
+    document.getElementById('saveResultsList').innerHTML = summaryHTML;
+    document.getElementById('saveResultsDetails').innerText = JSON.stringify(details, null, 2);
+    spinner.hide();
+    $('#saveResultsDialog').modal('show');
   }
+
 
 };
 
