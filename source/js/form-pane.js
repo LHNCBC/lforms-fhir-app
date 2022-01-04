@@ -113,6 +113,7 @@ export function showForm(formDef, addOptions, onServer, savedQR) {
       }
     }
   }
+
   if (formDef) {
     if (onServer) {
       originalQDef_ = formDefParam;
@@ -120,7 +121,7 @@ export function showForm(formDef, addOptions, onServer, savedQR) {
     }
     saveDeleteVisibility(!!savedQR);
     setFromServerMenuItemVisibility();
-    return new Promise((resolve, reject)=> {
+    rtn = new Promise((resolve, reject)=> {
       try {
         LForms.Util.addFormToPage(formDef, formContainer_, addOptions).then(() => {
           spinner.hide();
@@ -139,7 +140,7 @@ export function showForm(formDef, addOptions, onServer, savedQR) {
       };
     });
   }
-  return
+  return rtn;
 }
 
 
@@ -262,7 +263,6 @@ async function createQRToFhir() {
   if (fhirService.getCurrentUser() && !qr.author) {
     qr.author = fhirService.getCurrentUserReference();
   }
-
   try {
     let saveResults;
     if (originalQDef_) { // Questionnaire is already on server
@@ -282,7 +282,7 @@ async function createQRToFhir() {
       }
       catch(qqrError) {
         console.log(qqrError);
-        saveeResults = [qqrError];
+        saveResults = [qqrError];
       }
       notifyQRSaveOrDelete();
       notifyQSaveOrDelete();
@@ -373,7 +373,7 @@ function updateQRToFhir() {
     var qr = LForms.Util.getFormFHIRData('QuestionnaireResponse',
       fhirService.fhirVersion, formContainer_, {subject: fhirService.getCurrentPatient()});
     fhirService.setQRRefToQ(qr, originalQDef_);
-    qr.id = lastSavedQR_.id; // id must be stay the same
+    qr.id = lastSavedQR_.id; // id must stay the same
     fhirService.fhir.update(qr).then((saveResults)=>{
       updateCurrentQQRRefs([saveResults]);
       notifyQRSaveOrDelete();

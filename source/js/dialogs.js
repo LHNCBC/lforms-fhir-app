@@ -270,7 +270,7 @@ export const Dialogs = {
 
   /**
    *  Show a dialog with the results from a "save as" operation.
-   * @param resultsPromise An array of the responses from
+   * @param results An array of the responses from
    *  the FHIR server for whatever save requests were sent.  The responses could
    *  be reponses for bundles of requests, responses for individual requests, or
    *  Errors.
@@ -298,6 +298,20 @@ export const Dialogs = {
             escapeHtml(entry.response.location)+'</a>');
           details.push(entry);
         }
+      }
+      else if (resourceType === 'OperationOutcome') {
+        // This is a failed save, though it most likely indicates a bug in this
+        // program, or possibly a bug in the server, because the resources we
+        // generate and the endpoints we use should be correct.
+        // Also this case usually occasions a 404 response which results in an
+        // Error being generated, so I am not it is necessary to handle this
+        // here.
+        foundError = true;
+        summary.push('The server reported an error when trying to save.  See the details section.');
+        let detailMsg = 'The server reported an error when trying to save.';
+        if (result.issue?.diagnostics)
+          detailMsg += '  ' + result.issue?.diagnostics;
+        details.push(detailMsg);
       }
       else if (resourceType) {
         // This should also be a successful save, but for an individual

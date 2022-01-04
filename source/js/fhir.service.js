@@ -290,18 +290,18 @@ thisService.searchPatientByName = function(searchText, resultCount) {
     type: "Patient",
     query: {name: searchText.split(/\s+/), _count: resultCount},
     headers: {'Cache-Control': 'no-cache'}
-  }).then(function(response) {
+  }).then(function(bundle) {
     // Return results in autocomplete-lhc format
-    const rtn = [response.total];
+    const rtn = [bundle.total];
     const ids = [];
     const resources=[];
     const display = [];
     rtn.push(ids);
     rtn.push({resource: resources});
     rtn.push(display);
-    if (response.entry) {
-      for (let i=0, iLen=response.entry.length; i<iLen; i++) {
-        var patient = response.entry[i].resource;
+    if (bundle.entry) {
+      for (let i=0, iLen=bundle.entry.length; i<iLen; i++) {
+        var patient = bundle.entry[i].resource;
         ids.push(patient.id);
         resources.push(patient);
         display.push([thisService.getPatientName(patient),
@@ -327,18 +327,18 @@ thisService.searchQuestionnaire = function(searchText, resultCount) {
     type: "Questionnaire",
     query: {title: searchText, _count: resultCount},
     headers: {'Cache-Control': 'no-cache'}
-  }).then(function(response) {
+  }).then(function(bundle) {
     // Return results in autocomplete-lhc format
-    const rtn = [response.total];
+    const rtn = [bundle.total];
     const ids = [];
     const resources=[];
     const display = [];
     rtn.push(ids);
     rtn.push({resource: resources});
     rtn.push(display);
-    if (response.entry) {
-      for (let i=0, iLen=response.entry.length; i<iLen; i++) {
-        const q = response.entry[i].resource;
+    if (bundle.entry) {
+      for (let i=0, iLen=bundle.entry.length; i<iLen; i++) {
+        const q = bundle.entry[i].resource;
         ids.push(q.id);
         resources.push(q);
         display.push([q.title]);
@@ -504,7 +504,6 @@ thisService.createQQRObs = function (q, qr, obsArray, qExists) {
 
   function withQuestionnaire(q) {
     // Set the questionnaire reference in the response
-    var qr = bundle.entry[0].resource;
     thisService.setQRRefToQ(qr, q);
 
     return thisService.fhir.request({url: '', method: 'POST',
@@ -526,7 +525,7 @@ thisService.createQQRObs = function (q, qr, obsArray, qExists) {
 
 
 /**
- * Create Questionnaire if it does not exist, and QuestionnaireResponse
+ * Create the Questionnaire and the QuestionnaireResponse.
  * Data returned through an angular broadcast event.
  * @param q the Questionnaire resource
  * @param qr the QuestionnaireResponse resource
@@ -579,12 +578,10 @@ thisService.deleteQRespAndObs = function(resId) {
       headers: {
         'Cache-Control': 'no-cache'
       }
-    }).then(function(response) {   // response is a searchset bundle
+    }).then(function(bundle) {
       var thenPromise;
-      var bundle = response;
       var entries = bundle.entry;
       if (entries && entries.length > 0) {
-        var errorReported = false;
         var obsDelPromises = [];
         for (var i=0, len=entries.length; i<len; ++i) {
           var obsId = entries[i].resource.id;
