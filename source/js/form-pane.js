@@ -96,7 +96,7 @@ export function showForm(formDef, addOptions, onServer, savedQR) {
   let rtn;
   if (formDef.resourceType === 'Questionnaire') {
     // Convert it to the LForms format
-    const fhirVersion = fhirService.fhirVersion;
+    const fhirVersion = onServer ? fhirService.fhirVersion : undefined;
     formDef = LForms.Util.convertFHIRQuestionnaireToLForms(
       formDef, fhirVersion);
     if (savedQR) {

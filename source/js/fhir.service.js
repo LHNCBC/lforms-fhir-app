@@ -305,8 +305,8 @@ thisService.searchPatientByName = function(searchText, resultCount) {
         ids.push(patient.id);
         resources.push(patient);
         display.push([thisService.getPatientName(patient),
-          patient.gender,
-          patient.birthDate]);
+          patient.gender || '',
+          patient.birthDate || '']);
       }
     }
     return rtn;

@@ -76,7 +76,7 @@ formPane.listenForQSave(()=>loadSavedQList());
 document.getElementById('search').addEventListener('click', ()=>{
   Dialogs.showQuestionnairePicker().then((questionnaire)=> {
     if (questionnaire)
-      formPane.showForm(questionnaire, null, true);
+      formPane.showForm(questionnaire, {prepopulate: true}, true);
   });
 });
 
@@ -94,7 +94,8 @@ loadFileInput.addEventListener('change', ()=>{
         var importedData = JSON.parse(event.target.result);
         // Update it to the current version of LForms
         // Unset (any) selected item after showForm attempt
-        selectItemAfterPromise(null, ()=>formPane.showForm(importedData));
+        selectItemAfterPromise(null,
+          ()=>formPane.showForm(importedData, {prepopulate: true}));
       }
       catch (e) {
         formPane.showError('Could not process the file.', e);
@@ -355,8 +356,9 @@ function initFeaturedList() {
       const qName = itemChildren.item(0);
       let name = fqData.name;
       if (fqData.code)
-        name += '['+fqData.code+']';
+        name += ' ['+fqData.code+']';
       qName.innerText = name;
+      qName.id = fqData.id;
       listItemDiv.appendChild(featuredItemElem);
       featuredItemElem.addEventListener('click', () => {
         selectItemAfterPromise(featuredItemElem, ()=>showFeaturedQ(fqData.id));
@@ -428,7 +430,7 @@ function getQName(q) {
  * @return a Promise that resolves if the form is successfully shown.
  */
 function showSavedQQR(q, qr) {
-  return formPane.showForm(q, {prepopulate: false}, true, qr);
+  return formPane.showForm(q, null, true, qr);
 }
 
 
@@ -438,7 +440,7 @@ function showSavedQQR(q, qr) {
  * @return a Promise that resolves if the form is successfully shown.
  */
 function showSavedQuestionnaire(q) {
-  return formPane.showForm(q, null, true);
+  return formPane.showForm(q, {prepopulate: true}, true);
 };
 
 

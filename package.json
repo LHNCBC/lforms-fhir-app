@@ -8,7 +8,11 @@
     ".tmp/launch.html"
   ],
   "serverPort": "8000",
+  "devDependenciesComments": [
+    "autocomplete-lhc is included only for its test helpers; for the app it is pulled in through lforms"
+  ],
   "devDependencies": {
+    "autocomplete-lhc": "^18.2.0",
     "bower": "^1.8.8",
     "grunt": "^1.1.0",
     "grunt-angular-templates": "^1.2.0",

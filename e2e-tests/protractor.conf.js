@@ -23,7 +23,7 @@ exports.config = {
 
   jasmineNodeOpts: {
     realtimeFailure: true,
-    defaultTimeoutInterval: 60000
+    defaultTimeoutInterval: 5000
   },
 
   onPrepare: function() {
@@ -32,6 +32,9 @@ exports.config = {
     // add jasmine spec reporter
     jasmine.getEnv().addReporter(new
     SpecReporter({displayStacktrace: true}));
+
+    // Disable waiting for AngularJS
+    browser.waitForAngularEnabled(false);
 
     // Disabling animations, per https://stackoverflow.com/a/32611061/360782
     var disableNgAnimate = function() {
