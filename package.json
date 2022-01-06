@@ -46,15 +46,6 @@
     "tmp": "0.0.33",
     "uglify-js": "3.9.1"
   },
-  "old_scripts": {
-    "postinstall": "bower install && npm run update-webdriver",
-    "update-deps": "npm update",
-    "postupdate-deps": "bower update",
-    "cp-lforms-updater": "mkdir -p app/lforms-updater; cp node_modules/lforms-updater/browser/updater.js* app/lforms-updater/",
-    "cp-fhirclient": "cp node_modules/fhirclient/build/fhir-client.js app",
-    "copy-npm-scripts": "npm run cp-lforms-updater && npm run cp-fhirclient",
-    "test-dist": "npm run start-dist & sleep 5; protractor e2e-tests/protractor.conf.js; s=$?; kill %1; exit $s"
-  },
   "scripts": {
     "build:clean": "rimraf dist .tmp",
     "build:pages": "node -e '(new (require(\"ssi\"))(\"source/html-ssi\", \".tmp\", \"/*.html\", true)).compile()'",
@@ -64,10 +55,11 @@
     "build": "npm run build:preparcel && npm run build:parcel",
     "prestart": "echo \"Website starting at http://localhost:8000/$npm_package_name\"",
     "start": "http-server -s -o $npm_package_name -a localhost -p $npm_package_serverPort -c-1 dist",
+    "start-no-open": "http-server -s -a localhost -p $npm_package_serverPort -c-1 dist",
     "start-public": "http-server -s -o $npm_package_name -p $npm_package_serverPort -c-1 dist",
     "prestart-public": "npm run prestart",
     "update-webdriver": "node node_modules/protractor/bin/webdriver-manager update --versions.chrome $(google-chrome --version |awk '{print $NF}')",
-    "test": "npm run start & sleep 5; protractor e2e-tests/protractor.conf.js; s=$?; kill %1; exit $s"
+    "test": "npm run update-webdriver && npm run start-no-open & sleep 5; protractor e2e-tests/protractor.conf.js; s=$?; kill %1; exit $s"
   },
   "dependencies": {
     "bootstrap": "^3.4.1",

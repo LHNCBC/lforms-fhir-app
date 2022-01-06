@@ -290,7 +290,7 @@ let util = {
    * @param serverURL the base URL of the FHIR server
    */
   selectServerUsingDialog: function(serverURL) {
-    var urlField = '#serverSelection';
+    const urlField = '#serverSelection';
     browser.wait(EC.presenceOf($(urlField)), 5000);
     $(urlField).click();
     util.sendKeys($(urlField), serverURL);
@@ -307,7 +307,7 @@ let util = {
    *  Closes the "save results" dialog.
    */
   closeSaveResultsDialog: function() {
-    var okButton = '#closeSaveResults';
+    const okButton = '#closeSaveResults';
     browser.wait(EC.visibilityOf($(okButton)));
     $(okButton).click();
     browser.wait(EC.invisibilityOf($(okButton)));
@@ -318,7 +318,7 @@ let util = {
    *  Closes the currently displayed resource dialog.
    */
   closeResDialog: function () {
-    let closeButton = $('#closeDataDialog');
+    const closeButton = $('#closeDataDialog');
     browser.wait(EC.visibilityOf(closeButton));
     browser.wait(EC.elementToBeClickable(closeButton));
     closeButton.click();
@@ -365,7 +365,7 @@ let util = {
    */
   saveAsQR: function() {
     let saveAs = $('#btn-save-as');
-    browser.wait(EC.visibilityOf(saveAs, 2000));
+    browser.wait(EC.visibilityOf(saveAs), 2000);
     saveAs.click();
     $('#createQRToFhir').click();
   },
@@ -376,7 +376,7 @@ let util = {
    */
   saveAsQRAndObs: function() {
     let saveAs = $('#btn-save-as');
-    browser.wait(EC.visibilityOf(saveAs, 2000));
+    browser.wait(EC.visibilityOf(saveAs), 2000);
     saveAs.click();
     $('#saveAsQRExtracted').click();
   },
@@ -441,8 +441,8 @@ let util = {
       let entries = res.body.entry;
       const reportedTotal = res.body.total;
       if (reportedTotal && (entries?.length !== reportedTotal)) {
-        // Sometimes it HAPI reports a number of resources, but does not include
-        // them.  This might have been do to a caching issue, addressed above by
+        // Sometimes HAPI reports a number of resources, but does not include
+        // them.  This might have been due to a caching issue, addressed above by
         // setting a Cache-Control header, but I am leaving this here in case we
         // see the problem again.
         console.log("For "+query+" the server reported a total of "+res.body.total+
