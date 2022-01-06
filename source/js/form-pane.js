@@ -401,6 +401,7 @@ function deleteQRObs() {
       }, (error)=>showError('Some or all of the resources to delete could not be deleted.', error));
       originalQDef_ = null;
       lastSavedQR_ = null;
+      notifyQRSaveOrDelete();
     }
   }
 };

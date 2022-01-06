@@ -31,9 +31,9 @@ describe('SMART on FHIR connection', function () {
       browser.wait(EC.textToBePresentInElement(user, 'Susan Clark'), 2000);
     });
 
-    afterAll(function() {
+    afterAll(function(done) {
       util.cleanUpTmpFiles();
-      return util.deleteTestResources(); // Clean up test resources
+      util.deleteTestResources().then(()=>done()); // Clean up test resources
     });
 
 
@@ -61,11 +61,11 @@ describe('SMART on FHIR connection', function () {
         util.uploadFormWithTitleChange('R4/ussg-fhp.json');
         // Wait for name to be auto-filled (pre-population test)
         let name = element(by.id('/54126-8/54125-0/1/1'));
-        browser.wait(EC.presenceOf(name), 2000);
+        browser.wait(EC.visibilityOf(name), 2000);
         browser.wait(EC.textToBePresentInElementValue(name, 'Daniel'), 2000);
         // Enter a height value
         let height = element(by.id('/54126-8/8302-2/1/1'));
-        browser.wait(EC.presenceOf(height), 2000);
+        browser.wait(EC.visibilityOf(height), 2000);
         util.clearField(height);
         height.sendKeys('70');
         let saveAs = $('#btn-save-as');
@@ -89,22 +89,22 @@ describe('SMART on FHIR connection', function () {
         util.waitForSpinnerStopped();
         // Confirm that the edited field value is no longer there.
         height = element(by.id('/54126-8/8302-2/1/1')); // new on page
-        browser.wait(EC.presenceOf(height), 2000);
+        browser.wait(EC.visibilityOf(height), 2000);
         expect(height.getAttribute('value')).not.toBe('70');
         // Confirm that a warning message (about an unknown FHIR version) is not shown.
-        expect(EC.not(EC.presenceOf($('.warning'))));
+        expect(EC.invisibilityOf($('.warning')));
 
         // Now open up the saved QuestionnaireResponse and confirm we can see the
         // saved value.
         // open the saved qr section
         util.expandSavedQRs();
         $('#qrList a:first-child').click();
-        browser.wait(EC.presenceOf(element(by.id('/54126-8/8302-2/1/1'))), 15000);
+        browser.wait(EC.visibilityOf(element(by.id('/54126-8/8302-2/1/1'))), 15000);
         height = element(by.id('/54126-8/8302-2/1/1')); // new on page
         browser.wait(EC.textToBePresentInElementValue(height, '70'), 2000);
         expect(height.getAttribute('value')).toBe('70');
         // Confirm that a warning message (about an unknown FHIR version) is not shown.
-        expect(EC.not(EC.presenceOf($('.warning'))));
+        expect(EC.invisibilityOf($('.warning')));
         // open the saved q section
         util.expandAvailQs();
       });
@@ -113,7 +113,7 @@ describe('SMART on FHIR connection', function () {
     it('should provide data for observationLinkPeriod', function() {
       util.uploadFormWithTitleChange('R4/weight-height-questionnaire.json');
       let height = element(by.id('/8302-2/1'));
-      browser.wait(EC.presenceOf(height), 2000);
+      browser.wait(EC.visibilityOf(height), 2000);
       browser.wait(function() {return height.getAttribute('value').then(value => value.length > 0)}, 2000);
     });
 
@@ -179,7 +179,7 @@ describe('SMART on FHIR connection', function () {
             browser.wait(EC.elementToBeClickable(qr), 2000);
             qr.click();
             bodyPos = element(by.id('/8361-8/1')); // get new copy of field
-            browser.wait(EC.presenceOf(bodyPos), 2000);
+            browser.wait(EC.visibilityOf(bodyPos), 2000);
             browser.wait(EC.visibilityOf(bodyPos), 2000);
             bodyPos.click();
             expect(po.answerList.isDisplayed()).toBeTruthy();
@@ -195,7 +195,7 @@ describe('SMART on FHIR connection', function () {
       it('should delete a saved QuestionnaireResponse', function () {
         // Save a new QuestionnaireResponse
         util.uploadFormWithTitleChange('R4/ussg-fhp.json');
-        browser.wait(EC.presenceOf($(familyMemberName)), 2000);
+        browser.wait(EC.visibilityOf($(familyMemberName)), 2000);
         $(familyMemberName).click();
         $(familyMemberName).sendKeys('to be deleted');
         util.saveAsQR();
@@ -203,14 +203,14 @@ describe('SMART on FHIR connection', function () {
         // Load a blank questionnaire to clear the fields
         util.expandAvailQs();
         util.safeClick(util.pageObjects.firstSavedUSSGQ());
-        browser.wait(EC.presenceOf($(familyMemberName)), 2000);
+        browser.wait(EC.visibilityOf($(familyMemberName)), 2000);
         browser.wait(()=>$(familyMemberName).getAttribute('value').then(
           (val)=>val==''), 5000);
         // open the saved qr section
         util.expandSavedQRs();
         // Load the saved QR and check the value
         util.pageObjects.firstSavedQR().click();
-        browser.wait(EC.presenceOf($(familyMemberName)));
+        browser.wait(EC.visibilityOf($(familyMemberName)));
         expect($(familyMemberName).getAttribute('value')).toBe('to be deleted');
         util.deleteCurrentQR();
         expect(EC.visibilityOf(initialMsgDiv));
@@ -219,7 +219,7 @@ describe('SMART on FHIR connection', function () {
       it('should delete a saved QuestionnarieResponse and associated Observations', function() {
         // Save a new QuestionnaireResponse
         util.uploadFormWithTitleChange('R4/ussg-fhp.json');
-        browser.wait(EC.presenceOf($(familyMemberName)), 2000);
+        browser.wait(EC.visibilityOf($(familyMemberName)), 2000);
         $(familyMemberName).click();
         $(familyMemberName).sendKeys('to be deleted2');
         util.saveAsQRAndObs();
@@ -240,14 +240,14 @@ describe('SMART on FHIR connection', function () {
         // Load a blank questionnaire to clear the fields
         util.expandAvailQs();
         util.safeClick(util.pageObjects.firstSavedUSSGQ());
-        browser.wait(EC.presenceOf($(familyMemberName)), 2000);
+        browser.wait(EC.visibilityOf($(familyMemberName)), 2000);
         browser.wait(()=>$(familyMemberName).getAttribute('value').then(
           (val)=>val==''), 5000);
         // open the saved qr section
         util.expandSavedQRs();
         // Load the saved QR and check the value
         util.pageObjects.firstSavedQR().click();
-        browser.wait(EC.presenceOf($(familyMemberName)));
+        browser.wait(EC.visibilityOf($(familyMemberName)));
         expect($(familyMemberName).getAttribute('value')).toBe('to be deleted2');
         util.deleteCurrentQR();
         expect(EC.visibilityOf(initialMsgDiv));

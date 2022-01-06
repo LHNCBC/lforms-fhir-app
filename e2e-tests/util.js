@@ -9,7 +9,7 @@ const https = require('https');
 
 // Tag created resources with a unique tag.
 const tagCode = 'LHC-Forms-Test'
-const tagUnique = tagCode+Math.floor(Math.random() * Math.floor(1000000));
+const tagUnique = tagCode+'-'+Math.floor(Math.random() * 1000000);
 const tagSystem = 'https://lhcforms.nlm.nih.gov'
 
 let util = {
@@ -71,7 +71,7 @@ let util = {
    * @return Retuns a promise that resolves to whatever fn returns
    */
   runInNewestWindow: function(fn) {
-    browser.sleep(500); // sometimes going to the new window too soon prevents the window from loading
+    browser.sleep(1000); // sometimes going to the new window too soon prevents the window from loading
     return browser.getAllWindowHandles().then(function(handles) {
       let newWindowHandle = handles[handles.length-1];
       return browser.switchTo().window(newWindowHandle).then(function () {
@@ -183,7 +183,7 @@ let util = {
    */
   uploadFormWithTitleChange: function(formFilePath, prefix) {
     if (!prefix)
-      prefix = tagCode + '-';
+      prefix = tagUnique + '-';  // unique within one run of the tests
     let tmp = require('tmp');
     let tmpObj = tmp.fileSync();
     this._tmpFiles.push(tmpObj);
@@ -425,7 +425,7 @@ let util = {
     browser.wait(EC.presenceOf(deleteBtn), 4000);
     deleteBtn.click();
     browser.wait(EC.alertIsPresent(), 2000);
-    browser.switchTo().alert().dismiss(); // https://stackoverflow.com/a/25074109/360782
+    browser.switchTo().alert().accept(); // https://stackoverflow.com/a/31667699/360782
     util.waitForSpinnerStopped();
   },
 
@@ -436,9 +436,24 @@ let util = {
    * @param query the query to run against a FHIR server.
    */
   _findResourceIds: function(query) {
-    return sAgent.get(query).then(res => {
+    query += '&_total=accurate';
+    return sAgent.get(query).set('Cache-Control', 'no-cache').then(res => {
       let entries = res.body.entry;
-      return entries ? entries.map(e=>e.resource.id) : [];
+      const reportedTotal = res.body.total;
+      if (reportedTotal && (entries?.length !== reportedTotal)) {
+        // Sometimes it HAPI reports a number of resources, but does not include
+        // them.  This might have been do to a caching issue, addressed above by
+        // setting a Cache-Control header, but I am leaving this here in case we
+        // see the problem again.
+        console.log("For "+query+" the server reported a total of "+res.body.total+
+          " resources, but "+entries?.length+" were returned. Retrying.");
+        return new Promise((resolve) => {
+          setTimeout(()=>resolve(util._findResourceIds(query)), 10000);
+        });
+      }
+      else {
+        return entries ? entries.map(e=>e.resource.id) : [];
+      }
     });
   },
 
@@ -476,6 +491,7 @@ let util = {
     // deleted.  Therefore, we first delete Observations, then
     // QuestionnaireResponses, then Questionnaires, but the search starts with
     // Questionnaires that were created during testing.
+    util.log("Deleting resources created by these tests.");
     const promises = [];
     const tagString = tagSystem+'%7C'+tagCode;
     for (let fhirVer of ['Dstu3', 'R4']) {
@@ -483,6 +499,7 @@ let util = {
       let qQuery = serverURL + '/Questionnaire?_summary=true&'+
         '_tag='+tagString;
       promises.push(this._findResourceIds(qQuery).then(qIds => {
+        console.log("Found "+qIds.length+" test questionnaires to delete on "+serverURL);
         if (qIds.length) {
           // Find the QuestionaireResponses and delete those first.
           let qrQuery = serverURL +
