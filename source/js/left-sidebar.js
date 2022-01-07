@@ -76,7 +76,7 @@ formPane.listenForQSave(()=>loadSavedQList());
 document.getElementById('search').addEventListener('click', ()=>{
   Dialogs.showQuestionnairePicker().then((questionnaire)=> {
     if (questionnaire)
-      formPane.showForm(questionnaire, null, true);
+      formPane.showForm(questionnaire, {prepopulate: true}, true);
   });
 });
 
@@ -94,7 +94,8 @@ loadFileInput.addEventListener('change', ()=>{
         var importedData = JSON.parse(event.target.result);
         // Update it to the current version of LForms
         // Unset (any) selected item after showForm attempt
-        selectItemAfterPromise(null, ()=>formPane.showForm(importedData));
+        selectItemAfterPromise(null,
+          ()=>formPane.showForm(importedData, {prepopulate: true}));
       }
       catch (e) {
         formPane.showError('Could not process the file.', e);
@@ -138,7 +139,6 @@ export function initSideBarLists() {
         document.getElementById('toggleQList').click();
     });
   });
-  // TBD fhirService.getAllQ();
 }
 
 
@@ -355,8 +355,9 @@ function initFeaturedList() {
       const qName = itemChildren.item(0);
       let name = fqData.name;
       if (fqData.code)
-        name += '['+fqData.code+']';
+        name += ' ['+fqData.code+']';
       qName.innerText = name;
+      qName.id = fqData.id;
       listItemDiv.appendChild(featuredItemElem);
       featuredItemElem.addEventListener('click', () => {
         selectItemAfterPromise(featuredItemElem, ()=>showFeaturedQ(fqData.id));
@@ -428,7 +429,7 @@ function getQName(q) {
  * @return a Promise that resolves if the form is successfully shown.
  */
 function showSavedQQR(q, qr) {
-  return formPane.showForm(q, {prepopulate: false}, true, qr);
+  return formPane.showForm(q, null, true, qr);
 }
 
 
@@ -438,7 +439,7 @@ function showSavedQQR(q, qr) {
  * @return a Promise that resolves if the form is successfully shown.
  */
 function showSavedQuestionnaire(q) {
-  return formPane.showForm(q, null, true);
+  return formPane.showForm(q, {prepopulate: true}, true);
 };
 
 
@@ -496,325 +497,3 @@ function showFeaturedQ(qId) {
   });
 };
 
-
-
-// TBD - below this line code should be removed or updated
-
-/*
-angular.module('lformsApp')
-  .controller('NavBarCtrl', [
-      '$scope', '$http', '$mdDialog', 'selectedFormData', 'fhirService',
-      'FileUploader', 'userMessages', '$timeout', 'fhirServerConfig',
-      function ($scope, $http, $mdDialog, selectedFormData, fhirService,
-                FileUploader, userMessages, $timeout, fhirServerConfig) {
-
-        $scope.search = {};
-
-        // See https://github.com/nervgh/angular-file-upload/wiki/Introduction on
-        // usage of angular-file-upload.
-        $scope.uploader = new FileUploader({removeAfterUpload: true});
-
-        // Featured Questionnaire (for demo)
-        $scope.listFeaturedQ = fhirService.getFeaturedQs();
-
-        // Saved QuestionnaireResponse of a patient
-        $scope.listSavedQR = null;
-
-        // Questionnaire created by all users using the LHC form builder
-        $scope.listSavedQ = null;
-
-        // the current form displayed
-        $scope.formSelected = {};
-
-        // Customized OBR fields for DiagnosticReport forms
-        $scope.obrItems = [
-          {
-            "question": "Effective Date", "questionCode": "date_done", "dataType": "DT", "answers": "", "_answerRequired": true,"answerCardinality":{"min":"1", "max":"1"},
-            "displayControl": {
-              "colCSS": [{"name": "width", "value": "100%"}, {"name": "min-width", "value": "4em"}]
-            }
-          }
-        ];
-
-
-        /**
-         * Callback after the item is selected in the file dialog.
-         *
-         * @param {Object} item - Refer to angular-file-upload for object definition.
-         *   Apart from others, it has selected file reference.
-         */
-/*
-        $scope.uploader.onAfterAddingFile = function(item) {
-          // clean up the form before assigning a new one for performance reasons related to AngularJS watches
-          selectedFormData.setFormData(null);
-          $timeout(function() {removeMessages()});
-
-          var reader = new FileReader(); // Read from local file system.
-          reader.onload = function(event) {
-            try {
-              var importedData = JSON.parse(event.target.result);
-            }
-            catch(e) {
-              // We're using $timeout in this function rather than
-              // $scope.$apply, because in Edge (but not Firefox or Chrome) an
-              // error was raised about $apply already being in
-              // progress.  $timeout will wait until the current digest cycle is
-              // over, and then will call $apply.
-              $timeout(function() {userMessages.error = e});
-            }
-            if (importedData) {
-              importedData = lformsUpdater.update(importedData); // call before constructing LFormsData
-              // if the imported data is in FHIR Questionnaire format
-              if (importedData.resourceType && importedData.resourceType === "Questionnaire") {
-                var questionnaire;
-                try {
-                  var fhirVersion = LForms.Util.detectFHIRVersion(importedData);
-
-                  if (!fhirVersion) {
-                    fhirVersion = LForms.Util.guessFHIRVersion(importedData);
-                    var metaProfMsg =
-                      'specified via meta.profile (see documentation for versioning '+
-                      '<a href="http://build.fhir.org/versioning.html#mp-version">resources</a> and '+
-                      '<a href="https://www.hl7.org/fhir/references.html#canonical">canonical URLs</a>).</p>'+
-                      '<p>Example 1:  http://hl7.org/fhir/4.0/StructureDefinition/Questionnaire'+
-                      ' (for Questionnaire version 4.0).<br>'+
-                      'Example 2:  http://hl7.org/fhir/3.0/StructureDefinition/Questionnaire'+
-                      ' (for Questionnaire version 3.0).<br>'+
-                      'Example 3:  http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire|2.7.0 '+
-                      ' (for SDC Questionnaire version 2.7).</p>';
-                    if (!fhirVersion) {
-                      $timeout(function() {
-                        userMessages.htmlError = '<p>Could not determine the '+
-                        'FHIR version for this resource.  Please make sure it is '+
-                        metaProfMsg;
-                      });
-                    }
-                    else {
-                      $timeout(function() {
-                        userMessages.htmlWarning = '<p>Warning:  Assuming this '+
-                        'resource is for FHIR version ' +fhirVersion+'.'+
-                        'To avoid this warning, please make sure the FHIR version is '+
-                        metaProfMsg;
-                      });
-                    }
-                  }
-                  console.log("fhirVersion for uploaded Questionnaire = "+fhirVersion);
-                  fhirVersion = LForms.Util.validateFHIRVersion(fhirVersion); // might throw
-                  questionnaire = LForms.Util.convertFHIRQuestionnaireToLForms(importedData, fhirVersion);
-                }
-                catch (e) {
-                  $timeout(function() {userMessages.error = e});
-                }
-                if (questionnaire) {
-                  $timeout(function() {
-                    $('.spinner').show();
-                    var lfData = new LForms.LFormsData(questionnaire);
-                    if (LForms.fhirContext) {
-                      lfData.loadFHIRResources(true).then(function() {
-                        $('.spinner').hide();
-                        $scope.$apply(function() {
-                          selectedFormData.setFormData(lfData);
-                          fhirService.setCurrentQuestionnaire(null);
-                          $scope.formSelected = null;
-                        });
-                      });
-                    }
-                    else
-                      selectedFormData.setFormData(lfData);
-                  });
-                }
-              }
-              // in the internal LForms format
-              else {
-                $timeout(function() {selectedFormData.setFormData(new LForms.LFormsData(importedData))});
-              }
-            }
-          };
-          reader.readAsText(item._file);
-          $('#inputAnchor')[0].value = ''; // or we can't re-upload the same file twice in a row
-        };
-
-
-        /**
-         * Determines the selection-state CSS class for a form in a list
-         * @param listIndex list index
-         * @param formIndex form index in the list
-         * @returns {string}
-         */
-/*
-        $scope.isSelected = function (listIndex, formIndex) {
-          var ret = "";
-          if ($scope.formSelected &&
-              $scope.formSelected.groupIndex === listIndex &&
-              $scope.formSelected.formIndex === formIndex ) {
-            //ret = "panel-selected"
-            ret = "active"
-          }
-          return ret;
-        };
-
-
-        /**
-         * Get the initial CSS class for the section panel Check based on the data retrieved
-         * from the selected FHIR server.
-         * 'in' means the section panel is expanded.
-         * @param listIndex list/section index
-         * @returns {string} a CSS class for the section body element
-         */
-/*
-        $scope.getSectionPanelClass = function(listIndex) {
-          // if there is a list of featured questionnaires
-          if ($scope.listFeaturedQ) {
-            return listIndex === 0 ? 'in' : '';
-          }
-          // if there is a list of save questionnaire responses
-          else if ($scope.listSavedQR && $scope.listSavedQR.length > 0 ) {
-            return listIndex === 1 ? 'in' : '';
-          }
-          // if there is a list of available questionnaires
-          else if ($scope.listSavedQ && $scope.listSavedQ.length > 0) {
-            return listIndex === 2 ? 'in' : '';
-          }
-          else {
-            return '';
-          }
-        };
-
-
-        /**
-         * Get the CSS class for the section title depending on whether the section is initially collapsed
-         * @param listIndex list/section index
-         * @returns {string} a CSS class for the section title element
-         */
-/*
-        $scope.getSectionTitleClass = function(listIndex) {
-          return $scope.getSectionPanelClass(listIndex) === 'in' ? '' : 'collapsed';
-        };
-
-
-
-        /**
-         * Update the Questionnaire list when the data is returned
-         */
-/*
-        $scope.$on('LF_FHIR_QUESTIONNAIRE_LIST', function(event, arg, error) {
-          $scope.listSavedQ = [];
-          $scope.listSavedQError = error;
-          if (arg && arg.resourceType=="Bundle" && arg.type=="searchset" &&
-              arg.entry) {  // searchset bundle
-            for (var i=0, iLen=arg.entry.length; i< iLen; i++) {
-              var q = arg.entry[i].resource;
-              var updated;
-              if (q.meta && q.meta.lastUpdated) {
-                updated = new Date(q.meta.lastUpdated).toString(dateTimeFormat);
-              }
-              else if (q.date) {
-                updated = new Date(q.date).toString(dateTimeFormat);
-              }
-              $scope.listSavedQ.push({
-                resId: q.id,
-                resName: getQName(q),
-                updatedAt: updated,
-                resType: "Questionnaire",
-                questionnaire: q,
-                resTypeDisplay: "Questionnaire"
-              });
-            }
-            $scope.processPagingLinks("Questionnaire", arg.link);
-          }
-          $scope.$apply();
-          $('.spinner').hide();
-        });
-
-
-        /**
-         * Update the QuestionnaireResponse list when a QuestionnaireResponse has been deleted on an FHIR server
-         */
-/*
-        $scope.$on('LF_FHIR_RESOURCE_DELETED', function(event, arg) {
-          var patient = fhirService.getCurrentPatient();
-          fhirService.getAllQRByPatientId(patient.id);
-          fhirService.getAllQ();
-          $scope.formSelected = {};
-          $('.spinner').hide();
-        });
-
-
-        /**
-         *  Update the Questionnnaire list when a Questionnaire has been created
-         *  on an FHIR server
-         */
-/*
-        $scope.$on('LF_FHIR_Q_CREATED', function(event, arg) {
-          fhirService.getAllQ();
-          $scope.formSelected = {
-            groupIndex: 2,
-            formIndex: 0
-          };
-          $('.spinner').hide();
-        });
-
-
-        /**
-         *  Update the QuestionnaireResponse and Questionnnaire lists when a
-         *  QuestionnaireResponse has been created on an FHIR server
-         */
-/*
-        $scope.$on('OP_RESULTS', function(event, arg) {
-          if (arg && arg.successfulResults) {
-            var patient = fhirService.getCurrentPatient();
-            fhirService.getAllQRByPatientId(patient.id);
-            fhirService.getAllQ();
-            $scope.formSelected = {
-              groupIndex: 1,
-              formIndex: 0
-            };
-          }
-          $('.spinner').hide();
-        });
-
-
-        /**
-         * Update the QuestionnaireResponse list when a QuestionnaireResponse has been updated on an FHIR server
-         */
-/*
-        $scope.$on('LF_FHIR_RESOURCE_UPDATED', function(event, arg) {
-          // also update the list to get the updated timestamp and fhir resources.
-          var patient = fhirService.getCurrentPatient();
-          fhirService.getAllQRByPatientId(patient.id);
-          // fhirService.getAllQ(); // should not be necessary
-          $scope.formSelected = {
-            groupIndex: 1,
-            formIndex: 0
-          };
-          $('.spinner').hide();
-        });
-
-
-        /**
-         * Update the Featured Questionnaires list when a new Non-SMART FHIR server is selected
-         */
-/*
-        $scope.$on('LF_FHIR_SERVER_SELECTED', function(event) {
-          $scope.listFeaturedQ = fhirService.getFeaturedQs();
-          $('.spinner').hide();
-        });
-
-
-        // Questionnaire selected from the questionnaire dialog
-        $scope.selectedQuestionnaire = null;
-
-        /**
-         * Check if the newly selected Questionnaire is different that the current Questionnaire
-         * @param current the current Questionnaire
-         * @param newlySelected the newly selected Questionnaire
-         * @returns {*|boolean}
-         */
-/*
-        $scope.differentQuestionnaire = function(current, newlySelected) {
-          return (current && newlySelected && current.id !== newlySelected.id)
-        };
-
-      }
-  ]);
-*/

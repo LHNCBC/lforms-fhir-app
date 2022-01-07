@@ -55,9 +55,9 @@ function updateUserAndPatientBanner() {
   document.getElementById('ptName').innerText =
     'Patient: ' + fhirService.getPatientName();
   document.getElementById('ptGender').innerText =
-    'Gender: ' + patient.gender;
+    'Gender: ' + (patient.gender || '');
   document.getElementById('ptDoB').innerText =
-    'DoB: ' + patient.birthDate;
+    'DoB: ' + (patient.birthDate || '');
   document.getElementById('userName').innerText =
     'User: ' + fhirService.getUserName();
   document.querySelector('.lf-patient table').style.visibility = 'visible';

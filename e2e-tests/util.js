@@ -1,7 +1,7 @@
 // Helper functions for the tests.
 var EC = protractor.ExpectedConditions;
 
-var autoCompBasePage = require("../app/bower_components/autocomplete-lhc/test/protractor/basePage").BasePage;
+var autoCompBasePage = require("../node_modules/autocomplete-lhc/test/protractor/basePage").BasePage;
 var autoCompHelpers = new autoCompBasePage();
 const fs = require('fs');
 const sAgent = require('superagent');
@@ -9,7 +9,7 @@ const https = require('https');
 
 // Tag created resources with a unique tag.
 const tagCode = 'LHC-Forms-Test'
-const tagUnique = tagCode+Math.floor(Math.random() * Math.floor(1000000));
+const tagUnique = tagCode+'-'+Math.floor(Math.random() * 1000000);
 const tagSystem = 'https://lhcforms.nlm.nih.gov'
 
 let util = {
@@ -71,7 +71,7 @@ let util = {
    * @return Retuns a promise that resolves to whatever fn returns
    */
   runInNewestWindow: function(fn) {
-    browser.sleep(500); // sometimes going to the new window too soon prevents the window from loading
+    browser.sleep(1000); // sometimes going to the new window too soon prevents the window from loading
     return browser.getAllWindowHandles().then(function(handles) {
       let newWindowHandle = handles[handles.length-1];
       return browser.switchTo().window(newWindowHandle).then(function () {
@@ -164,40 +164,6 @@ let util = {
 
 
   /**
-   *  Deletes the current Questionnaire, its QuestionnaireResponses, and their
-   *  extracted Observations (if not STU3).  The purpose it to clean up forms
-   *  that were uploaded during a test.  This assumes that there is a current
-   *  questionnaire, i.e. that either a Questionnaire or saved QuestionnaireResponse
-   *  is showing.
-   */
-  deleteCurrentQuestionnaire: function() {
-    let deleteBtn = $('#deleteQBtn');
-    // Make the button visible
-    browser.executeScript('arguments[0].style.display=""', deleteBtn.getWebElement()).then(
-      // Leaving some debugging statements for an intermittment problem.
-      console.log("(debugging) made the delete button visible")
-    );
-    // Make sure the section containing the button is visible
-    let searchButton = $('#search'); // in that same section
-    searchButton.isDisplayed().then(function (result) {
-      console.log("(debugging) isDisplayed() for searchButton returned "+result);
-      if (!result) {
-        let availQLink = $('#heading-three a');
-        availQLink.click();
-      }
-    });
-    browser.wait(EC.elementToBeClickable(deleteBtn));
-    deleteBtn.click();
-    let confirmButton = $('button.md-confirm-button');
-    browser.wait(EC.elementToBeClickable(confirmButton));
-    confirmButton.click();
-    browser.wait(EC.textToBePresentInElement($('.md-title'), "Deletion Completed"));
-    element(by.buttonText('OK')).click();
-    browser.wait(EC.not(EC.textToBePresentInElement($('.md-title'), "Deletion Completed")));
-  },
-
-
-  /**
    *  Temporary files removed by cleanUpTmpFiles.  These should be objects
    *  return by the "tmp" package.
    */
@@ -217,7 +183,7 @@ let util = {
    */
   uploadFormWithTitleChange: function(formFilePath, prefix) {
     if (!prefix)
-      prefix = tagCode + '-';
+      prefix = tagUnique + '-';  // unique within one run of the tests
     let tmp = require('tmp');
     let tmpObj = tmp.fileSync();
     this._tmpFiles.push(tmpObj);
@@ -320,13 +286,55 @@ let util = {
 
 
   /**
+   *  Selects the server using the server dialog
+   * @param serverURL the base URL of the FHIR server
+   */
+  selectServerUsingDialog: function(serverURL) {
+    const urlField = '#serverSelection';
+    browser.wait(EC.presenceOf($(urlField)), 5000);
+    $(urlField).click();
+    util.sendKeys($(urlField), serverURL);
+    $(urlField).sendKeys(protractor.Key.TAB);
+    const okayBtn = $('#serverSelectBtn');
+    okayBtn.click();
+    // Wait for dialog to close
+    browser.wait(EC.invisibilityOf(okayBtn), 5000);
+  },
+
+
+
+  /**
    *  Closes the "save results" dialog.
    */
   closeSaveResultsDialog: function() {
-    var okButton = '#btnOK';
-    browser.wait(EC.presenceOf($(okButton)));
+    const okButton = '#closeSaveResults';
+    browser.wait(EC.visibilityOf($(okButton)));
     $(okButton).click();
-    browser.wait(EC.not(EC.presenceOf($(okButton))));
+    browser.wait(EC.invisibilityOf($(okButton)));
+  },
+
+
+  /**
+   *  Closes the currently displayed resource dialog.
+   */
+  closeResDialog: function () {
+    const closeButton = $('#closeDataDialog');
+    browser.wait(EC.visibilityOf(closeButton));
+    browser.wait(EC.elementToBeClickable(closeButton));
+    closeButton.click();
+    browser.wait(EC.not(EC.visibilityOf(closeButton)));
+  },
+
+
+  /**
+   *  Sends a message to console.log after waiting its turn in the protractor
+   *  promise queue.
+   * @param msg the message to log.
+   */
+  log: function (msg) {
+    // See https://stackoverflow.com/questions/24564489/how-do-you-add-a-promise-to-the-flow-control-queue-using-protractor
+    // for this and other solutions.
+    browser.sleep(1).then(()=>console.log(msg));
   },
 
 
@@ -335,9 +343,9 @@ let util = {
    * @returns a promise
    */
   getQRUrlFromDialog: function() {
-    var link = element(by.css('li a.ng-binding'));
+    var link = element(by.css('li a'));
     browser.wait(EC.presenceOf(link), 1000);
-    return link.getAttribute('href')    
+    return link.getAttribute('href')
   },
 
 
@@ -357,8 +365,9 @@ let util = {
    */
   saveAsQR: function() {
     let saveAs = $('#btn-save-as');
+    browser.wait(EC.visibilityOf(saveAs), 2000);
     saveAs.click();
-    $('#btn-save-sdc-qr').click();
+    $('#createQRToFhir').click();
   },
 
 
@@ -367,17 +376,44 @@ let util = {
    */
   saveAsQRAndObs: function() {
     let saveAs = $('#btn-save-as');
+    browser.wait(EC.visibilityOf(saveAs), 2000);
     saveAs.click();
-    $('#btn-save-sdc-qr-obs').click();
+    $('#saveAsQRExtracted').click();
   },
-  
+
 
   /**
-   *  Returns a function, which when called, will send the given message to the
-   *  log.  The purpose is to be used in .then clauses for debugging.
+   *  Selects the given item from the "show" menu.
    */
-  log: function(msg) {
-    return ()=>console.log(msg);
+  clickShowMenuItem: function (showItemCSS) {
+    const showMenu = $('#btn-show-as');
+    showMenu.click();
+    const showItem = $(showItemCSS);
+    browser.wait(EC.visibilityOf(showItem), 2000);
+    browser.wait(EC.elementToBeClickable(showItem));
+    showItem.click();
+  },
+
+
+  /**
+   *  Shows the current Questionnaire's definition from the server.
+   */
+  showAsQuestionnaireFromServer: function () {
+    util.clickShowMenuItem('#showOrigFHIRQuestionnaire');
+  },
+
+  /**
+   *  Shows the current Questionnaire's definition as generated by LHC-Forms.
+   */
+  showAsQuestionnaire: function () {
+    util.clickShowMenuItem('#showFHIRSDCQuestionnaire');
+  },
+
+  /**
+   *  Shows the QuestionnaireResponse for the currently displayed Questionnaire.
+   */
+  showAsQuestionnaireResponse: function() {
+    util.clickShowMenuItem('#showFHIRSDCQuestionnaireResponse');
   },
 
 
@@ -388,8 +424,11 @@ let util = {
     let deleteBtn = $('#btn-delete');
     browser.wait(EC.presenceOf(deleteBtn), 4000);
     deleteBtn.click();
+    browser.wait(EC.alertIsPresent(), 2000);
+    browser.switchTo().alert().accept(); // https://stackoverflow.com/a/31667699/360782
     util.waitForSpinnerStopped();
   },
+
 
   /**
    *  Returns a promise that resolves to an array of IDs of resources returned
@@ -397,9 +436,24 @@ let util = {
    * @param query the query to run against a FHIR server.
    */
   _findResourceIds: function(query) {
-    return sAgent.get(query).then(res => {
+    query += '&_total=accurate';
+    return sAgent.get(query).set('Cache-Control', 'no-cache').then(res => {
       let entries = res.body.entry;
-      return entries ? entries.map(e=>e.resource.id) : [];
+      const reportedTotal = res.body.total;
+      if (reportedTotal && (entries?.length !== reportedTotal)) {
+        // Sometimes HAPI reports a number of resources, but does not include
+        // them.  This might have been due to a caching issue, addressed above by
+        // setting a Cache-Control header, but I am leaving this here in case we
+        // see the problem again.
+        console.log("For "+query+" the server reported a total of "+res.body.total+
+          " resources, but "+entries?.length+" were returned. Retrying.");
+        return new Promise((resolve) => {
+          setTimeout(()=>resolve(util._findResourceIds(query)), 10000);
+        });
+      }
+      else {
+        return entries ? entries.map(e=>e.resource.id) : [];
+      }
     });
   },
 
@@ -437,12 +491,15 @@ let util = {
     // deleted.  Therefore, we first delete Observations, then
     // QuestionnaireResponses, then Questionnaires, but the search starts with
     // Questionnaires that were created during testing.
+    util.log("Deleting resources created by these tests.");
     const promises = [];
+    const tagString = tagSystem+'%7C'+tagCode;
     for (let fhirVer of ['Dstu3', 'R4']) {
       let serverURL = 'https://lforms-fhir.nlm.nih.gov/base'+fhirVer;
       let qQuery = serverURL + '/Questionnaire?_summary=true&'+
-        '_tag=https://lhcforms.nlm.nih.gov%7CLHC-Forms-Test';
+        '_tag='+tagString;
       promises.push(this._findResourceIds(qQuery).then(qIds => {
+        console.log("Found "+qIds.length+" test questionnaires to delete on "+serverURL);
         if (qIds.length) {
           // Find the QuestionaireResponses and delete those first.
           let qrQuery = serverURL +
@@ -473,7 +530,7 @@ let util = {
       }));
       // Also delete the observations that were directly created by the tests
       let obsQuery = serverURL + '/Observation?_summary=true&'+
-        '_tag=https://lhcforms.nlm.nih.gov%7CLHC-Forms-Test';
+        '_tag='+tagString;
       promises.push(this._findResourceIds(obsQuery).then(obsIds => {
         if (obsIds.length) {
           return this._deleteResIds(serverURL, 'Observation', obsIds);
@@ -488,10 +545,10 @@ let util = {
    *  The tests here do not interact with a FHIR server, so we need to dismiss that selection box.
    */
   dismissFHIRServerDialog: function() {
-    var cancelButton = '#btnCancel';
+    var cancelButton = '#serverCloseBtn';
     browser.wait(EC.elementToBeClickable($(cancelButton)), 5000);
     $(cancelButton).click();
-    browser.wait(EC.not(EC.presenceOf($(cancelButton))), 5000);
+    browser.wait(EC.invisibilityOf($(cancelButton)), 5000);
   },
 
 
@@ -610,13 +667,19 @@ let util = {
      *  Returns an element finder for the message body of the resource dialog.
      */
     resDialogBody: function () {
-      return $('#message-body');
+      return $('#messageBody');
     },
 
     /**
      *  The autocompletion list.
      */
-    answerList: $('#searchResults')
+    answerList: $('#searchResults'),
+
+    /**
+     *  The initial message element that says something like "Please select a
+     *  form".
+     */
+    initialMessageDiv: $('div.initial')
 
   },
 

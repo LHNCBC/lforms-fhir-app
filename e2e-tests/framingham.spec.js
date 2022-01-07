@@ -12,7 +12,6 @@ describe('Framingham HCHD risk form', function() {
   beforeAll(() => {
     browser.get(util.mainPageURL);
     util.dismissFHIRServerDialog();
-    element(by.css('body')).allowAnimations(false);
     util.uploadForm('R4/framingham-HCHD.json');
   });
 
@@ -96,7 +95,9 @@ describe('Framingham HCHD risk form', function() {
    *  Asserts that the computed risk value is equal to the given value.
    */
   function assertRisk(expectedRisk) {
-    var risk = browser.executeScript('return $("#\\\\/age\\\\/1").scope().lfData.itemList[9].value');
+
+    var risk = browser.executeScript(
+      ()=>LForms.Util.getFormFHIRData('QuestionnaireResponse', 'R4').item[7].answer[0].valueDecimal);
     // The perl output contained 15 digits after the decimal.  JavaScript
     // provides a few more, so we need to round.
     // Also, there was a difference found in the 15th place, so we will
@@ -104,6 +105,7 @@ describe('Framingham HCHD risk form', function() {
     // still sometimes results in a difference, if one value has a 5 and the
     // other a 4 in the 15th place).
     risk.then(function(val) {
+      val = parseFloat(val);
       let precFactor = 10**13;
       val = Math.round(val*precFactor)/precFactor;
       expectedRisk = Math.round(expectedRisk*precFactor)/precFactor;

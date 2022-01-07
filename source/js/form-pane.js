@@ -96,7 +96,7 @@ export function showForm(formDef, addOptions, onServer, savedQR) {
   let rtn;
   if (formDef.resourceType === 'Questionnaire') {
     // Convert it to the LForms format
-    const fhirVersion = fhirService.fhirVersion;
+    const fhirVersion = onServer ? fhirService.fhirVersion : undefined;
     formDef = LForms.Util.convertFHIRQuestionnaireToLForms(
       formDef, fhirVersion);
     if (savedQR) {
@@ -401,6 +401,7 @@ function deleteQRObs() {
       }, (error)=>showError('Some or all of the resources to delete could not be deleted.', error));
       originalQDef_ = null;
       lastSavedQR_ = null;
+      notifyQRSaveOrDelete();
     }
   }
 };
