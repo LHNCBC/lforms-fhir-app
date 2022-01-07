@@ -1,8 +1,16 @@
+@import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
+@import './fhir-app.css';
+@import './patient-info-banner.css';
+@import './dialogs.css';
+@import './spinner.css';
+@import './form-pane.css';
+@import './left-sidebar.css';
+@import './lforms-overrides.css';
 
 /**
  * Bootstrap Fonts
  */
-
+/*
 @font-face {
   font-family: 'Glyphicons Halflings';
   src: url('./bower_components/bootstrap/fonts/glyphicons-halflings-regular.eot');
@@ -11,11 +19,12 @@
   url('./bower_components/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
   url('./bower_components/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
+*/
 
 /**
  *Font Awesome Fonts
  */
-
+/*
 @font-face {
   font-family: 'FontAwesome';
   src: url('./bower_components/font-awesome/fonts/fontawesome-webfont.eot?v=4.1.0');
@@ -26,7 +35,7 @@
   font-weight: normal;
   font-style: normal;
 }
-
+*/
 /**
  * App-wide Styles
  */
@@ -63,19 +72,6 @@ md-dialog-content {
 /* CSS adjustments for PHR */
 .lf-form .button-row .lf-float-button {
   margin-bottom: 1em;
-}
-
-/* loading msg */
-.loading {
-  background-color: #458ac5;
-  color: white;
-  font-size: 24px;
-  height: 60%;
-  width: 70%;
-  margin: 50px auto 50px auto;
-  text-align: center;
-  vertical-align: middle;
-  padding: 25px;
 }
 
 /* Styles for the NIH/NLM/LHC logo */

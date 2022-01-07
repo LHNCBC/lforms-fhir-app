@@ -1,0 +1,118 @@
+<div class="modal fade" id="dataDialog" tabindex="-1" role="dialog"
+ aria-labelledby="modalTitle">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 id="modalTitle" class="modal-title"></h4>
+      </div>
+      <div class="modal-body">
+        <div id="messageNote"></div>
+        <pre id="messageBody"></pre>
+      </div>
+      <div class="modal-footer">
+        <button id="copyToClipboardBtn" type="button" class="btn btn-primary">Copy to Clipboard</button>
+        <button id="closeDataDialog" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="msgDialog" tabindex="-1" role="dialog"
+ aria-labelledby="msgModalTitle">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 id="msgModalTitle" class="modal-title"></h4>
+      </div>
+      <div class="modal-body">
+        <pre id="msgMessageBody"></pre>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="resSelectDialog" tabindex="-1" role="dialog"
+ aria-labelledby="resModalTitle">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 id="resModalTitle" class="modal-title">Patient Picker</h4>
+      </div>
+      <div class="modal-body">
+        <div class="fieldLabel"><label id="resSelLabel" for="resSelection">Choose a
+          patient:</label></div>
+        <div class="dialogSelectionList"><input id="resSelection"
+         type="text" placeholder="Search for patients by name"></div>
+      </div>
+      <div class="modal-footer">
+        <button id="resSelectBtn" type="button" class="btn btn-primary" data-dismiss="modal"
+         >Select</button>
+        <button id="resCloseBtn" type="button" class="btn btn-default" data-dismiss="modal"
+         >Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="serverSelectDialog" tabindex="-1" role="dialog"
+ aria-labelledby="serverSelectModalTitle">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 id="serverSelectModalTitle" class="modal-title">FHIR Server Needed</h4>
+      </div>
+      <div class="modal-body">
+        <p>Note: The preferred
+        way of running this app is through a SMART on FHIR launch, which you
+        can do from our <a href="/sdc">SMART launch page</a>, which selects the
+        FHIR server for you so you can skip this step.</p>
+
+        <div class="fieldLabel"><label for="serverSelection">Select or Enter
+         the base URL of a FHIR Server.  A list of public <a
+        href="https://confluence.hl7.org/display/FHIR/Public+Test+Servers"
+         >FHIR server URLs</a> is available from HL7.</label></div>
+        <div class="dialogSelectionList"><input id="serverSelection"
+         type="text" placeholder="URL for FHIR Server"></div>
+      </div>
+      <div class="modal-footer">
+        <button id="serverSelectBtn" type="button" class="btn btn-primary" data-dismiss="modal"
+         >Select</button>
+        <button id="serverCloseBtn" type="button" class="btn btn-default" data-dismiss="modal"
+         >Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="saveResultsDialog" tabindex="-1" role="dialog"
+ aria-labelledby="modalTitle">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 id="saveResultsTitle" class="modal-title">Save Results</h4>
+      </div>
+      <div id="saveResultsBody" class="modal-body">
+        <div id="saveResultsStatus"></div>
+        <ul id="saveResultsList"></ul>
+        <a id="saveResultsDetailsLink" href="javascript:void(0)">Details</a>
+        <pre id="saveResultsDetails" style="display: none"></pre>
+      </div>
+      <div class="modal-footer">
+        <button id="saveResultsCopyBtn" type="button" class="btn btn-primary"
+         style="display: none">Copy to Clipboard</button>
+        <button id="closeSaveResults" type="button" class="btn btn-primary"
+         data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+

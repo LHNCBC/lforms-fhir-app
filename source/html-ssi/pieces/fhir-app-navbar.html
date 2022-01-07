@@ -1,0 +1,104 @@
+<div class="panel">
+  <div class="panel-body">
+    <input type="file" id="loadFileInput" accept="application/json" class="hide" />
+
+    <div class="btn-group btn-group-justified" role="group">
+      <a id="upload" role="button" type="button"
+       class="btn btn-default btn-sm btn-success"
+       title="Upload a file."><span class="glyphicon glyphicon-upload"></span><span
+       class="lf-nav-button">Upload</span></a></div>
+    <p>If you do not have a Questionnaire of your own to upload, you can try
+     downloading one of our <a href=
+     "https://raw.githubusercontent.com/lhncbc/lforms-fhir-app/master/e2e-tests/data/R4/weight-height-questionnaire.json"
+     target="_blank" rel="noopener noreferrer" id=sampleQ>samples</a> (saving
+     it to file, and then uploading it here).</p>
+  </div>
+</div>
+
+<div class="panel-group" id="listAccordion" role="tablist" aria-multiselectable="true">
+
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="heading-one">
+      <div class="panel-title">
+        <a id="toggleQRList" role="button" class="collapsed" data-toggle="collapse"
+         data-target="#collapse-one" data-parent="#listAccordion" aria-expanded="false"
+         aria-controls="collapse-one" href="javascript:void(0)">
+          Saved QuestionnaireResponses
+        </a>
+      </div>
+    </div>
+    <div class="panel-collapse collapse" id="collapse-one" role="tabpanel"
+         aria-labelledby="heading-one">
+      <div id="savedQRListMsg"></div>
+      <div id="qrList" class="list-group">
+        <div id="qrListItems">
+          <a href="javascript:void(0)" class="list-group-item" style="display: none" role="presentation">
+            <p class="form-name"></p>
+            <p class="last-updated"></p>
+          </a>
+        </div>
+        <div class="btn-group next-prev-btns" role="group">
+          <button id="qrPrevPage" title="Previous Page" role="button" type="button" disabled
+           class="btn btn-default btn-sm glyphicon glyphicon-chevron-left" />
+          <button id="qrNextPage" title="Next Page" role="button" type="button" disabled
+           class="btn btn-default btn-sm glyphicon glyphicon-chevron-right" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="featuredQs" class="panel panel-default">
+    <div class="panel-heading" role="tab" id="heading-two">
+      <div class="panel-title">
+        <a id="toggleFeaturedList" role="button" class="collapsed" data-toggle="collapse"
+         data-target="#collapse-two" href="javascript:void(0)"
+         data-parent="#listAccordion" aria-expanded="false" aria-controls="collapse-two">
+          Featured Questionnaires:
+        </a>
+      </div>
+    </div>
+    <div class="panel-collapse collapse" id="collapse-two" role="tabpanel"
+         aria-labelledby="heading-two">
+      <div id="fqList" class="list-group">
+        <a href="javascript:void(0)" class="list-group-item" role="presentation">
+          <p class="form-name"></p>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="heading-three">
+      <div class="panel-title">
+          <a href="javascript:void(0)" id="toggleQList" role="button" class="collapsed" data-toggle="collapse"
+           data-target="#collapse-three"
+           data-parent="#listAccordion" aria-expanded="false" aria-controls="collapse-three">
+          Available Questionnaires:
+          </a>
+        <span class=showDate><label><input id="showDate" type=checkbox> Show Date</label></span>
+      </div>
+    </div>
+    <div class="panel-collapse collapse" id="collapse-three" role="tabpanel"
+         aria-labelledby="heading-three">
+      <button id="search" role="button" type="button" class="btn btn-default btn-sm btn-success"
+       title="Choose a Questionnaire from the FHIR server."><span
+       class="glyphicon glyphicon-search"></span><span
+       class="lf-nav-button">Search</span></button>
+      <div id="savedQListMsg"></div>
+      <div id="qList" class="list-group">
+        <div id="qListItems">
+          <a href="javascript:void(0)" class="list-group-item" role="presentation">
+            <p class="form-name"></p>
+            <p class="last-updated"></p>
+          </a>
+        </div>
+        <div class="btn-group next-prev-btns" role="group">
+          <button id="qPrevPage" title="Previous Page" role="button" type="button"
+           class="btn btn-default btn-sm glyphicon glyphicon-chevron-left" />
+          <button id="qNextPage" title="Next Page" role="button" type="button"
+           class="btn btn-default btn-sm glyphicon glyphicon-chevron-right" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

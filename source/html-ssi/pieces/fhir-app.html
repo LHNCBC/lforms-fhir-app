@@ -2,11 +2,11 @@
 <div id="header">
   <div id="lhc-logo">
     <a href="https://lhncbc.nlm.nih.gov" title="Lister Hill National Center for Biomedical Communications">
-      <img src="assets/images/LHNCBC_white.svg" alt="NIH/NLM/LHNCBC logo"/>
+      <img src="../source/images/LHNCBC_white.svg" alt="NIH/NLM/LHNCBC logo"/>
     </a>
   </div>
   <a href="http://lhncbc.nlm.nih.gov" title="Lister Hill Center" id="logo">
-    <img src="assets/images/lhncbc.jpg" alt="Lister Hill Center" />
+    <img src="../source/images/lhncbc.jpg" alt="Lister Hill Center" />
   </a>
   <div id="siteNameBox">
     <span id=siteName>SDC Questionnaire App</span><br>
@@ -20,35 +20,23 @@
 <!-- end page header -->
 
 <div>
+  <div class="lf-patient">
+    <table border=0><tbody><tr class="lf-patient-info">
+      <td class="glyphicon glyphicon-user"></td>
+      <td id="ptName"></td>
+      <td id="ptGender"></td>
+      <td id="ptDoB"></td>
+      <td>
+        <img class="lf-icon-doctor" src="../source/images/doctor.png" alt="user" />
+        <span id="userName"></span>
+      </td>
+    </tr></tbody></table>
+  </div>
 
-  <md-toolbar class="lf-patient">
-
-    <div class="md-toolbar-tools">
-      <span class="glyphicon glyphicon-user"></span>
-      <span ng-if="getCurrentPatient()" flex="" class="lf-patient-info">
-        <div id="ptName" class="col-xs-6 col-md-3">Patient: {{getPatientName()}}</div>
-        <div class="col-xs-6 col-md-3">Gender: {{getPatientGender()}}</div>
-        <div class="col-xs-6 col-md-3">DoB: {{getPatientDob()}}</div>
-        <div class="col-xs-6 col-md-3">
-          <span id="userName" ng-if="getCurrentUser()" flex="" class="lf-user-info">
-            <img class="lf-icon-doctor" src="assets/images/doctor.png" alt="user" />
-            User: {{getUserName()}}
-          </span>
-    
-        </div>
-      </span>
-
-    </div>
-
-  </md-toolbar>
-
-
-  <md-content>
-    <div class="lf-content">
-      <div class="col-md-4 form-nav" ng-include="'fhir-app/fhir-app-navbar.html'"></div>
-      <div class="col-md-8 form-content" ng-include="'fhir-app/fhir-app-content.html'"></div>
-    </div>
-  </md-content>
+  <div class="lf-content">
+    <div class="col-md-4 form-nav"><!--#include file="./fhir-app-navbar.html"--></div>
+    <div class="col-md-8 form-content"><!--#include file="./fhir-app-content.html"--></div>
+  </div>
 </div>
 
 
@@ -62,7 +50,7 @@
     <li><a title="NIH Freedom of Information Act office"  href="http://www.nih.gov/icd/od/foia/index.htm"
      >Freedom of Information Act</a></li>
     <li class="last-item"><a title="USA.gov" href="http://www.usa.gov/"><img
-          src="assets/images/USAgov.gif" alt="USA.gov" id="usagov"></a></li>
+          src="../source/images/USAgov.gif" alt="USA.gov" id="usagov"></a></li>
   </ul>
   <ul class="horz-list">
     <li><a title="U.S. National Library of Medicine" href="http://www.nlm.nih.gov/"

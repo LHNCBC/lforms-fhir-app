@@ -1,11 +1,8 @@
 logs/*
-!.gitkeep
-node_modules/
-bower_components/
-tmp
-.tmp
 dist
+node_modules/
+!.gitkeep
+.tmp
 .DS_Store
 .idea
-app/lforms-updater/
-app/fhir-client.js
+.parcel-cache/

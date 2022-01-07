@@ -13,7 +13,6 @@ describe('fhir app', function() {
   describe('Main View', function() {
 
     it('should render a page without any data', function() {
-      browser.ignoreSynchronization = false;
       browser.get(mainPageURL);
       util.dismissFHIRServerDialog();
       browser.wait(function() {
@@ -40,7 +39,6 @@ describe('fhir app', function() {
         bmi = element(by.id('/39156-5/1'));
 
     it("should load a Questionnaire file", function() {
-      browser.ignoreSynchronization = false;
       browser.get(mainPageURL);
       util.dismissFHIRServerDialog();
       browser.wait(function() {
@@ -48,8 +46,7 @@ describe('fhir app', function() {
       }, 5000);
       util.uploadForm('R4/weight-height-questionnaire.json');
 
-      browser.waitForAngular();
-      browser.wait(EC.textToBePresentInElement(element(by.css('.lf-form-title')), "Weight"), 5000);
+      browser.wait(EC.textToBePresentInElement(element(by.css('.lhc-form-title')), "Weight"), 5000);
 
       // BMI
       height.sendKeys("70");
@@ -85,6 +82,8 @@ describe('fhir app', function() {
         expect($('.error').isDisplayed()).toBe(true);
       });
 
+      // In the rewrite to remove AngularJs, I decided this warning was not necessary.
+      /*
       it("should show a warning message if the FHIR version was guessed", function() {
         // Edit a working sample file.
         browser.get(mainPageURL);
@@ -106,6 +105,7 @@ describe('fhir app', function() {
         util.uploadForm('R4/weight-height-questionnaire.json');
         expect($('.warning').isPresent()).toBe(false);
       });
+      */
     });
   });
 

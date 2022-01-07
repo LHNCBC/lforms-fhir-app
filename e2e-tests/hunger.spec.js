@@ -7,7 +7,6 @@ describe('Hunger Vital Signs form', function() {
   beforeAll(() => {
     browser.get(util.mainPageURL);
     util.dismissFHIRServerDialog(); // not needed currently; might be later
-    element(by.css('body')).allowAnimations(false);
     util.uploadForm('R4/hunger-vital-signs.json');
   });
 

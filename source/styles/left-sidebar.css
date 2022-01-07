@@ -1,0 +1,26 @@
+/* Styles for the left side bar */
+
+#savedQRListMsg, #savedQListMsg {
+  display: none;
+  padding-left: 15px;
+}
+
+#featuredQs {
+  display: none;
+}
+
+#qListItems .last-updated {
+  display: none;
+}
+
+.next-prev-btns {
+  width: 100%;
+}
+
+.next-prev-btns button {
+  width: 50%;
+}
+
+#search {
+  width: 100%;
+}

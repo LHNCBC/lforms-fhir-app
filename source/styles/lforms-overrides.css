@@ -1,0 +1,25 @@
+/* Overrides needed due to styles from lforms */
+/* A fix for this issue from lforms is being working on, so hopefully this is temporary. */
+
+.lf-content {
+  line-height: 1.42857143;  /* bootstrap 3 line height value */
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.modal pre {
+  font-size: 13px;
+}
+
+.panel-body p a, .modal-body a {
+  color: #337ab7;
+}
+.panel-body p a:hover, .modal-body a:hover {
+  color: #23527c;
+}
+
+#listAccordion .panel-title a:hover {
+  color: inherit;
+}
+
+/* End of overrides needed due to styles from lforms */
+

@@ -1,0 +1,29 @@
+/* Styles for the form pane (fhir-app-content.html) */
+#formDataControls {
+  display: none;
+}
+
+/* Initial msg */
+#initialMsg {
+  background-color: #458ac5;
+  color: white;
+  font-size: 24px;
+  height: 60%;
+  width: 70%;
+  margin: 50px auto 50px auto;
+  text-align: center;
+  vertical-align: middle;
+  padding: 25px;
+}
+
+.error {
+  display: none;
+  border: 2px solid red;
+  padding: 0.5em;
+  margin: 1em;
+  color: red;
+}
+
+#btn-delete, #saveAsMenu {
+  margin-right: 10px;
+}
