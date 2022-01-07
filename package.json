@@ -41,7 +41,7 @@
     "start-public": "http-server -s -o $npm_package_name -p $npm_package_serverPort -c-1 dist",
     "prestart-public": "npm run prestart",
     "update-webdriver": "node node_modules/protractor/bin/webdriver-manager update --versions.chrome $(google-chrome --version |awk '{print $NF}')",
-    "test": "npm run update-webdriver && npm run start-no-open & sleep 5; protractor e2e-tests/protractor.conf.js; s=$?; kill %1; exit $s"
+    "test": "npm run start-no-open & sleep 5; npm run update-webdriver && protractor e2e-tests/protractor.conf.js; s=$?; kill %1; exit $s"
   },
   "dependencies": {
     "bootstrap": "^3.4.1",
