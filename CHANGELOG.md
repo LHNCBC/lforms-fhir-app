@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [2.0.1] - 2022-04-07
+### Changed
+- Updated fhir-client.js to 2.4.0.
+
 ## [2.0.0] - 2022-01-07
 ### Changed
 - Rewrite of app to remove AngularJs, which is no longer supported.
