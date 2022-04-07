@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [2.0.2] - 2022-04-07
+### Fixed
+- LForms.lformsVersion was showing 'undefined' after the lforms update in 2.0.1.
+
 ## [2.0.1] - 2022-04-07
 ### Changed
 - Updated fhir-client.js to 2.4.0.
