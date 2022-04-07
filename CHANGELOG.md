@@ -6,6 +6,7 @@ This project follows [Semantic Versioning](http://semver.org/).
 ## [2.0.1] - 2022-04-07
 ### Changed
 - Updated fhir-client.js to 2.4.0.
+- Updated lforms to 30.1.3.
 
 ## [2.0.0] - 2022-01-07
 ### Changed
