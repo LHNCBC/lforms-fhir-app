@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [2.0.4] - 2022-08-10
+### Changed
+- Use shared header and footer from CTSS.
+
 ## [2.0.3] - 2022-06-14
 ### Updated
 - LForms to 30.3.0.
