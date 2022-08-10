@@ -74,19 +74,6 @@ md-dialog-content {
   margin-bottom: 1em;
 }
 
-/* Styles for the NIH/NLM/LHC logo */
-#lhc-logo {
-  background-color: #0BACB6;
-  padding: 2px 0 5px 5px;
-  overflow: hidden;
-}
-#lhc-logo img {
-  height: 35px;
-  width: auto;
-  margin-bottom: -1px;
-}
-/* End styles for the NIH/NLM/LHC logo */
-
 /* Styles for the header */
 body {
   margin: 0;
@@ -138,33 +125,3 @@ body {
 }
 
 /* End of styles for the header */
-/* Styles for the footer */
-#fine-print {
-  border-top: 2px solid #0BACB6;
-  clear: left;
-  text-align: center;
-  font-size: 12px;
-  padding-top: 10px;
-}
-ul.horz-list li {
-  list-style-type: none;
-  display: inline;
-  padding-left: 8px;
-  padding-right: 10px;
-  border-right: 1px solid #999;
-}
-ul.horz-list li.last-item {
-  border-right: none;
-}
-#usagov {
-  vertical-align: bottom;
-}
-/* Add some space above the footer.  For some reason adding a margin-top
-   does not work, perhaps because of a float, so instead we add padding to the
-   floated element.
- */
-.col-md-9 {
-  padding-bottom: 1em;
-}
-
-/* End of styles for the footer */
