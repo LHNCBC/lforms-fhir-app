@@ -50,6 +50,7 @@ describe('Non-SMART connection to FHIR server', () => {
 
   after(() => {
     cy.task('cleanUpTmpFiles');
+    util.deleteTestResources();
   });
 
   it('should be able to select an off-list FHIR server', () => {
