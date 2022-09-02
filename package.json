@@ -13,6 +13,7 @@
   ],
   "devDependencies": {
     "autocomplete-lhc": "^18.2.0",
+    "cypress": "^10.6.0",
     "http-server": "^14.1.0",
     "jasmine-core": "^3.2.1",
     "jasmine-spec-reporter": "^4.2.1",
@@ -41,7 +42,9 @@
     "start-public": "http-server -s -o $npm_package_name -p $npm_package_serverPort -c-1 dist",
     "prestart-public": "npm run prestart",
     "update-webdriver": "node node_modules/protractor/bin/webdriver-manager update --versions.chrome $(google-chrome --version |awk '{print $NF}')",
-    "test": "npm run start-no-open & sleep 5; npm run update-webdriver && protractor e2e-tests/protractor.conf.js; s=$?; kill %1; exit $s"
+    "test": "npm run start-no-open & sleep 5; npm run update-webdriver && protractor e2e-tests/protractor.conf.js; s=$?; kill %1; exit $s",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run"
   },
   "dependencies": {
     "bootstrap": "^3.4.1",

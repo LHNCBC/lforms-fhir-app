@@ -1,16 +1,15 @@
 // Tests the Framingham HCHD form.  This does not interact with the FHIR server.
+import { util } from './util';
 
-var util = require('./util');
-
-describe('Framingham HCHD risk form', function() {
+describe('Framingham HCHD risk form', () => {
   // These tests compare the output of the form with the output of a perl
   // script written by Mehmet Kayaalp, who diligently tested his script
   // against an online tool that no longer exists.
   // The purpose here is it be able to test changes to our form without
   // having to re-run the perl script.
 
-  beforeAll(() => {
-    browser.get(util.mainPageURL);
+  before(() => {
+    cy.visit(util.mainPageURL);
     util.dismissFHIRServerDialog();
     util.uploadForm('R4/framingham-HCHD.json');
   });
@@ -28,15 +27,13 @@ describe('Framingham HCHD risk form', function() {
    *  provided.
    */
   function setOrClear(field, val) {
-    field.click();
+    field.clear();
     if (hasValue(val)) {
-      util.sendKeys(field, ''+val);
+      field.type(''+val);
     }
-    else
-      util.clearField(field);
   }
 
-  var lastAge, lastGender, lastSmokes, lastSystolic, lastTChol, lastHDL, lastAntihypert
+  var lastAge, lastGender, lastSmokes, lastSystolic, lastTChol, lastHDL, lastAntihypert;
 
   /**
    *  Clears the framingham form and populates it with the given values,
@@ -47,47 +44,40 @@ describe('Framingham HCHD risk form', function() {
     // Setting field values is relatively slow.  Only set the ones we think
     // changed.
     if (age != lastAge) {
-      setOrClear($('#\\/age\\/1'), age);
+      setOrClear(cy.get('#\\/age\\/1'), age);
       lastAge = age;
     }
     if (gender != lastGender) {
-      let genderField = $('#\\/46098-0\\/1');
       if (hasValue(gender)) {
-        util.autoCompHelpers.autocompPickFirst(genderField, gender);
+        cy.get('#\\/46098-0\\/1').type(gender).type('{downArrow}').type('{enter}');
+      } else {
+        cy.get('#\\/46098-0\\/1').clear();
       }
-      else
-        util.clearField(genderField);
       lastGender = gender;
     }
     if (smokes != lastSmokes) {
       if (hasValue(smokes)) {
-        if (smokes)
-          $('#\\/smokes\\/1Y').click();
-        else
-          $('#\\/smokes\\/1N').click();
+        smokes ? cy.get('#\\/smokes\\/1Y').click() : cy.get('#\\/smokes\\/1N').click();
       }
       lastSmokes = smokes;
     }
     if (systolic != lastSystolic) {
-      setOrClear($('#\\/8480-6\\/1'), systolic);
+      setOrClear(cy.get('#\\/8480-6\\/1'), systolic);
       lastSystolic = systolic;
     }
     if (tChol != lastTChol) {
-      setOrClear($('#\\/2093-3\\/1'), tChol);
+      setOrClear(cy.get('#\\/2093-3\\/1'), tChol);
       lastTChol = tChol;
     }
     if (hdl != lastHDL) {
-      setOrClear($('#\\/2085-9\\/1'), hdl);
+      setOrClear(cy.get('#\\/2085-9\\/1'), hdl);
       lastHDL = hdl;
     }
     if (antihypert != lastAntihypert) {
       if (hasValue(antihypert)) {
-        if (antihypert)
-          $('#\\/antihypertensive\\/1Y').click();
-        else
-          $('#\\/antihypertensive\\/1N').click();
+        antihypert ? cy.get('#\\/antihypertensive\\/1Y').click() : cy.get('#\\/antihypertensive\\/1N').click();
+        lastAntihypert = antihypert;
       }
-      lastAntihypert = antihypert;
     }
   }
 
@@ -95,45 +85,40 @@ describe('Framingham HCHD risk form', function() {
    *  Asserts that the computed risk value is equal to the given value.
    */
   function assertRisk(expectedRisk) {
-
-    var risk = browser.executeScript(
-      ()=>LForms.Util.getFormFHIRData('QuestionnaireResponse', 'R4').item[7].answer[0].valueDecimal);
-    // The perl output contained 15 digits after the decimal.  JavaScript
-    // provides a few more, so we need to round.
-    // Also, there was a difference found in the 15th place, so we will
-    // round both values to the 13th place.  (Rounding to the 14th place
-    // still sometimes results in a difference, if one value has a 5 and the
-    // other a 4 in the 15th place).
-    risk.then(function(val) {
+    cy.window().then((win) => {
+      let val = win.LForms.Util.getFormFHIRData('QuestionnaireResponse', 'R4').item[7].answer[0].valueDecimal;
       val = parseFloat(val);
       let precFactor = 10**13;
       val = Math.round(val*precFactor)/precFactor;
       expectedRisk = Math.round(expectedRisk*precFactor)/precFactor;
-      expect(val).toEqual(expectedRisk);
+      expect(val).to.equal(expectedRisk);
     });
-
   }
 
-  it('should show age message when age is out of range', function() {
-    let ageReqNotice = $('#label-\\/age_requirement_notice\\/1');
+  it('should show age message when age is out of range', () => {
     // Initially, it should not be visible
-    expect(ageReqNotice.isPresent()).toBe(false);
+    cy.get('#label-\\/age_requirement_notice\\/1')
+        .should('not.exist');
     populateForm(29); // too young for form
-    expect(ageReqNotice.isPresent()).toBe(true);
+    cy.get('#label-\\/age_requirement_notice\\/1')
+        .should('be.visible');
     populateForm(30); // youngest age
-    expect(ageReqNotice.isPresent()).toBe(false);
+    cy.get('#label-\\/age_requirement_notice\\/1')
+        .should('not.exist');
     populateForm(79); // oldest age
-    expect(ageReqNotice.isPresent()).toBe(false);
+    cy.get('#label-\\/age_requirement_notice\\/1')
+        .should('not.exist');
     populateForm(80); // too old for form
-    expect(ageReqNotice.isPresent()).toBe(true);
+    cy.get('#label-\\/age_requirement_notice\\/1')
+        .should('be.visible');
   });
 
   // There are actually four equations, based on age and gender.  Each
   // equation is tested below in a separate 'it'.
-  it('should produce correct results for Female > 78', function() {
+  it('should produce correct results for Female > 78', () => {
     // While here, also check that the "all answers required" message is showing
-    var allReqNotice = $('#label-\\/all_answers_required_notice\\/1');
-    expect(allReqNotice.isPresent()).toBe(true);
+    cy.get('#label-\\/all_answers_required_notice\\/1')
+        .should('be.visible');
 
     populateForm(79, 'Female', true, 190, 150, 35, true);
     assertRisk(0.356375192717629);
@@ -155,9 +140,9 @@ describe('Framingham HCHD risk form', function() {
     assertRisk(0.0546747653467465);
     populateForm(79, 'Female', true, 100, 150, 35, false);
     assertRisk(0.0546747653467465); // same value
-  }, 60000);
+  });
 
-  it('should produce correct results for Female <= 78', function() {
+  it('should produce correct results for Female <= 78', () => {
     populateForm(59, 'Female', true, 190, 150, 35, true);
     assertRisk(0.145148635979579);
     populateForm(59, 'Female', false, 190, 150, 35, true);
@@ -170,9 +155,9 @@ describe('Framingham HCHD risk form', function() {
     assertRisk(0.208539122665616);
     populateForm(59, 'Female', true, 190, 150, 35, false);
     assertRisk(0.0978885972845346);
-  }, 60000);
+  });
 
-  it('should produce correct results for Male > 70', function() {
+  it('should produce correct results for Male > 70', () => {
     populateForm(79, 'Male', true, 190, 150, 35, true);
     assertRisk(0.45956062065269);
     populateForm(79, 'Male', false, 190, 150, 35, true);
@@ -185,6 +170,5 @@ describe('Framingham HCHD risk form', function() {
     assertRisk(0.5659908538172);
     populateForm(79, 'Male', true, 190, 150, 35, false);
     assertRisk(0.383267655192785);
-  }, 60000);
+  });
 });
-
