@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+    dev:
+        container_name: lforms-fhir-app
+        image: lforms-fhir-app:1.0.0
+        build:
+            context: .
+            target: development
+            dockerfile: ./Dockerfile
+        command: npm run start
+        ports:
+            - 8000:8000
+            - 9229:9229
+        networks:
+            - lforms_network
+        volumes:
+            - .:/usr/src/app
+            - /usr/src/app/node_modules
+        restart: unless-stopped
+        environment:
+            - PORT=3000
+    prod:
+        container_name: lforms-fhir-app-prod
+        image: lforms-fhir-app-prod:1.0.0
+        build:
+            context: .
+            target: production
+            dockerfile: ./Dockerfile
+        command: npm run start
+        ports:
+            - 8000:8000
+            - 9230:9229
+        networks:
+            - lforms_network
+        volumes:
+            - .:/usr/src/app
+            - /usr/src/app/node_modules
+        restart: unless-stopped
+        environment:
+            - PORT=8000
+networks:
+    lforms_network:
