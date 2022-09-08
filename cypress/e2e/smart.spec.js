@@ -52,10 +52,11 @@ describe('SMART on FHIR connection', () => {
       });
 
       it('should display the weight and height questionnaire with pre-populated data', () => {
+        const height = '/8302-2/1';
         cy.byId('55418-8-x')
             .should('be.visible')
             .click();
-        cy.byId('/8302-2/1', { timeout: 200000 })
+        cy.byId(height, { timeout: 200000 })
             .should('be.visible')
             .should('have.length.greaterThan', 0);
       });
@@ -99,8 +100,9 @@ describe('SMART on FHIR connection', () => {
         po.firstSavedUSSGQ()
             .click();
         util.waitForSpinnerStopped();
+        const height = '/54126-8/8302-2/1/1';
         // Confirm that the edited field value is no longer there.
-        cy.byId('/54126-8/8302-2/1/1') // new on page
+        cy.byId(height) // new on page
             .should('be.visible')
             .should('not.have.value', '70');
         // Confirm that a warning message (about an unknown FHIR version) is not shown.
@@ -113,9 +115,9 @@ describe('SMART on FHIR connection', () => {
         util.expandSavedQRs();
         cy.get('#qrList a:first-child')
             .click();
-        cy.byId('/54126-8/8302-2/1/1', { timeout: 15000 })
+        cy.byId(height, { timeout: 15000 })
             .should('be.visible');
-        cy.byId('/54126-8/8302-2/1/1') // new on page
+        cy.byId(height) // new on page
             .should('have.value', '70');
         // Confirm that a warning message (about an unknown FHIR version) is not shown.
         cy.get('.warning')
@@ -127,7 +129,8 @@ describe('SMART on FHIR connection', () => {
 
     it('should provide data for observationLinkPeriod', () => {
       util.uploadFormWithTitleChange('R4/weight-height-questionnaire.json');
-      cy.byId('/8302-2/1')
+      const height = '/8302-2/1';
+      cy.byId(height)
           .should('be.visible')
           .should('have.length.greaterThan', 0);
     });
@@ -175,30 +178,29 @@ describe('SMART on FHIR connection', () => {
             const prefix = 'LHC-Forms-Test-WHQ-'+fhirVersion+'-';
             util.uploadFormWithTitleChange(fhirVersion+'/weight-height-questionnaire.json',
                 prefix);
-            cy.byId('/8361-8/1')
+            const bodyPos = '/8361-8/1';
+            cy.byId(bodyPos)
                 .should('be.visible');
 
             util.saveAsQRAndObs();
             util.waitForSpinnerStopped();
             // check if qr.author is saved
-            // ?? Below assertion fails. Looks like the Questionnaire does NOT have author saved, but QuestionnaireResponse does.
-            // ?? But according to protractor test case, util.getQRUrlFromDialog() gets the first link which is the Questionnaire.
-            // util.getQRUrlFromDialog().then((url) => {
-            //     return util.getResouceByUrl(url).then((res) => {
-            //         expect(res.author).to.equal({
-            //             reference: 'Practitioner/smart-Practitioner-71482713',
-            //             type: 'Practitioner',
-            //             display: 'Susan Clark'
-            //         });
-            //     });
-            // });
+            util.getQRUrlFromDialog().then((url) => {
+                return util.getResouceByUrl(url).then((res) => {
+                    expect(res.author).to.deep.equal({
+                        reference: 'Practitioner/smart-Practitioner-71482713',
+                        type: 'Practitioner',
+                        display: 'Susan Clark'
+                    });
+                });
+            });
             util.closeSaveResultsDialog();
             /// open the saved qr section
             util.expandSavedQRs();
             // Wait for the saved questionnaire response to be this page.
             po.firstSavedQR(prefix)
                 .click();
-            cy.byId('/8361-8/1') // get new copy of field
+            cy.byId(bodyPos) // get new copy of field
                 .should('be.visible')
                 .click();
             cy.get('#searchResults')
@@ -248,17 +250,17 @@ describe('SMART on FHIR connection', () => {
             .click()
             .type('to be deleted2');
         util.saveAsQRAndObs();
+        util.waitForSpinnerStopped();
         // check if qr.author is saved
-        // ?? Same above.
-        // util.getQRUrlFromDialog().then((url) => {
-        //     return util.getResouceByUrl(url).then((res) => {
-        //         expect(res.author).to.equal({
-        //             reference: 'Practitioner/smart-Practitioner-71482713',
-        //             type: 'Practitioner',
-        //             display: 'Susan Clark'
-        //         });
-        //     });
-        // });
+        util.getQRUrlFromDialog().then((url) => {
+            return util.getResouceByUrl(url).then((res) => {
+                expect(res.author).to.deep.equal({
+                    reference: 'Practitioner/smart-Practitioner-71482713',
+                    type: 'Practitioner',
+                    display: 'Susan Clark'
+                });
+            });
+        });
 
         util.closeSaveResultsDialog();
         // Load a blank questionnaire to clear the fields

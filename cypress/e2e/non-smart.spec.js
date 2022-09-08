@@ -149,6 +149,7 @@ describe('Non-SMART connection to FHIR server', () => {
             .should('be.visible')
             .type('zz');
         util.saveAsQR();
+        util.waitForSpinnerStopped();
         // check if qr.author is saved
         util.getQRUrlFromDialog().then((url) => {
           return util.getResouceByUrl(url).then((res) => {
@@ -245,6 +246,7 @@ describe('Non-SMART connection to FHIR server', () => {
             .click()
             .type('to be deleted2');
         util.saveAsQRAndObs();
+        util.waitForSpinnerStopped();
         // check if qr.author is saved
         util.getQRUrlFromDialog().then(function(url) {
           return util.getResouceByUrl(url).then(function(res) {

@@ -212,11 +212,12 @@ export const util = {
   },
 
   /**
-   * Get the URL of the save QuestionnaireResponse (the first in the list)
+   * Get the URL of the save QuestionnaireResponse
    */
   getQRUrlFromDialog: function() {
     return cy.get('#saveResultsList li a')
-        .should('be.visible')
+        .filter(':contains("QuestionnaireResponse")')
+        .eq(0)
         .invoke('attr', 'href');
   },
 
@@ -274,8 +275,8 @@ export const util = {
     cy.get('#btn-delete')
         .should('be.visible')
         .click();
-    cy.on('window:alert', (txt) => {
-      expect(txt).to.contain('delete');
+    cy.on('window:confirm', (txt) => {
+      expect(txt).to.contains('Are you sure you want to delete');
     });
     util.waitForSpinnerStopped();
   },
