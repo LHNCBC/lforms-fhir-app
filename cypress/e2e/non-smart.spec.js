@@ -372,7 +372,6 @@ describe('Non-SMART connection to FHIR server', () => {
     });
 
     it('should display one of the questionnaires', () => {
-      // Continue with form loaded in previous tests
       cy.byId('54127-6-x')
           .should('be.visible')
           .click();
@@ -381,7 +380,6 @@ describe('Non-SMART connection to FHIR server', () => {
     });
 
     it('should display the weight and height questionnaire with pre-populated data', () => {
-      // Continue with form loaded in previous tests
       cy.byId('55418-8-x')
           .should('be.visible')
           .click();

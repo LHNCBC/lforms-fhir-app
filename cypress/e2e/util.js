@@ -92,12 +92,6 @@ export const util = {
   },
 
   /**
-   *  Temporary files removed by cleanUpTmpFiles.  These should be objects
-   *  return by the "tmp" package.
-   */
-  _tmpFiles: [],
-
-  /**
    *  Uploads a modified form with the given prefix prepended to the form's title, so that
    *  the instance of the form can be found and selected.  This will also modify
    *  the form's first identifier, to make it unique.
@@ -238,8 +232,6 @@ export const util = {
     });
   },
 
-  _smartAppLoginUrl: '',
-
   /**
    *  Opens up the SMART app in the SMART on FHIR developer sandbox.
    * @param fhirVersion the FHIR server version to be picked in SMART env.
@@ -282,6 +274,9 @@ export const util = {
     cy.get('#btn-delete')
         .should('be.visible')
         .click();
+    cy.on('window:alert', (txt) => {
+      expect(txt).to.contain('delete');
+    });
     util.waitForSpinnerStopped();
   },
 
@@ -293,7 +288,6 @@ export const util = {
    * @param coding the coding of the Observation
    * @param valueType the FHIR type of the observation's value (capitalized)
    * @param value a value of type valueType
-   * @return a promise that resolves when the request is completed
    */
   storeObservation: function(fhirVer, patientID, coding, valueType, value) {
     if (fhirVer == 'STU3')

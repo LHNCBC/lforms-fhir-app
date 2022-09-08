@@ -24,6 +24,7 @@ module.exports = defineConfig({
                     fs.writeFileSync(tmpObj.name, data);
                     return tmpObj.name;
                 },
+
                 /**
                  * Deletes temp files created in createTmpFile().
                  */

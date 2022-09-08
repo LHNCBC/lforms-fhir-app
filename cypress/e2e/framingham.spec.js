@@ -86,6 +86,12 @@ describe('Framingham HCHD risk form', () => {
    */
   function assertRisk(expectedRisk) {
     cy.window().then((win) => {
+      // The perl output contained 15 digits after the decimal.  JavaScript
+      // provides a few more, so we need to round.
+      // Also, there was a difference found in the 15th place, so we will
+      // round both values to the 13th place.  (Rounding to the 14th place
+      // still sometimes results in a difference, if one value has a 5 and the
+      // other a 4 in the 15th place).
       let val = win.LForms.Util.getFormFHIRData('QuestionnaireResponse', 'R4').item[7].answer[0].valueDecimal;
       val = parseFloat(val);
       let precFactor = 10**13;
