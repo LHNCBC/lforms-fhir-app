@@ -48,9 +48,10 @@ describe('Non-SMART connection to FHIR server', () => {
 
   const mainPageURL = '/lforms-fhir-app/';
 
-  after(() => {
+  after((done) => {
     cy.task('cleanUpTmpFiles');
-    util.deleteTestResources();
+    util.deleteTestResources()
+        .then(() => done());
   });
 
   it('should be able to select an off-list FHIR server', () => {
