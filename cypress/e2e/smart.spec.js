@@ -40,10 +40,11 @@ describe('SMART on FHIR connection', () => {
           .should('contain.text', 'Susan Clark');
     });
 
-    after((done) => {
+    after(() => {
       cy.task('cleanUpTmpFiles');
-      util.deleteTestResources()
-          .then(() => done());
+      cy.then(() => {
+        return util.deleteTestResources();
+      });
     });
 
     describe('Featured Questionnaires', () => {
