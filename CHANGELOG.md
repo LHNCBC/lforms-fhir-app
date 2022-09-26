@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [2.0.6] - 2022-09-26
+### Fixed
+- Fixed the link to the 'samples' page.
+
 ## [2.0.5] - 2022-09-12
 ### Updated
 - LForms to 32.0.2.
