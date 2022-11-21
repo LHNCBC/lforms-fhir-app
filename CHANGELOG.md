@@ -3,6 +3,11 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [2.0.7] - 2022-11-08
+### Fixed
+- Issue with Cache-Control header: some FHIR servers do not permit the
+  Cache-Control header on CORS requests.
+
 ## [2.0.6] - 2022-09-26
 ### Fixed
 - Fixed the link to the 'samples' page.

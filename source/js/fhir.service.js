@@ -1,5 +1,6 @@
 "use strict";
 import { fhirServerConfig } from './fhir-server-config.js'
+import { config } from './config.js';
 
 export const fhirService = {};
 
@@ -17,11 +18,10 @@ thisService.fhir = null;
 // Current Questionnaire resource
 thisService.currentQuestionnaire = null;
 
-// Holds results of a chain of operations
-var _collectedResults = [];
-// Holds the error result that halted a chain of operations
-var _terminatingError = null;
-
+// whether to use the Cache-Control header
+let useCacheControl = true;
+// whether to try to resend a request without Cache-Control
+let retryWithoutCacheControl = config.retryWithoutCacheControl;
 
 /**
  *  Requests a SMART on FHIR connection.  Once a connection request is in
@@ -235,7 +235,7 @@ thisService.getPatientName = function(patient) {
 
 /**
  * Get a person's name, for display
- * @param {string}} person a resource of Patient, Practioner, and etc.
+ * @param {string} person a resource of Patient, Practioner, and etc.
  * @returns
  * @private
  */
@@ -288,8 +288,7 @@ thisService.searchPatientByName = function(searchText, resultCount) {
   // md-autocomplete directive requires a promise to be returned
   return fhirSearch({
     type: "Patient",
-    query: {name: searchText.split(/\s+/), _count: resultCount},
-    headers: {'Cache-Control': 'no-cache'}
+    query: {name: searchText.split(/\s+/), _count: resultCount}
   }).then(function(bundle) {
     // Return results in autocomplete-lhc format
     const rtn = [bundle.total];
@@ -325,8 +324,7 @@ thisService.searchPatientByName = function(searchText, resultCount) {
 thisService.searchQuestionnaire = function(searchText, resultCount) {
   return fhirSearch({
     type: "Questionnaire",
-    query: {title: searchText, _count: resultCount},
-    headers: {'Cache-Control': 'no-cache'}
+    query: {title: searchText, _count: resultCount}
   }).then(function(bundle) {
     // Return results in autocomplete-lhc format
     const rtn = [bundle.total];
@@ -396,7 +394,24 @@ function fhirSearch(searchConfig) {
   }
   return thisService.fhir.request({
     url: searchConfig.type + '?' + searchParams,
-    headers: searchConfig.headers
+    headers: {
+      ...(useCacheControl ? {'Cache-Control': 'no-cache'} : {}),
+      ...searchConfig.headers
+    }
+  }).catch((reason) => {
+    if (retryWithoutCacheControl && useCacheControl) {
+      // Try to resend a request without Cache-Control only once
+      retryWithoutCacheControl = false;
+      return thisService.fhir.request({
+        url: searchConfig.type + '?' + searchParams,
+        headers: searchConfig.headers
+      }).then((result) => {
+        // Disable the use of Cache-Control if the request works without it
+        useCacheControl = false;
+        return result;
+      })
+    }
+    return Promise.reject(reason);
   });
 }
 
@@ -415,9 +430,6 @@ thisService.getAllQRByPatientId = function(pId) {
       _include: 'QuestionnaireResponse:questionnaire',
       _sort: '-_lastUpdated',
       _count: 5
-    },
-    headers: {
-      'Cache-Control': 'no-cache'
     }
   });
 };
@@ -455,9 +467,6 @@ thisService.getAllQ = function() {
     query: {
       _sort: '-_lastUpdated',
       _count: 10
-    },
-    headers: {
-      'Cache-Control': 'no-cache'
     }
   });
 };
@@ -574,9 +583,6 @@ thisService.deleteQRespAndObs = function(resId) {
       type: 'Observation',
       query: {
         'derived-from': 'QuestionnaireResponse/'+resId,
-      },
-      headers: {
-        'Cache-Control': 'no-cache'
       }
     }).then(function(bundle) {
       var thenPromise;
