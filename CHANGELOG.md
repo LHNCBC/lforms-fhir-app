@@ -3,9 +3,13 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [3.0.1] 2022-12-09
+### Changed
+- Updated website header and footer and logo.
+
 ## [3.0.0] 2022-11-21
 ### Changed
-- Updateed lforms to 33.0.0, which removed support for IE 11.
+- Updated lforms to 33.0.0, which removed support for IE 11.
 
 ## [2.0.7] - 2022-11-08
 ### Fixed
