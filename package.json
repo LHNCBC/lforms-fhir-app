@@ -1,13 +1,15 @@
 {
   "name": "lforms-fhir-app",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "A SMART on FHIR app for lforms",
   "repository": "https://github.com/lhncbc/lforms-fhir-app",
   "source": [
     ".tmp/index.html",
     ".tmp/launch.html"
   ],
-  "serverPort": "8000",
+  "config": {
+    "serverPort": "8000"
+  },
   "devDependenciesComments": [
     "autocomplete-lhc is included only for its test helpers; for the app it is pulled in through lforms"
   ],
@@ -36,9 +38,9 @@
     "build:version": "sed -i s/VERSION_PLACEHOLDER/$npm_package_version/ dist/lforms-fhir-app/index.html",
     "build": "npm run build:preparcel && npm run build:parcel && npm run build:version",
     "prestart": "echo \"Website starting at http://localhost:8000/$npm_package_name\"",
-    "start": "http-server -s -o $npm_package_name -a localhost -p $npm_package_serverPort -c-1 dist",
-    "start-no-open": "http-server -s -a localhost -p $npm_package_serverPort -c-1 dist",
-    "start-public": "http-server -s -o $npm_package_name -p $npm_package_serverPort -c-1 dist",
+    "start": "http-server -s -o $npm_package_name -a localhost -p $npm_package_config_serverPort -c-1 dist",
+    "start-no-open": "http-server -s -a localhost -p $npm_package_config_serverPort -c-1 dist",
+    "start-public": "http-server -s -o $npm_package_name -p $npm_package_config_serverPort -c-1 dist",
     "prestart-public": "npm run prestart",
     "test": "npm run start-no-open & sleep 5; npm run cy:run; s=$?; kill %1; exit $s",
     "cy:open": "cypress open",

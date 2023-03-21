@@ -3,6 +3,11 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [3.0.2] 2023-03-21
+### Changed
+- Updated nodejs to v18.14.2.
+- Updated lforms to v33.3.2.
+
 ## [3.0.1] 2022-12-09
 ### Changed
 - Updated website header and footer and logo.
