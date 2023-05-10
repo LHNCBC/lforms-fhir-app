@@ -3,6 +3,12 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [3.0.3] 2023-05-10
+### Changed
+- Updated lforms to v33.3.4, which fixed a bug that values in 
+  QuestionnaireResponse are not displayed when the values are 
+  from answerValueSet in the Questionnaire.
+
 ## [3.0.2] 2023-03-21
 ### Changed
 - Updated nodejs to v18.14.2.
