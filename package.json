@@ -24,6 +24,7 @@
     "karma-jasmine": "^1.1.2",
     "karma-junit-reporter": "^1.2.0",
     "parcel": "^2.1.1",
+    "process": "^0.11.10",
     "rimraf": "^3.0.2",
     "ssi": "^0.3.0",
     "superagent": "^6.1.0",
@@ -50,6 +51,7 @@
     "bootstrap": "^3.4.1",
     "escape-html": "^1.0.3",
     "fhirclient": "^2.4.0",
+    "lforms-loader": "^1.0.0",
     "lforms-updater": "^29.0.2"
   }
 }

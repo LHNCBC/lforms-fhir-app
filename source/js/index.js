@@ -1,6 +1,20 @@
+import {getLFormsLoadStatus} from './initLForms.js'; /* first, because it takes a while */
 import {fhirService} from './fhir.service.js';
+import './jquery-import.js'; // Needed by Bootstrap dialogs
 import {Dialogs} from './dialogs.js';
 import * as leftSideBar from './left-sidebar.js';
+
+// Now that enough things have loaded to show an error message, check on the
+// status of loading LHC-Forms.
+
+;
+getLFormsLoadStatus().then(()=>{console.log("calling efc"); establishFHIRContext()}, e=>{
+  errMsgElem.textContent =
+    'Unable to load LHC-Forms.  See the console for details.';
+  showErrorMsg(errMsgElem);
+  console.log('Unable to load LHC-Forms version '+lformsVersion);
+  console.log(e);
+});
 
 /**
  * Get the connection to FHIR server and the selected patient
@@ -59,8 +73,6 @@ function updateUserAndPatientBanner() {
     'User: ' + fhirService.getUserName();
   document.querySelector('.lf-patient table').style.visibility = 'visible';
 }
-
-setTimeout(establishFHIRContext, 1);
 
 
 /**
