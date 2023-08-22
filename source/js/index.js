@@ -117,7 +117,7 @@ function setServerAndPickPatient(fhirServer, callback) {
         if (patientResource) {
           fhirService.setCurrentPatient(patientResource);
           fhirService.setNonSmartServerPatient(patientResource.id);
-          leftSideBar.initSideBarLists()
+          leftSideBar.initSideBarLists();
           updateUserAndPatientBanner();
         }
       });

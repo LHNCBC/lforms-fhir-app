@@ -3,8 +3,9 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
-## [3.1.0] 2023-08-
+## [3.1.0] 2023-08-22
 ### Changed
+- Now loads and uses the latest LHC-Forms version automatically.
 
 ## [3.0.3] 2023-05-10
 ### Changed
