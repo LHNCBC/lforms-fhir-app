@@ -1,6 +1,18 @@
+import {getLFormsLoadStatus} from './initLForms.js'; // first, because it takes a while
 import {fhirService} from './fhir.service.js';
+import './jquery-import.js'; // Needed by Bootstrap dialogs
 import {Dialogs} from './dialogs.js';
 import * as leftSideBar from './left-sidebar.js';
+import {spinner} from './spinner.js';
+
+// Now that enough things have loaded to show an error message, check on the
+// status of loading LHC-Forms.
+
+getLFormsLoadStatus().then(()=>establishFHIRContext(), e=>{
+  spinner.hide();
+  showErrorMsg('Unable to load LHC-Forms.  See the console for details.');
+});
+
 
 /**
  * Get the connection to FHIR server and the selected patient
@@ -12,6 +24,7 @@ function establishFHIRContext() {
   const params = (new URL(document.location)).searchParams;
   const fhirServerURL = params.get('server');
   if (fhirServerURL) {
+    spinner.hide();
     setServerAndPickPatient({url:fhirServerURL});
   }
   else {
@@ -22,13 +35,14 @@ function establishFHIRContext() {
           const patientPromise = smart.patient.read().then(function (pt) {
             fhirService.setCurrentPatient(pt);
             leftSideBar.initSideBarLists();
-          });
+          }).catch(e=>spinner.hide());
           const userPromise = smart.user.read().then(function(user) {
             fhirService.setCurrentUser(user);
           });
           Promise.all([patientPromise, userPromise]).then(function() {
             updateUserAndPatientBanner();
           }, function failed (msg) {
+            spinner.hide();
             console.log('Unable to read the patient and user resources.');
             console.log(msg);
             console.trace();
@@ -37,6 +51,7 @@ function establishFHIRContext() {
         }
         else {
           console.log("Could not establish a SMART connection.");
+          spinner.hide();
           selectServerAndPatient();
         }
       });
@@ -59,8 +74,6 @@ function updateUserAndPatientBanner() {
     'User: ' + fhirService.getUserName();
   document.querySelector('.lf-patient table').style.visibility = 'visible';
 }
-
-setTimeout(establishFHIRContext, 1);
 
 
 /**

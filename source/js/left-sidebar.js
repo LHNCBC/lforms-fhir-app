@@ -128,6 +128,7 @@ showDate.addEventListener('change', ()=>{
  *  (It assumes those two things have happened.)
  */
 export function initSideBarLists() {
+  spinner.show();
   const numFeaturedQs = initFeaturedList();
   loadSavedQRList().then((qrCount) => {
     loadSavedQList().then((qCount) => {
@@ -137,8 +138,8 @@ export function initSideBarLists() {
         document.getElementById('toggleQRList').click();
       else if (qCount)
         document.getElementById('toggleQList').click();
-    });
-  });
+    }).finally(()=>spinner.hide());
+  }).catch(()=>spinner.hide());
 }
 
 

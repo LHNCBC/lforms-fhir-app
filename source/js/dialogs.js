@@ -70,7 +70,6 @@ export const Dialogs = {
   showMsgDialog: function (title, msg) {
     document.getElementById('msgModalTitle').textContent = title;
     document.getElementById('msgMessageBody').textContent = msg;
-    announce('Showing dialog with title: ' +title);
     $('#msgDialog').modal('show');
   },
 
