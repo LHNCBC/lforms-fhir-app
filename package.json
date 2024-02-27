@@ -53,7 +53,7 @@
     "bootstrap": "^3.4.1",
     "escape-html": "^1.0.3",
     "fhirclient": "^2.4.0",
-    "lforms-loader": "^1.0.0",
+    "lforms-loader": "^2.0.3",
     "lforms-updater": "^29.0.2"
   }
 }
