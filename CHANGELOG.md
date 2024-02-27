@@ -3,7 +3,7 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
-## [3.2.0] 2023-08-22
+## [3.2.0] 2024-02-27
 ### Changed
 - updated lforms-loader version.
 
