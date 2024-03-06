@@ -54,6 +54,6 @@
     "escape-html": "^1.0.3",
     "fhirclient": "^2.4.0",
     "lforms-loader": "^3.0.0",
-    "lforms-updater": "^29.0.2"
+    "lforms-updater": "^30.0.0"
   }
 }
