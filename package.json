@@ -18,7 +18,7 @@
   ],
   "devDependencies": {
     "autocomplete-lhc": "^18.2.0",
-    "cypress": "^10.6.0",
+    "cypress": "^13.6.6",
     "http-server": "^14.1.0",
     "jasmine-core": "^3.2.1",
     "jasmine-spec-reporter": "^4.2.1",
