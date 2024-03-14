@@ -1,6 +1,6 @@
 {
   "name": "lforms-fhir-app",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "A SMART on FHIR app for lforms",
   "repository": "https://github.com/lhncbc/lforms-fhir-app",
   "source": [
@@ -18,7 +18,7 @@
   ],
   "devDependencies": {
     "autocomplete-lhc": "^18.2.0",
-    "cypress": "^10.6.0",
+    "cypress": "^13.6.6",
     "http-server": "^14.1.0",
     "jasmine-core": "^3.2.1",
     "jasmine-spec-reporter": "^4.2.1",
@@ -29,6 +29,7 @@
     "parcel": "^2.1.1",
     "rimraf": "^3.0.2",
     "ssi": "^0.3.0",
+    "start-server-and-test": "^2.0.3",
     "superagent": "^6.1.0",
     "tmp": "^0.2.1"
   },
@@ -45,7 +46,7 @@
     "start-no-open": "http-server -s -a localhost -p $npm_package_config_serverPort -c-1 dist",
     "start-public": "http-server -s -o $npm_package_name -p $npm_package_config_serverPort -c-1 dist",
     "prestart-public": "npm run prestart",
-    "test": "npm run start-no-open & sleep 5; npm run cy:run; s=$?; kill %1; exit $s",
+    "test": "start-server-and-test start-no-open http://localhost:$npm_package_config_serverPort cy:run",
     "cy:open": "cypress open",
     "cy:run": "cypress run"
   },
@@ -53,7 +54,7 @@
     "bootstrap": "^3.4.1",
     "escape-html": "^1.0.3",
     "fhirclient": "^2.4.0",
-    "lforms-loader": "^1.0.0",
-    "lforms-updater": "^29.0.2"
+    "lforms-loader": "^3.0.0",
+    "lforms-updater": "^30.0.0"
   }
 }
