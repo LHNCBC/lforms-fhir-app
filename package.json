@@ -52,9 +52,11 @@
     "start-public": "http-server -s -o $npm_package_name -p $npm_package_config_serverPort -c-1 dist",
     "prestart-public": "npm run prestart",
     "test": "start-server-and-test start-no-open http://localhost:$npm_package_config_serverPort cy:run",
-    "windows:test": "start-server-and-test windows:start-no-open http://localhost:%npm_package_config_serverPort% cy:run",
+    "windows:test": "start-server-and-test windows:start-no-open http://localhost:%npm_package_config_serverPort% windows:cy:run",
     "cy:open": "cypress open",
-    "cy:run": "cypress run"
+    "windows:cy:open": "node_modules\\.bin\\cypress open",
+    "cy:run": "cypress run",
+    "windows:cy:run": "node_modules\\.bin\\cypress run"
   },
   "dependencies": {
     "bootstrap": "^3.4.1",
