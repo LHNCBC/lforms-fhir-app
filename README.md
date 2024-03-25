@@ -70,6 +70,7 @@ two new folders in your project.
 Add node_modules/.bin to your path.
 
 ### Build the application
+(For Windows, please use scripts that are prefixed with "windows:", e.g. npm run windows:build.)
 ```
 npm run build
 ```
