@@ -1,5 +1,6 @@
 // Replaces the version placeholder in the built index.html file.
-// Used on Windows.
+// This script is created so that the work can be done cross-platform,
+// since there isn't a good equivalent of the 'sed' command on Windows.
 
 const fs = require('fs');
 
