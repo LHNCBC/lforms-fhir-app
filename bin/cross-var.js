@@ -1,3 +1,6 @@
+// This file is based on the cross-var package https://www.npmjs.com/package/cross-var.
+// The license is included in the same directory.
+
 const {spawn} = require('cross-spawn');
 
 /**
