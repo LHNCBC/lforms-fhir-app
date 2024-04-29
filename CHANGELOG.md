@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [3.3.0] 2024-03-25
+### Added
+- Scripts for Windows environment.
+
 ## [3.2.0] 2024-02-27
 ### Changed
 - updated lforms-loader version.
