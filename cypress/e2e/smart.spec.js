@@ -375,6 +375,23 @@ describe('SMART on FHIR connection', () => {
           cy.get(msgBody)
               .should('contain.text', 'sdc-questionnaire');
         });
+
+        it('should set subject and author', () => {
+          cy.get(msgBody)
+            .invoke('text')
+            .then((text) => {
+              const data = JSON.parse(text);
+              expect(data.author).to.deep.equal({
+                reference: 'Practitioner/smart-Practitioner-71482713',
+                type: 'Practitioner',
+                display: 'Susan Clark'
+              });
+              expect(data.subject).to.deep.equal({
+                reference: 'Patient/smart-1186747',
+                display: 'Daniel Johnson'
+              });
+            });
+        });
       });
     });
   });

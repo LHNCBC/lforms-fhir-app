@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [3.3.1] 2024-05-10
+### Added
+- Set subject and author when showing questionnaire response.
+
 ## [3.3.0] 2024-03-25
 ### Added
 - Scripts for Windows environment.

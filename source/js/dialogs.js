@@ -101,7 +101,12 @@ export const Dialogs = {
    */
   showFHIRSDCQuestionnaireResponse: function (event) {
     var sdc = LForms.Util.getFormFHIRData('QuestionnaireResponse',
-      outputFHIRVersion_, formContainer_);
+      outputFHIRVersion_, formContainer_, {
+        subject: fhirService.getCurrentPatient()
+      });
+    if (fhirService.getCurrentUser() && !sdc.author) {
+      sdc.author = fhirService.getCurrentUserReference();
+    }
     var fhirString = JSON.stringify(sdc, null, 2);
     this.showDataDialog("FHIR SDC QuestionnaireResponse Content", fhirString);
   },
