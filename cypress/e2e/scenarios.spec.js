@@ -62,27 +62,6 @@ describe('fhir app', () => {
       cy.byId(bmi)
           .should('have.value', '17');
     });
-
-    describe('Warnings or errors', () => {
-      it("should show an error message if the FHIR version is not supported", () => {
-        // Edit a working sample file.
-        cy.visit(mainPageURL);
-        util.dismissFHIRServerDialog();
-        // For some reason Cypress reads the file into a Uint8Array if I put the extension '.json' here, even though
-        // it's supposed to work the same, just like in other test cases calling util.uploadFormWithTitleChange().
-        cy.fixture('R4/weight-height-questionnaire').then((qData) => {
-          console.log(qData);
-          qData.meta.profile = ['http://hl7.org/fhir/1.0/StructureDefinition/Questionnaire'];
-          cy.task('createTmpFile', JSON.stringify(qData, null, 2))
-              .then((tempFilePath) => {
-                util.uploadForm(tempFilePath, false);
-              });
-        });
-        cy.get('.error')
-            .should('be.visible');
-        cy.task('cleanUpTmpFiles');
-      });
-    });
   });
 
   describe('R4 examples', () => {

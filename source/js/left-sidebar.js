@@ -430,7 +430,7 @@ function getQName(q) {
  * @return a Promise that resolves if the form is successfully shown.
  */
 function showSavedQQR(q, qr) {
-  return formPane.showForm(q, null, true, qr);
+  return formPane.showForm(q, {questionnaireResponse: qr}, true);
 }
 
 

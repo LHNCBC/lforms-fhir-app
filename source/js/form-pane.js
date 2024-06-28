@@ -80,10 +80,9 @@ document.getElementById('btn-delete').addEventListener('click',
  * @param addOptions the options object for LForms.Util.addFormToPage.
  * @param onServer true if the Questionnaire definition is on the current FHIR
  *  server. (Default: false)
- * @param savedQR (optional) A QuestionnaireResponse to show using the form.
  * @return a Promise that resolves when the form is successfully shown.
  */
-export function showForm(formDef, addOptions, onServer, savedQR) {
+export function showForm(formDef, addOptions, onServer) {
   util.hide(initialMsgElem_);
   removeErrMsg();
   removeForm();
@@ -94,32 +93,13 @@ export function showForm(formDef, addOptions, onServer, savedQR) {
   formDef = lformsUpdater.update(formDef);
 
   let rtn;
-  if (formDef.resourceType === 'Questionnaire') {
-    // Convert it to the LForms format
-    const fhirVersion = onServer ? fhirService.fhirVersion : undefined;
-    formDef = LForms.Util.convertFHIRQuestionnaireToLForms(
-      formDef, fhirVersion);
-    if (savedQR) {
-      var newFormData = (new LForms.LFormsData(formDef));
-      try {
-        formDef = LForms.Util.mergeFHIRDataIntoLForms(
-          'QuestionnaireResponse', savedQR, newFormData, fhirVersion);
-      }
-      catch (e) {
-        showError('Sorry.  Could not process that '+
-          'QuestionnaireResponse.  See the console for details.', e);
-        formDef = null;
-        rtn = Promise.reject(e);
-      }
-    }
-  }
 
   if (formDef) {
     if (onServer) {
       originalQDef_ = formDefParam;
-      lastSavedQR_ = savedQR;
+      lastSavedQR_ = addOptions?.questionnaireResponse;
     }
-    saveDeleteVisibility(!!savedQR);
+    saveDeleteVisibility(!!addOptions?.questionnaireResponse);
     setFromServerMenuItemVisibility();
     rtn = new Promise((resolve, reject)=> {
       try {
