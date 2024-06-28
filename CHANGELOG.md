@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [3.3.2] 2024-06-28
+### Changed
+- Simplify lforms API calls when showing a saved questionnaire response.
+
 ## [3.3.1] 2024-05-10
 ### Added
 - Set subject and author when showing questionnaire response.
