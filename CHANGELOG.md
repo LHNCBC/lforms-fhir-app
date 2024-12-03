@@ -3,6 +3,11 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [3.3.2] 2024-12-03
+### Changed
+- Turned on the support for displaying HTML content on item.text, item.prefix
+  help and answer's text.
+
 ## [3.3.2] 2024-06-28
 ### Changed
 - Simplify lforms API calls when showing a saved questionnaire response.
