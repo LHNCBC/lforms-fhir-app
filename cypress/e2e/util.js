@@ -328,7 +328,10 @@ export const util = {
         console.log("For "+query+" the server reported a total of "+res.body.total+
             " resources, but "+entries?.length+" were returned. Retrying.");
         return new Promise((resolve) => {
-          setTimeout(()=>resolve(util._findResourceIds(query)), 10000);
+          // On rare occasions we end up having too many test resources but the
+          // query returns a paging size of 20 with a "next" link.
+          // Add _count param to return all resources.
+          setTimeout(()=>resolve(util._findResourceIds(query + '&_count=' + reportedTotal)), 10000);
         });
       }
       else {
