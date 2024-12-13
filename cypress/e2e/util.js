@@ -326,9 +326,7 @@ export const util = {
         // On rare occasions we end up having too many test resources but the
         // query returns a paging size of 20 with a "next" link.
         resourceIdsAlreadyReturned.push(...entries.map(e => e.resource.id));
-        return new Promise((resolve) => {
-          setTimeout(() => resolve(util._findResourceIds(nextLink.url, resourceIdsAlreadyReturned)), 0);
-        });
+        return util._findResourceIds(nextLink.url, resourceIdsAlreadyReturned);
       } else if (!resourceIdsAlreadyReturned.length && reportedTotal && (entries?.length !== reportedTotal)) {
         // Sometimes HAPI reports a number of resources, but does not include
         // them.  This might have been due to a caching issue, addressed above by
