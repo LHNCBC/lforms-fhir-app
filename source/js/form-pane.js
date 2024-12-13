@@ -92,6 +92,14 @@ export function showForm(formDef, addOptions, onServer) {
   const formDefParam = formDef;
   formDef = lformsUpdater.update(formDef);
 
+  if (!addOptions) {
+    addOptions = {}
+  }
+  // turn on the allowHTML option unless it is already set to false
+  if (addOptions.allowHTML !== false) {
+    addOptions.allowHTML = true;
+  }
+
   let rtn;
 
   if (formDef) {
