@@ -365,6 +365,19 @@ thisService.setQRRefToQ = function(qrData, qData) {
 
 
 /**
+ * Escape a FHIR search param by prefixing ",|$\" with a "\".
+ * See LF-1281.
+ */
+function escapeFhirSearchParam(searchParam) {
+  if (typeof searchParam === 'string') {
+    return searchParam.replace(/[,$|\\]/g, "\\$&");
+  } else {
+    return searchParam;
+  }
+}
+
+
+/**
  *  Builds a FHIR search query and returns a promise with the result.
  * @param searchConfig an object with the following sub-keys for configuring the search.
  *  type: (required) the Resource type to search for
@@ -380,16 +393,16 @@ function fhirSearch(searchConfig) {
     var key, val;
     for (var i=0, len=queryVarKeys.length; i<len; ++i) {
       key = queryVarKeys[i];
-      val =  queryVars[key];
+      val = queryVars[key];
       if (Array.isArray(val)) {
         // For multiple values, repeat the search parameter name, so that the
         // effect is an AND (e.g., if the user is searching on a Patient name,
         // and has typed both a first and a last name).
         for (let j=0, jLen=val.length; j<jLen; ++j)
-          searchParams.append(key, val[j]);
+          searchParams.append(key, escapeFhirSearchParam(val[j]));
       }
       else
-        searchParams.append(key, val);
+        searchParams.append(key, escapeFhirSearchParam(val));
     }
   }
   return thisService.fhir.request({

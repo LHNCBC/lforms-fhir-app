@@ -314,25 +314,33 @@ export const util = {
    *  Returns a promise that resolves to an array of IDs of resources returned
    *  by a given query.  Used by deleteTestResources.
    * @param query the query to run against a FHIR server.
+   * @param resourceIdsAlreadyReturned a list of resource IDs already returned
    */
-  _findResourceIds: function(query) {
+  _findResourceIds: function (query, resourceIdsAlreadyReturned = []) {
     query += '&_total=accurate';
     return sAgent.get(query).set('Cache-Control', 'no-cache').then(res => {
       let entries = res.body.entry;
       const reportedTotal = res.body.total;
-      if (reportedTotal && (entries?.length !== reportedTotal)) {
+      const nextLink = res.body.link?.find(x => x.relation === 'next');
+      if (nextLink) {
+        // On rare occasions we end up having too many test resources but the
+        // query returns a paging size of 20 with a "next" link.
+        resourceIdsAlreadyReturned.push(...entries.map(e => e.resource.id));
+        return util._findResourceIds(nextLink.url, resourceIdsAlreadyReturned);
+      } else if (!resourceIdsAlreadyReturned.length && reportedTotal && (entries?.length !== reportedTotal)) {
         // Sometimes HAPI reports a number of resources, but does not include
         // them.  This might have been due to a caching issue, addressed above by
         // setting a Cache-Control header, but I am leaving this here in case we
         // see the problem again.
-        console.log("For "+query+" the server reported a total of "+res.body.total+
-            " resources, but "+entries?.length+" were returned. Retrying.");
+        console.log("For " + query + " the server reported a total of " + res.body.total +
+          " resources, but " + entries?.length + " were returned. Retrying.");
         return new Promise((resolve) => {
-          setTimeout(()=>resolve(util._findResourceIds(query)), 10000);
+          setTimeout(() => resolve(util._findResourceIds(query)), 10000);
         });
-      }
-      else {
-        return entries ? entries.map(e=>e.resource.id) : [];
+      } else {
+        const newlyReturned = entries ? entries.map(e => e.resource.id) : [];
+        resourceIdsAlreadyReturned.push(...newlyReturned);
+        return resourceIdsAlreadyReturned;
       }
     });
   },

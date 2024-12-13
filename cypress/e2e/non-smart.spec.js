@@ -338,21 +338,35 @@ describe('Non-SMART connection to FHIR server', () => {
         const title = 'Height';
         const ptField = '#resSelection';
         cy.get('#search')
-            .click();
+          .click();
         cy.get(ptField)
-            .should('be.visible')
-            .type(title);
+          .should('be.visible')
+          .type(title);
         cy.get('#searchResults')
-            .should('contain.text', title);
+          .should('contain.text', title);
         cy.get(ptField)
-            .type('{downArrow}')
-            .blur();
+          .type('{downArrow}')
+          .blur();
         cy.get('#resSelectBtn')
-            .click();
+          .click();
         // Confirm questionnaire is displayed
         cy.get('.lhc-form-title > span')
-            .should('be.visible')
-            .should('contain.text', title);
+          .should('be.visible')
+          .should('contain.text', title);
+      });
+
+      it('should prefix "," with "\\" in FHIR search param', () => {
+        const title = 'vital signs, weight';
+        const ptField = '#resSelection';
+        // "vital signs\, weight"
+        cy.intercept('**/Questionnaire?title=vital+signs%5C%2C+weight&_count=7')
+          .as('fhirSearchQuery');
+        cy.get('#search')
+          .click();
+        cy.get(ptField)
+          .should('be.visible')
+          .type(title);
+        cy.wait('@fhirSearchQuery');
       });
     });
   });
