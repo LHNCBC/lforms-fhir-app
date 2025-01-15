@@ -6,6 +6,9 @@ export const fhirService = {};
 
 const thisService = fhirService;
 
+// FHIR version of the connected FHIR server
+thisService.fhirVersion = null;
+
 // current user
 thisService.currentUser = null;
 
@@ -149,12 +152,19 @@ thisService.getSmartConnection = function() {
 
 
 /**
- *  Returns the service URL of the FHIR server the app is using.
+ * Returns the service URL of the FHIR server the app is using.
  */
 thisService.getServerServiceURL = function() {
   return thisService.getSmartConnection().state.serverUrl;
 };
 
+
+/**
+ * Return the FHIR version of the connected FHIR server.
+ */
+thisService.getFHIRVersion = function() {
+  return thisService.fhirVersion;
+}
 
 /**
  * Set the current user (practitioner/patient/related persion/...)

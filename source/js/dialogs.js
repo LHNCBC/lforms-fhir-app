@@ -6,15 +6,15 @@ import { config } from './config.js';
 import {fhirService} from './fhir.service.js';
 import * as util from './util.js';
 import 'bootstrap/js/modal.js';
-import { fhirServerConfig } from './fhir-server-config';
+import { fhirServerConfig } from './fhir-server-config.js';
 import escapeHtml from 'escape-html';
 //const escapeHtml = require('escape-html');
 import {spinner} from './spinner.js';
 
 /**
- *  The version of FHIR output by this app (in the "show" dialogs).
+ *  The default version of FHIR output by this app (in the "show" dialogs).
  */
-const outputFHIRVersion_ = 'R4';
+const defaultVersion = 'R4';
 
 /**
  *  A reference to the element into which the form will be placed.
@@ -89,7 +89,7 @@ export const Dialogs = {
    */
   showFHIRSDCQuestionnaire: function (event) {
     var sdc = LForms.Util.getFormFHIRData('Questionnaire',
-      outputFHIRVersion_, formContainer_);
+      fhirService.getFHIRVersion() || this.defaultVersion, formContainer_);
     var fhirString = JSON.stringify(sdc, null, 2);
     this.showDataDialog("FHIR SDC Questionnaire Content", fhirString);
   },
@@ -101,7 +101,7 @@ export const Dialogs = {
    */
   showFHIRSDCQuestionnaireResponse: function (event) {
     var sdc = LForms.Util.getFormFHIRData('QuestionnaireResponse',
-      outputFHIRVersion_, formContainer_, {
+      fhirService.getFHIRVersion() || this.defaultVersion, formContainer_, {
         subject: fhirService.getCurrentPatient()
       });
     if (fhirService.getCurrentUser() && !sdc.author) {
