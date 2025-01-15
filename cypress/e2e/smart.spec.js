@@ -244,7 +244,7 @@ describe('SMART on FHIR connection', () => {
             .should('be.visible');
       });
 
-      it('should delete a saved QuestionnarieResponse and associated Observations', () => {
+      it('should delete a saved QuestionnaireResponse and associated Observations', () => {
         // Save a new QuestionnaireResponse
         util.uploadFormWithTitleChange('R4/ussg-fhp.json');
         cy.get(familyMemberName)
