@@ -53,7 +53,7 @@
     "cy:run": "cypress run"
   },
   "dependencies": {
-    "bootstrap": "^3.4.1",
+    "bootstrap": "^5.3.3",
     "escape-html": "^1.0.3",
     "fhirclient": "^2.4.0",
     "lforms-loader": "^3.0.0",

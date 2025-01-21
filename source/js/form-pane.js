@@ -2,7 +2,7 @@ import {config} from './config.js';
 import { announce } from './announcer'; // for a screen reader
 import * as util from './util'
 import {spinner} from './spinner.js';
-import 'bootstrap/js/dropdown.js';
+import { Dropdown as Dropdown } from 'bootstrap';
 import {Dialogs} from './dialogs.js';
 import {fhirService} from './fhir.service.js';
 import lformsUpdater from 'lforms-updater';

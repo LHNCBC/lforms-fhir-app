@@ -1,7 +1,7 @@
 'use strict';
 // Functions and initialization for the left navigation bar.
 
-import 'bootstrap/js/collapse.js';
+import { Collapse as Collapse } from 'bootstrap';
 import * as util from './util';
 import { announce } from './announcer'; // for a screen reader
 import * as formPane from './form-pane';
