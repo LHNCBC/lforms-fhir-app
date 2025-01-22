@@ -10,15 +10,28 @@
   font-size: 13px;
 }
 
-.panel-body p a, .modal-body a {
-  color: #337ab7;
-}
-.panel-body p a:hover, .modal-body a:hover {
-  color: #23527c;
+#listAccordion .accordion-button a:hover {
+  color: inherit;
 }
 
-#listAccordion .panel-title a:hover {
-  color: inherit;
+#listAccordion .accordion-body {
+  padding: 0;
+}
+
+.accordion-item:not(:first-of-type) {
+  margin-top: 5px;
+}
+
+.accordion-header > .accordion-button > a {
+  color: #333;
+}
+
+.btn-group-justified {
+  width: 100%;
+}
+
+.card {
+  margin-bottom: 20px;
 }
 
 /* End of overrides needed due to styles from lforms */
