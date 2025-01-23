@@ -230,7 +230,7 @@ function setFromServerMenuItemVisibility() {
 export function saveDeleteVisibility(visibility) {
   const saveDeleteGroup = document.getElementById('saveDeleteGroup');
   if (visibility) {
-    util.show(saveDeleteGroup);
+    util.show(saveDeleteGroup, 'inline-block');
   } else {
     util.hide(saveDeleteGroup);
   }

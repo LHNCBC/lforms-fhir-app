@@ -14,6 +14,12 @@
   --bs-btn-font-size: 12px;
 }
 
+.btn-group-sm>.btn, .btn-sm {
+  --bs-btn-padding-y: 5px;
+  --bs-btn-padding-x: 10px;
+  --bs-btn-font-size: 12px;
+}
+
 .list-group {
   --bs-list-group-item-padding-x: 15px;
   --bs-list-group-item-padding-y: 10px;
