@@ -173,19 +173,30 @@ export const Dialogs = {
     this.selectButtonClicked = false;
     if (!this.resPickerResolve_) { // if we haven't opened this before
       const selectButton = document.getElementById('resSelectBtn');
-      let selectButtonClicked = false; // whether it was the most recent button clicked
-      selectButton.addEventListener('click', ()=>{selectButtonClicked = true});
-      dialogEl.addEventListener('hidden.bs.modal', (e) => {
-        // Only take special action if the "select" button was the cause of the close
-        if (selectButtonClicked) {
-          selectButtonClicked = false; // reset the flag
-          const selectedData = selectionField.autocomp.getSelectedItemData();
-          // Make sure the user has not changed the field to an non-list value
-          if (selectedData?.length && (selectedData[0].text === selectionField.value))
-            this.resPickerResolve_(selectedData[0].data?.resource);
-          else
-            e.preventDefault();
+      selectButton.addEventListener('click', (e)=>{
+        this.selectButtonClicked = true;
+      });
+      // This is to prevent the "Blocked aria-hidden on an element because its descendant retained focus" warning.
+      dialogEl.addEventListener('hide.bs.modal', (e) => {
+        if (document.activeElement) {
+          document.activeElement.blur();
         }
+      });
+      dialogEl.addEventListener('hidden.bs.modal', (e) => {
+        // setTimeout to make sure below code is executed after the select button click event callback above,
+        // so that this.selectButtonClicked is set to true.
+        setTimeout(() => {
+          // Only take special action if the "select" button was the cause of the close
+          if (this.selectButtonClicked) {
+            this.selectButtonClicked = false; // reset the flag
+            const selectedData = selectionField.autocomp.getSelectedItemData();
+            // Make sure the user has not changed the field to an non-list value
+            if (selectedData?.length && (selectedData[0].text === selectionField.value))
+              this.resPickerResolve_(selectedData[0].data?.resource);
+            else
+              e.preventDefault();
+          }
+        }, 0);
       });
       const closeBtn = document.getElementById('resCloseBtn');
       closeBtn.addEventListener('click', ()=>this.resPickerResolve_());
@@ -196,9 +207,8 @@ export const Dialogs = {
     document.getElementById('searchResults').style.zIndex = "1100";
 
     this.hideMsgDialog();
-    const dialogInstance = Modal.getOrCreateInstance(dialogEl);
-    dialogInstance.show();
-    announce('A dialog for selecting a '+resType+' is being opened');
+    Modal.getOrCreateInstance(dialogEl).show();
+    announce('A dialog for selecting a ' + resType + ' is being opened');
 
     return new Promise((resolve, reject) => {
       this.resPickerResolve_ = resolve;
