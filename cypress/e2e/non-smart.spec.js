@@ -330,7 +330,7 @@ describe('Non-SMART connection to FHIR server', () => {
     });
 
     describe('Search Questionnaires', () => {
-      before(() => {
+      beforeEach(() => {
         util.expandAvailQs();
       });
 
