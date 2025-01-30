@@ -22,7 +22,8 @@
   margin-top: 5px;
 }
 
-.accordion-header > .accordion-button > a {
+.accordion-header > .accordion-button > a,
+.accordion-header > .d-flex > .accordion-button > a{
   color: #333;
 }
 
