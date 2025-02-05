@@ -11,7 +11,7 @@ describe('fhir app', () => {
       util.dismissFHIRServerDialog();
       cy.byId(title)
           .should('be.visible');
-      cy.get('.panel-heading .panel-title')
+      cy.get('.accordion-header .accordion-button')
           .eq(0)
           .invoke('text')
           .should('match', /Saved QuestionnaireResponses/);

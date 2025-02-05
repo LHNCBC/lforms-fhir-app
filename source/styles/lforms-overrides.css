@@ -10,15 +10,35 @@
   font-size: 13px;
 }
 
-.panel-body p a, .modal-body a {
-  color: #337ab7;
-}
-.panel-body p a:hover, .modal-body a:hover {
-  color: #23527c;
+#listAccordion .accordion-button a:hover {
+  color: inherit;
 }
 
-#listAccordion .panel-title a:hover {
-  color: inherit;
+#listAccordion .accordion-body {
+  padding: 0;
+}
+
+.accordion-item:not(:first-of-type) {
+  margin-top: 5px;
+}
+
+.accordion-header > .accordion-button > a,
+.accordion-header > .d-flex > .accordion-button > a{
+  color: #333;
+}
+
+.btn-group-justified {
+  width: 100%;
+}
+
+.card {
+  margin-bottom: 20px;
+}
+
+a.list-group-item:hover {
+  color: #555;
+  background-color: #f5f5f5;
+  text-decoration: none;
 }
 
 /* End of overrides needed due to styles from lforms */
