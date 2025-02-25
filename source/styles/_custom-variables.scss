@@ -1,0 +1,45 @@
+:root {
+  -bs-body-font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+
+.btn-success {
+  --bs-btn-bg: #5cb85c;
+  --bs-btn-hover-bg: #398439;
+}
+
+.btn-primary {
+  --bs-btn-bg: #337ab7;
+  --bs-btn-hover-bg: #286090;
+  --bs-btn-active-bg: #204d74;
+}
+
+.btn-default {
+  --bs-btn-hover-bg: #e6e6e6;
+}
+
+.btn {
+  --bs-btn-font-size: 12px;
+}
+
+.btn-group-sm>.btn, .btn-sm {
+  --bs-btn-padding-y: 5px;
+  --bs-btn-padding-x: 10px;
+  --bs-btn-font-size: 12px;
+}
+
+.dropdown-menu {
+  --bs-dropdown-font-size: 14px;
+  --bs-dropdown-padding-y: 5px;
+}
+
+.list-group {
+  --bs-list-group-item-padding-x: 15px;
+  --bs-list-group-item-padding-y: 10px;
+  --bs-list-group-active-bg: #337ab7;
+}
+
+.accordion {
+  --bs-accordion-body-padding-x: 0;
+  --bs-accordion-body-padding-y: 0;
+  --bs-accordion-bg: #f5f5f5;
+}

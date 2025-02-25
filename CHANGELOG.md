@@ -3,11 +3,15 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
-## [3.3.5] 2025-01-14
+## [3.4.1] 2025-02-24
 ### Changed
 - Changed the FHIR version in the shown Questionnaire and QuestionnaireResponse
   to be the FHIR version of the connected FHIR server. 
 - Added a R5 FHIR server in the FHIR server list.
+
+## [3.4.0] 2025-01-24
+### Changed
+- Upgraded to Bootstrap 5.
 
 ## [3.3.4] 2024-12-13
 ### Changed

@@ -15,9 +15,12 @@ export const util = {
    *  The tests here do not interact with a FHIR server, so we need to dismiss that selection box.
    */
   dismissFHIRServerDialog: function () {
+    cy.get('#serverSelectDialog')
+        .should('be.visible');
+    cy.wait(200); // wait for the dialog to be fully visible
     cy.get('#serverCloseBtn')
-        .should('be.visible')
-        .click()
+        .click();
+    cy.get('#serverSelectDialog')
         .should('not.be.visible');
   },
 
@@ -34,7 +37,7 @@ export const util = {
     cy.get('#upload')
         .should('be.visible');
     cy.get('input[type=file]')
-        .invoke('attr', 'class', '');
+        .invoke('attr', 'style', 'display: block;');
     if (isFixture) {
       cy.fixture(formFileName)
           .as('myFixture');
@@ -45,7 +48,7 @@ export const util = {
           .selectFile(formFileName);
     }
     cy.get('input[type=file]')
-        .invoke('attr', 'class', 'hide');
+        .invoke('attr', 'style', 'display: none;');
     cy.get('.error', { timeout: 15000 })
         .should('exist');
   },
@@ -80,14 +83,16 @@ export const util = {
    */
   selectServerUsingDialog: function(serverURL) {
     const urlField = '#serverSelection';
+    cy.get('#serverSelectDialog')
+        .should('be.visible');
+    cy.wait(200); // wait for the dialog to be fully visible
     cy.get(urlField)
-        .should('be.visible')
         .type(serverURL)
         .blur();
     cy.get('#serverSelectBtn')
         .click();
     // Wait for dialog to close
-    cy.get('#serverSelectBtn')
+    cy.get('#serverSelectDialog')
         .should('not.be.visible');
   },
 
@@ -466,10 +471,11 @@ export const util = {
   closeResDialog: function () {
     const closeButton = '#closeDataDialog';
     cy.get(closeButton)
-        .should('be.visible')
-        .click();
+      .scrollIntoView()
+      .should('be.visible')
+      .click();
     cy.get(closeButton)
-        .should('not.be.visible');
+      .should('not.be.visible');
   },
 
 
