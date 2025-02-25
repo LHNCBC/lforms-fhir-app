@@ -373,7 +373,7 @@ describe('SMART on FHIR connection', () => {
 
         it('should be an SDC QuestionnaireResponse', () => {
           cy.get(msgBody)
-              .should('contain.text', 'sdc-questionnaire');
+              .should('contain.text', 'http://hl7.org/fhir/4.0/StructureDefinition/QuestionnaireResponse');
         });
 
         it('should set subject and author', () => {
