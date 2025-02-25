@@ -8,3 +8,4 @@ node_modules/
 .parcel-cache/
 cypress/videos
 cypress/screenshots/
+cypress/downloads/
