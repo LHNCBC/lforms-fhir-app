@@ -240,7 +240,7 @@ describe('Non-SMART connection to FHIR server', () => {
             .should('be.visible');
       });
 
-      it('should delete a saved QuestionnarieResponse and associated Observations', () => {
+      it('should delete a saved QuestionnaireResponse and associated Observations', () => {
         // Save a new QuestionnaireResponse
         util.uploadFormWithTitleChange('R4/ussg-fhp.json');
         cy.get(familyMemberName)
@@ -434,5 +434,60 @@ describe('Non-SMART connection to FHIR server', () => {
       cy.byId('fqList')
           .should('not.be.visible');
     });
+  });
+
+  describe('Switching FHIR Server', () => {
+    const danielJohnsonID = 'smart-1186747';
+    const msgBody = '#messageBody';
+
+    it('should show a STU3 Questionnaire when https://lforms-fhir.nlm.nih.gov/baseDstu3 is selected', () => {
+      cy.visit(mainPageURL+'?server=https://lforms-fhir.nlm.nih.gov/baseDstu3');
+      // Wait for patient picker to open
+      pickPatient('Daniel J', 1); // "Daniel Johnson"
+
+      // upload the weight and height questionnaire
+      util.uploadForm('STU3/weight-height-questionnaire.json');
+
+      util.showAsQuestionnaire();
+      cy.get(msgBody)
+        .should('contain.text', 'http://hl7.org/fhir/3.0/StructureDefinition/Questionnaire');
+
+      util.closeResDialog();
+
+    });
+
+    it('should show a R4 Questionnaire when https://lforms-fhir.nlm.nih.gov/baseR4 is selected', () => {
+      cy.visit(mainPageURL+'?server=https://lforms-fhir.nlm.nih.gov/baseR4');
+      // Wait for patient picker to open
+      pickPatient('Daniel J', 1); // "Daniel Johnson"
+
+      // upload the weight and height questionnaire
+      util.uploadForm('R4/weight-height-questionnaire.json');
+          
+      // show questionnaire
+      util.showAsQuestionnaire();
+      cy.get(msgBody)
+        .should('contain.text', 'http://hl7.org/fhir/4.0/StructureDefinition/Questionnaire');
+
+      util.closeResDialog();
+
+    });
+
+    it('should show a R5 Questionnaire when https://lforms-fhir.nlm.nih.gov/baseR5 is selected', () => {
+      cy.visit(mainPageURL+'?server=https://lforms-fhir.nlm.nih.gov/baseR5');
+      // Wait for patient picker to open
+      pickPatient('Daniel J', 1); // "Daniel Johnson"
+
+      // upload the weight and height questionnaire (R4 Q can be loaded as R5 Q)
+      util.uploadForm('R4/weight-height-questionnaire.json');
+
+      util.showAsQuestionnaire();
+      cy.get(msgBody)
+        .should('contain.text', 'http://hl7.org/fhir/5.0/StructureDefinition/Questionnaire');
+
+      util.closeResDialog();
+    });
+
+    
   });
 });

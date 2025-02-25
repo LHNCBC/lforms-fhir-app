@@ -244,7 +244,7 @@ async function createQRToFhir() {
   spinner.show();
 
   var qr = LForms.Util.getFormFHIRData('QuestionnaireResponse',
-    fhirService.fhirVersion, formContainer_, {
+    fhirService.getFHIRVersion(), formContainer_, {
     subject: fhirService.getCurrentPatient()})
 
   // add an author if in SMART environment
@@ -260,7 +260,7 @@ async function createQRToFhir() {
     }
     else {
       var q = LForms.Util.getFormFHIRData('Questionnaire',
-        fhirService.fhirVersion, formContainer_)
+        fhirService.getFHIRVersion(), formContainer_)
       delete q.id;
       try {
         saveResults = await fhirService.createQQR(q, qr);
@@ -292,7 +292,7 @@ async function createQRToFhir() {
 async function saveAsQRExtracted() {
   spinner.show();
   var resArray = LForms.Util.getFormFHIRData('QuestionnaireResponse',
-    fhirService.fhirVersion, formContainer_, {extract: true,
+    fhirService.getFHIRVersion(), formContainer_, {extract: true,
     subject: fhirService.getCurrentPatient()});
 
   var qExists;
@@ -302,7 +302,7 @@ async function saveAsQRExtracted() {
   }
   else {
     var qData = LForms.Util.getFormFHIRData('Questionnaire',
-      fhirService.fhirVersion, formContainer_)
+      fhirService.getFHIRVersion(), formContainer_)
     qExists = false;
   }
   var qr = resArray.shift();
@@ -359,7 +359,7 @@ function updateQRToFhir() {
   if (lastSavedQR_) { // The questionnaire should be already saved
     spinner.show();
     var qr = LForms.Util.getFormFHIRData('QuestionnaireResponse',
-      fhirService.fhirVersion, formContainer_, {subject: fhirService.getCurrentPatient()});
+      fhirService.getFHIRVersion(), formContainer_, {subject: fhirService.getCurrentPatient()});
     fhirService.setQRRefToQ(qr, originalQDef_);
     qr.id = lastSavedQR_.id; // id must stay the same
     fhirService.fhir.update(qr).then((saveResults)=>{

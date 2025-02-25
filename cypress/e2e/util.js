@@ -25,7 +25,7 @@ export const util = {
   },
 
   /**
-   *  Uploads the requested form from the e2e-tests/data directory.
+   *  Uploads the requested form from the cypress/fixtures directory.
    *  Note: Consider using uploadFormWithTitleChange instead, which both
    *  modifies the title and tags the Questionnaire resource for easier cleanup.
    * @param formFileName the pathname to the form, relative to the test/data
@@ -104,7 +104,7 @@ export const util = {
    * @param formFilePath the pathname to the form, relative to the test/data
    *  directory.
    * @param prefix the text to prepend to the actual form title and to the
-   *  form's first identifier (so it cannot contain characters that identifer does
+   *  form's first identifier (so it cannot contain characters that identifier does
    *  not permit).  If not provided, a default will be used.
    */
   uploadFormWithTitleChange: function(formFilePath, prefix) {

@@ -67,6 +67,7 @@ export const fhirServerConfig = {
           id: 'lforms-ahn-hrsn-screening'
         },
 
-    ]}
+    ]},
+    { url: 'https://lforms-fhir.nlm.nih.gov/baseR5'}
   ]
 };
