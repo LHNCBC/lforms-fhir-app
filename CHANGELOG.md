@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [3.4.3] 2025-03-28
+### Changed
+- Increased the width of bootstrap 5 modal dialogs.
+
 ## [3.4.2] 2025-02-25
 ### Fixed
 - Fixed a test that failed on a new version of lforms.
