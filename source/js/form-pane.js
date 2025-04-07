@@ -72,6 +72,33 @@ document.getElementById('btn-save').addEventListener('click',
 document.getElementById('btn-delete').addEventListener('click',
   ()=>deleteQRObs());
 
+// Show or hide repetition numbers for the form displayed on the page, if there is one already displayed.
+document.getElementById('showRepetitionNumbers').addEventListener('change', (event) => {
+  const formTag = document.getElementsByTagName('wc-lhc-form')[0];
+  if (formTag) {
+    // Use spread syntax so we get a new object while maintaining untouched properties like allowHTML.
+    formTag.options = {...formTag.options, hideRepetitionNumber: !event.target.checked};
+  }
+});
+// Show or hide indentations for the form displayed on the page, if there is one already displayed.
+document.getElementById('showIndentation').addEventListener('change', (event) => {
+  const formTag = document.getElementsByTagName('wc-lhc-form')[0];
+  if (formTag) {
+    // Use spread syntax so we get a new object while maintaining untouched properties like allowHTML.
+    formTag.options = {...formTag.options, hideIndentation: !event.target.checked};
+  }
+  // Hide "show tree lines" checkbox if "show indentation" is unchecked. Tree lines won't be shown.
+  document.getElementById('showTreeLinesContainer').style.display = event.target.checked ? 'inline' : 'none';
+});
+// Show or hide tree lines for the form displayed on the page, if there is one already displayed.
+document.getElementById('showTreeLines').addEventListener('change', (event) => {
+  const formTag = document.getElementsByTagName('wc-lhc-form')[0];
+  if (formTag) {
+    // Use spread syntax so we get a new object while maintaining untouched properties like allowHTML.
+    formTag.options = {...formTag.options, hideTreeLine: !event.target.checked};
+  }
+});
+
 
 /**
  *  Renders the given form definition, replacing any previously shown form.
@@ -111,9 +138,15 @@ export function showForm(formDef, addOptions, onServer) {
     setFromServerMenuItemVisibility();
     rtn = new Promise((resolve, reject)=> {
       try {
+        const showRepetitionNumbers = document.getElementById('showRepetitionNumbers').checked;
+        const showIndentation = document.getElementById('showIndentation').checked;
+        const showTreeLines = document.getElementById('showTreeLines').checked;
+        addOptions.hideRepetitionNumber = !showRepetitionNumbers;
+        addOptions.hideIndentation = !showIndentation;
+        addOptions.hideTreeLine = !showTreeLines;
         LForms.Util.addFormToPage(formDef, formContainer_, addOptions).then(() => {
           spinner.hide();
-          util.show(formDataControls_);
+          util.show(formDataControls_, 'inline-block');
           announce('A form is now displayed in the main content area, '+
             ' along with a save button and a menu for showing the form data.');
           resolve();
