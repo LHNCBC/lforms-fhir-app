@@ -53,6 +53,35 @@ describe('SMART on FHIR connection', () => {
             .should('be.visible');
       });
 
+      it('checkboxes to show/hide repetition numbers, indentation and tree lines should work', () => {
+        cy.byId('54127-6-x')
+          .should('be.visible')
+          .click();
+        cy.get('.lhc-form', { timeout: 10000 })
+          .should('exist')
+          .should('be.visible');
+        cy.get('.lhc-form-title span.lhc-question')
+          .should('have.text', 'US Surgeon General family health portrait');
+        cy.get('.lf-sn').should('exist');
+        cy.get('.lhc-indentation').should('exist');
+        cy.get('.lhc-tree-line').should('exist');
+        cy.get('#showRepetitionNumbers').click();
+        cy.get('.lf-sn').should('not.exist');
+        cy.get('#showIndentation').click();
+        cy.get('.lhc-indentation').should('not.exist');
+        // "Show tree lines" checkbox should be hidden when indentation is not shown.
+        cy.get('#showTreeLinesContainer').should('not.be.visible');
+        // Tree lines should also be hidden when indentation is not shown.
+        cy.get('.lhc-tree-line').should('not.exist');
+        cy.get('#showIndentation').click();
+        cy.get('.lhc-indentation').should('exist');
+        cy.get('.lhc-tree-line').should('exist');
+        cy.get('#showTreeLines').click();
+        cy.get('.lhc-tree-line').should('not.exist');
+        cy.get('#showRepetitionNumbers').click();
+        cy.get('#showTreeLines').click();
+      });
+
       it('should display the weight and height questionnaire with pre-populated data', () => {
         const height = '/8302-2/1';
         cy.byId('55418-8-x')
