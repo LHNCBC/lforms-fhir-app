@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [3.5.0] 2025-04-08
+### Added
+- Checkboxes to show/hide repetition numbers, indentation and tree lines.
+
 ## [3.4.3] 2025-03-28
 ### Changed
 - Increased the width of bootstrap 5 modal dialogs.
