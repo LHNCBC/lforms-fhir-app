@@ -1,6 +1,6 @@
 {
   "name": "lforms-fhir-app",
-  "version": "3.5.0",
+  "version": "3.5.1",
   "description": "A SMART on FHIR app for lforms",
   "repository": "https://github.com/lhncbc/lforms-fhir-app",
   "source": [
@@ -18,7 +18,7 @@
   ],
   "devDependencies": {
     "@parcel/transformer-sass": "^2.8.3",
-    "autocomplete-lhc": "^18.2.0",
+    "autocomplete-lhc": "^20.0.0",
     "cross-env": "^7.0.3",
     "cross-spawn": "^7.0.3",
     "cypress": "^13.6.6",
