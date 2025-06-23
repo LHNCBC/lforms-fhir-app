@@ -71,7 +71,7 @@ describe('fhir app', () => {
       util.uploadForm('R4/weight-height-questionnaire.json');
       cy.byId('/8361-8/1')
           .click();
-      cy.get('#searchResults')
+      cy.get('#lhc-tools-searchResults')
           .should('be.visible');
     });
 
@@ -128,7 +128,7 @@ describe('fhir app', () => {
       util.uploadForm('STU3/weight-height-questionnaire.json');
       cy.byId('/8361-8/1')
           .click();
-      cy.get('#searchResults')
+      cy.get('#lhc-tools-searchResults')
           .should('be.visible');
     });
   });

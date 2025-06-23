@@ -234,7 +234,7 @@ describe('SMART on FHIR connection', () => {
             cy.byId(bodyPos) // get new copy of field
                 .should('be.visible')
                 .click();
-            cy.get('#searchResults')
+            cy.get('#lhc-tools-searchResults')
                 .should('be.visible');
           });
         });

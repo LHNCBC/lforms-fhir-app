@@ -127,7 +127,7 @@ export const Dialogs = {
 
       // The search results list needs to be higher than the modals, so the autocompleter can be
       // used there.
-      document.getElementById('searchResults').style.zIndex = "1100";
+      document.getElementById('lhc-tools-searchResults').style.zIndex = "1100";
 
       // Set up event listeners
       document.getElementById('serverSelectBtn').addEventListener('click', ()=> {
@@ -204,7 +204,7 @@ export const Dialogs = {
 
     // The search results list needs to be higher than the modals, so the autocompleter can be
     // used there.
-    document.getElementById('searchResults').style.zIndex = "1100";
+    document.getElementById('lhc-tools-searchResults').style.zIndex = "1100";
 
     this.hideMsgDialog();
     Modal.getOrCreateInstance(dialogEl).show();
