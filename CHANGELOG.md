@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [3.5.1] 2025-06-23
+### Changed
+- Update autocomplete-lhc version and use new ID lhc-tools-searchResults.
+
 ## [3.5.0] 2025-04-08
 ### Added
 - Checkboxes to show/hide repetition numbers, indentation and tree lines.

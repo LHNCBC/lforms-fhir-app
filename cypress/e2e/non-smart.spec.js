@@ -22,7 +22,7 @@ function pickPatient(patientName, listItemNum) {
       .type(patientName);
   cy.wait('@lastSearchQuery');
   cy.wait(200);
-  cy.get('#searchResults')
+  cy.get('#lhc-tools-searchResults')
       .should('contain.text', patientName);
   for (let i=0; i<listItemNum; ++i) {
     cy.get(ptField)
@@ -342,7 +342,7 @@ describe('Non-SMART connection to FHIR server', () => {
         cy.get(ptField)
           .should('be.visible')
           .type(title);
-        cy.get('#searchResults')
+        cy.get('#lhc-tools-searchResults')
           .should('contain.text', title);
         cy.get(ptField)
           .type('{downArrow}')

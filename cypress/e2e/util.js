@@ -70,10 +70,10 @@ export const util = {
       cy.get(field)
           .type(text);
     }
-    cy.get('#searchResults')
+    cy.get('#lhc-tools-searchResults')
         .should('be.visible');
-    cy.get('#searchResults li:nth-child('+n+'), '+
-        '#searchResults tr:nth-child('+n+')')
+    cy.get('#lhc-tools-searchResults li:nth-child('+n+'), '+
+        '#lhc-tools-searchResults tr:nth-child('+n+')')
         .click();
   },
 
@@ -533,7 +533,7 @@ export const util = {
      * Wait for the autocomplete results to be shown
      */
     waitForSearchResults: function () {
-      cy.get('#searchResults')
+      cy.get('#lhc-tools-searchResults')
           .should('be.visible');
       cy.wait(75); // wait for autocompletion to finish to avoid a stale element
     },
@@ -544,8 +544,8 @@ export const util = {
      * @param pos the item position number (starting at 1).
      */
     searchResult: function(pos) {
-      return cy.get('#searchResults' + ' li:nth-child('+pos+'), '+
-          '#searchResults' + ' tr:nth-child('+pos+')');
+      return cy.get('#lhc-tools-searchResults' + ' li:nth-child('+pos+'), '+
+          '#lhc-tools-searchResults' + ' tr:nth-child('+pos+')');
     }
   }
 }
