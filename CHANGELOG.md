@@ -3,6 +3,11 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [3.5.2] 2025-07-25
+### Changed
+- Updated tests to work with changed DOM element IDs from the latest version
+  of LHC-Forms
+
 ## [3.5.1] 2025-06-23
 ### Changed
 - Update autocomplete-lhc version and use new ID lhc-tools-searchResults.
