@@ -321,8 +321,6 @@ describe('Non-SMART connection to FHIR server', () => {
               cy.get(firstQNameCSS)
                   .should('have.text', origVal);
               cy.get('#qPrevPage')
-                  .should('not.have.attr', 'disabled');
-              cy.get('#qPrevPage')
                   .click();
               // Wait for the text of the first item to be different
               cy.get(firstQNameCSS)
