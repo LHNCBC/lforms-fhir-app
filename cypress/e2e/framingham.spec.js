@@ -57,7 +57,7 @@ describe('Framingham HCHD risk form', () => {
     }
     if (smokes != lastSmokes) {
       if (hasValue(smokes)) {
-        smokes ? cy.get('#\\/smokes\\/1\\|\\|Y').click() : cy.get('#\\/smokes\\/1\\|\\|N').click();
+        smokes ? cy.get('#\\/smokes\\/1Y').click() : cy.get('#\\/smokes\\/1N').click();
       }
       lastSmokes = smokes;
     }
@@ -75,7 +75,7 @@ describe('Framingham HCHD risk form', () => {
     }
     if (antihypert != lastAntihypert) {
       if (hasValue(antihypert)) {
-        antihypert ? cy.get('#\\/antihypertensive\\/1\\|\\|Y').click() : cy.get('#\\/antihypertensive\\/1\\|\\|N').click();
+        antihypert ? cy.get('#\\/antihypertensive\\/1Y').click() : cy.get('#\\/antihypertensive\\/1N').click();
         lastAntihypert = antihypert;
       }
     }
