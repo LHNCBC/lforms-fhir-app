@@ -6,7 +6,7 @@ let lformsLoadPromise;
 let params = new URL(document.location).searchParams;
 let lformsVersion = params.get('lfv');
 if (lformsVersion)
-  lformsLoadPromise = loadLForms(lformsVersion).catch(e=>{
+  lformsLoadPromise = loadLForms(lformsVersion, null, "http://localhost:8080").catch(e=>{
     console.log('Unable to load LHC-Forms version '+lformsVersion);
     if (e)
       console.log(e);
@@ -14,7 +14,7 @@ if (lformsVersion)
   });
 else {
   lformsLoadPromise = getSupportedLFormsVersions().then(versions=>{
-    return loadLForms(versions[0]).catch(e=>{
+    return loadLForms(versions[0], null, "http://localhost:8080").catch(e=>{
       // Some file failed to load.
       console.log(e);
       // Try the next most recent version
