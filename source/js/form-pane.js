@@ -320,7 +320,7 @@ async function createQRToFhir() {
 
 /**
  *  Saves the data as a new copy of an SDC QuestionnaireResponse and
- *  extracted Observations.
+ *  extracted resources.
  */
 async function saveAsQRExtracted() {
   spinner.show();
