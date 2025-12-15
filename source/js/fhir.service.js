@@ -501,12 +501,12 @@ thisService.getAllQ = function() {
  * Data returned through an angular broadcast event.
  * @param q the Questionnaire resource
  * @param qr the QuestionnaireResponse resource
- * @param obsArray the array of Observations extracted from qr
+ * @param obsArray the array of Observations or Bundles extracted from qr
  * @param qExists true if the questionnaire already exists and does not need to
  * be created.
  * @return a Promise that will resolve to an array of the responses for creating
  *  the Questionnaire (if !qExists) and the result of the bundle to create the QR
- *  and the Observations.
+ *  and the extracted resources (Observations or Bundles).
  */
 thisService.createQQRObs = function (q, qr, obsArray, qExists) {
   // Build a FHIR transaction bundle to create these resources.
@@ -524,14 +524,21 @@ thisService.createQQRObs = function (q, qr, obsArray, qExists) {
     }
   });
 
-  for (var i=0, len=obsArray.length; i<len; ++i) {
-    bundle.entry.push({
-      resource: obsArray[i],
-      request: {
-        method: "POST",
-        url: "Observation"
-      }
-    });
+  for (var i = 0, len = obsArray.length; i < len; ++i) {
+    const isResourceBundle = obsArray[i].resourceType === "Bundle";
+    if (isResourceBundle) {
+      // If this is a Bundle from template-based extraction, add its entry
+      // into the parent Bundle entry to be saved together with the QR.
+      bundle.entry.push(...obsArray[i].entry);
+    } else {
+      bundle.entry.push({
+        resource: obsArray[i],
+        request: {
+          method: "POST",
+          url: "Observation"
+        }
+      });
+    }
   }
 
   function withQuestionnaire(q) {
