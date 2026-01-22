@@ -3,6 +3,10 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [3.6.1] 2026-01-22
+### Changed
+- Updated a test to use a valid FHIR server.
+
 ## [3.6.0] 2025-08-28
 ### Changed
 - Save Bundles together with QuestionnaireResponse and Observations

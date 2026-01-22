@@ -60,7 +60,7 @@ describe('Non-SMART connection to FHIR server', () => {
     // Note:  If this test fails, it might be because this particular server is
     // down.  In that case, feel free to replace it with another off-list
     // server.
-    util.selectServerUsingDialog('http://wildfhir4.aegis.net/fhir4-0-1');
+    util.selectServerUsingDialog('http://hapi.fhir.org/baseR4');
     pickPatient('a', 1);
   });
 
