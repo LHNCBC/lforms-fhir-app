@@ -152,8 +152,23 @@ export function showForm(formDef, addOptions, onServer) {
           resolve();
         }, (error)=>{
           console.log(error);
-          showError('Could not display the form.', error);
-          reject(error);
+          let q = formDef;
+          if (!formDef.resourceType) {
+            q = LForms.Util._convertLFormsToFHIRData('Questionnaire', 'R4', formDef);
+          }
+          const urlParams = new URLSearchParams(window.location.search);
+          const server = urlParams.get('server') || 'https://lforms-fhir.nlm.nih.gov/baseR4';
+          LForms.Util.validateQuestionnaireOnFHIRServer(q, server)
+            .then((result) => {
+              if (result !== null) {
+                // Show validation error returned from server /questionnaire/$validate call, if any.
+                showError('The Questionnaire is not valid.', result);
+                reject(result);
+              } else {
+                showError('Could not display the form.', error);
+                reject(error);
+              }
+            });
         });
       } catch (e) {
         showError('Could not display the form.', e);
