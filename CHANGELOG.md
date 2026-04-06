@@ -3,6 +3,12 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [3.6.2] 2026-04-06
+### Changed
+- Call LForms.Util.validateQuestionnaireOnFHIRServer() and show
+  validation errors from server when an error happens rendering
+  a Questionnaire.
+
 ## [3.6.1] 2026-01-22
 ### Changed
 - Updated a test to use a valid FHIR server.
