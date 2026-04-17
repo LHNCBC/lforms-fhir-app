@@ -152,6 +152,7 @@ export function showForm(formDef, addOptions, onServer) {
           resolve();
         }, (error)=>{
           console.log(error);
+          showError('Could not display the form.', error);
           let q = formDef;
           if (!formDef.resourceType) {
             q = LForms.Util._convertLFormsToFHIRData('Questionnaire', 'R4', formDef);
@@ -162,10 +163,10 @@ export function showForm(formDef, addOptions, onServer) {
             .then((result) => {
               if (result !== null) {
                 // Show validation error returned from server /questionnaire/$validate call, if any.
-                showError('The Questionnaire is not valid.', result);
+                appendError('The Questionnaire is not valid. Errors returned from the $validate query:');
+                appendError(result);
                 reject(result);
               } else {
-                showError('Could not display the form.', error);
                 reject(error);
               }
             });
@@ -201,6 +202,18 @@ export function showError(msg, error) {
   }
   util.show(errMsgElem_);
   spinner.hide();
+}
+
+
+/**
+ * Appends to the error messages.
+ * @param msg the error message to append.
+ */
+export function appendError(msg) {
+  const newMsg = document.createElement("div");
+  newMsg.textContent = msg;
+  errMsgElem_.appendChild(newMsg);
+  announce(msg);
 }
 
 
