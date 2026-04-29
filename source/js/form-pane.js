@@ -18,6 +18,11 @@ const formContainer_ = document.getElementById(config.formContainer);
 const errMsgElem_ = document.getElementById('errMsg');
 
 /**
+ *  A reference to the element for showing additional error messages.
+ */
+const errMsg1Elem_ = document.getElementById('errMsg1');
+
+/**
  *  A reference to the element containing the initial instructions which are
  *  removed once a form loads.
  */
@@ -151,7 +156,6 @@ export function showForm(formDef, addOptions, onServer) {
             ' along with a save button and a menu for showing the form data.');
           resolve();
         }, (error)=>{
-          console.log(error);
           showError('Could not display the form.', error);
           let q = formDef;
           if (!formDef.resourceType) {
@@ -161,10 +165,16 @@ export function showForm(formDef, addOptions, onServer) {
           const server = urlParams.get('server') || 'https://lforms-fhir.nlm.nih.gov/baseR4';
           LForms.Util.validateQuestionnaireOnFHIRServer(q, server)
             .then((result) => {
-              if (result !== null) {
+              let rtn = null;
+              if (result.resourceType === "OperationOutcome") {
+                const errorOrFatal = result.issue?.filter(item => item.severity === "error" || item.severity === "fatal");
+                if (errorOrFatal && errorOrFatal.length) {
+                  rtn = errorOrFatal.map(e => e.diagnostics);
+                }
+              }
+              if (rtn !== null) {
                 // Show validation error returned from server /questionnaire/$validate call, if any.
-                appendError('The Questionnaire is not valid. Errors returned from the $validate query:');
-                appendError(result);
+                showAdditionalErrors('The Questionnaire is not valid. Errors returned from the $validate query:', rtn);
                 reject(result);
               } else {
                 reject(error);
@@ -174,7 +184,7 @@ export function showForm(formDef, addOptions, onServer) {
       } catch (e) {
         showError('Could not display the form.', e);
         reject(e);
-      };
+      }
     });
   }
   return rtn;
@@ -206,14 +216,19 @@ export function showError(msg, error) {
 
 
 /**
- * Appends to the error messages.
- * @param msg the error message to append.
+ * Shows additional error messages, e.g. server validation errors.
+ * @param msg the error message to show.
+ * @param errors an array of additional error messages.
  */
-export function appendError(msg) {
-  const newMsg = document.createElement("div");
-  newMsg.textContent = msg;
-  errMsgElem_.appendChild(newMsg);
-  announce(msg);
+export function showAdditionalErrors(msg, errors) {
+  errMsg1Elem_.textContent = msg;
+  errors.forEach(e => {
+    const newMsg = document.createElement("div");
+    newMsg.textContent = e;
+    errMsg1Elem_.appendChild(newMsg);
+    announce(msg);
+  });
+  util.show(errMsg1Elem_);
 }
 
 
@@ -259,6 +274,8 @@ function notifyQSaveOrDelete() {
 function removeErrMsg() {
   util.hide(errMsgElem_);
   errMsgElem_.textContent = '';
+  util.hide(errMsg1Elem_);
+  errMsg1Elem_.textContent = '';
 }
 
 
