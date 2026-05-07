@@ -204,11 +204,20 @@ export function showError(msg, error) {
   announce(msg);
   if (error) {
     console.log(error);
-    const details = document.createElement("div");
-    const detailMsg = 'Cause: ' + error.toString();
-    details.textContent = detailMsg;
-    errMsgElem_.appendChild(details);
-    announce(detailMsg);
+    if (Array.isArray(error)) {
+      error.forEach(e => {
+        const newMsg = document.createElement("div");
+        newMsg.textContent = e;
+        errMsgElem_.appendChild(newMsg);
+        announce(msg);
+      });
+    } else {
+      const details = document.createElement("div");
+      const detailMsg = 'Cause: ' + error.toString();
+      details.textContent = detailMsg;
+      errMsgElem_.appendChild(details);
+      announce(detailMsg);
+    }
   }
   util.show(errMsgElem_);
   spinner.hide();
