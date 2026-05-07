@@ -169,12 +169,12 @@ export function showForm(formDef, addOptions, onServer) {
               if (result.resourceType === "OperationOutcome") {
                 const errorOrFatal = result.issue?.filter(item => item.severity === "error" || item.severity === "fatal");
                 if (errorOrFatal && errorOrFatal.length) {
-                  rtn = errorOrFatal.map(e => e.diagnostics);
+                  rtn = errorOrFatal.map(({severity, diagnostics}) => (`${severity}: ${diagnostics}`));
                 }
               }
               if (rtn !== null) {
                 // Show validation error returned from server /questionnaire/$validate call, if any.
-                showAdditionalErrors('The Questionnaire is not valid. Errors returned from the $validate query:', rtn);
+                showAdditionalErrors(`Errors returned from the $validate operation on ${server}:`, rtn);
                 reject(result);
               } else {
                 reject(error);
