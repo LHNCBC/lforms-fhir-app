@@ -205,12 +205,14 @@ export function showError(msg, error) {
   if (error) {
     console.log(error);
     if (Array.isArray(error)) {
+      let ul = document.createElement('ul');
       error.forEach(e => {
-        const newMsg = document.createElement("div");
-        newMsg.textContent = e;
-        errMsgElem_.appendChild(newMsg);
+        const li = document.createElement('li');
+        li.textContent = e;
+        ul.appendChild(li);
         announce(msg);
       });
+      errMsgElem_.appendChild(ul);
     } else {
       const details = document.createElement("div");
       const detailMsg = 'Cause: ' + error.toString();
@@ -231,12 +233,14 @@ export function showError(msg, error) {
  */
 export function showAdditionalErrors(msg, errors) {
   errMsg1Elem_.textContent = msg;
+  let ul = document.createElement('ul');
   errors.forEach(e => {
-    const newMsg = document.createElement("div");
-    newMsg.textContent = e;
-    errMsg1Elem_.appendChild(newMsg);
+    const li = document.createElement('li');
+    li.textContent = e;
+    ul.appendChild(li);
     announce(msg);
   });
+  errMsg1Elem_.appendChild(ul);
   util.show(errMsg1Elem_);
 }
 
