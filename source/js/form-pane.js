@@ -210,7 +210,7 @@ export function showError(msg, error) {
         const li = document.createElement('li');
         li.textContent = e;
         ul.appendChild(li);
-        announce(msg);
+        announce(e);
       });
       errMsgElem_.appendChild(ul);
     } else {
@@ -233,12 +233,13 @@ export function showError(msg, error) {
  */
 export function showAdditionalErrors(msg, errors) {
   errMsg1Elem_.textContent = msg;
+  announce(msg);
   let ul = document.createElement('ul');
   errors.forEach(e => {
     const li = document.createElement('li');
     li.textContent = e;
     ul.appendChild(li);
-    announce(msg);
+    announce(e);
   });
   errMsg1Elem_.appendChild(ul);
   util.show(errMsg1Elem_);
