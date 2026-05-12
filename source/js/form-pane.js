@@ -18,6 +18,11 @@ const formContainer_ = document.getElementById(config.formContainer);
 const errMsgElem_ = document.getElementById('errMsg');
 
 /**
+ *  A reference to the element for showing additional error messages.
+ */
+const errMsg1Elem_ = document.getElementById('errMsg1');
+
+/**
  *  A reference to the element containing the initial instructions which are
  *  removed once a form loads.
  */
@@ -151,14 +156,35 @@ export function showForm(formDef, addOptions, onServer) {
             ' along with a save button and a menu for showing the form data.');
           resolve();
         }, (error)=>{
-          console.log(error);
           showError('Could not display the form.', error);
-          reject(error);
+          let q = formDef;
+          if (!formDef.resourceType) {
+            q = LForms.Util._convertLFormsToFHIRData('Questionnaire', 'R4', formDef);
+          }
+          const urlParams = new URLSearchParams(window.location.search);
+          const server = urlParams.get('server') || 'https://lforms-fhir.nlm.nih.gov/baseR4';
+          LForms.Util.validateQuestionnaireOnFHIRServer(q, server)
+            .then((result) => {
+              let rtn = null;
+              if (result.resourceType === "OperationOutcome") {
+                const errorOrFatal = result.issue?.filter(item => item.severity === "error" || item.severity === "fatal");
+                if (errorOrFatal && errorOrFatal.length) {
+                  rtn = errorOrFatal.map(({severity, diagnostics}) => (`${severity}: ${diagnostics}`));
+                }
+              }
+              if (rtn !== null) {
+                // Show validation error returned from server /questionnaire/$validate call, if any.
+                showAdditionalErrors(`Errors returned from the $validate operation on ${server}:`, rtn);
+                reject(result);
+              } else {
+                reject(error);
+              }
+            });
         });
       } catch (e) {
         showError('Could not display the form.', e);
         reject(e);
-      };
+      }
     });
   }
   return rtn;
@@ -178,14 +204,45 @@ export function showError(msg, error) {
   announce(msg);
   if (error) {
     console.log(error);
-    const details = document.createElement("div");
-    const detailMsg = 'Cause: ' + error.toString();
-    details.textContent = detailMsg;
-    errMsgElem_.appendChild(details);
-    announce(detailMsg);
+    if (Array.isArray(error)) {
+      let ul = document.createElement('ul');
+      error.forEach(e => {
+        const li = document.createElement('li');
+        li.textContent = e;
+        ul.appendChild(li);
+        announce(e);
+      });
+      errMsgElem_.appendChild(ul);
+    } else {
+      const details = document.createElement("div");
+      const detailMsg = 'Cause: ' + error.toString();
+      details.textContent = detailMsg;
+      errMsgElem_.appendChild(details);
+      announce(detailMsg);
+    }
   }
   util.show(errMsgElem_);
   spinner.hide();
+}
+
+
+/**
+ * Shows additional error messages, e.g. server validation errors.
+ * @param msg the error message to show.
+ * @param errors an array of additional error messages.
+ */
+export function showAdditionalErrors(msg, errors) {
+  errMsg1Elem_.textContent = msg;
+  announce(msg);
+  let ul = document.createElement('ul');
+  errors.forEach(e => {
+    const li = document.createElement('li');
+    li.textContent = e;
+    ul.appendChild(li);
+    announce(e);
+  });
+  errMsg1Elem_.appendChild(ul);
+  util.show(errMsg1Elem_);
 }
 
 
@@ -231,6 +288,8 @@ function notifyQSaveOrDelete() {
 function removeErrMsg() {
   util.hide(errMsgElem_);
   errMsgElem_.textContent = '';
+  util.hide(errMsg1Elem_);
+  errMsg1Elem_.textContent = '';
 }
 
 

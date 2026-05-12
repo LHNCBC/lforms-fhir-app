@@ -1,6 +1,6 @@
 {
   "name": "lforms-fhir-app",
-  "version": "3.6.1",
+  "version": "3.6.2",
   "description": "A SMART on FHIR app for lforms",
   "repository": "https://github.com/lhncbc/lforms-fhir-app",
   "source": [
@@ -17,6 +17,7 @@
     "autocomplete-lhc is included only for its test helpers; for the app it is pulled in through lforms"
   ],
   "devDependencies": {
+    "@parcel/transformer-sass": "^2.16.3",
     "cross-env": "^10.1.0",
     "cross-spawn": "^7.0.6",
     "cypress": "^15.9.0",
