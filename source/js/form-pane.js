@@ -121,7 +121,7 @@ export function showForm(formDef, addOptions, onServer) {
   originalQDef_ = null;
   lastSavedQR_ = null;
   spinner.show();
-  const formDefParam = formDef;
+  const formDefParam = LForms.Util.deepCopy(formDef);
   formDef = lformsUpdater.update(formDef);
 
   if (!addOptions) {
