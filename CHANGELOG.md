@@ -3,6 +3,11 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [3.6.3] 2026-05-27
+### Fixed
+- "Show Questionnaire from FHIR Server" option did not show the
+  exact file from the server.
+
 ## [3.6.2] 2026-04-06
 ### Changed
 - Call LForms.Util.validateQuestionnaireOnFHIRServer() and show
