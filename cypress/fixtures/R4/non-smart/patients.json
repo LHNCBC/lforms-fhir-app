@@ -1,0 +1,42 @@
+{
+  "resourceType": "Bundle",
+  "id": "stub-patient-searchset",
+  "type": "searchset",
+  "total": 2,
+  "entry": [
+    {
+      "fullUrl": "https://fhir-stub.example.org/baseR4/Patient/stub-pt-1",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "stub-pt-1",
+        "name": [
+          {
+            "use": "official",
+            "family": "Anderson",
+            "given": ["Sarah"]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1975-04-12"
+      },
+      "search": { "mode": "match" }
+    },
+    {
+      "fullUrl": "https://fhir-stub.example.org/baseR4/Patient/stub-pt-2",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "stub-pt-2",
+        "name": [
+          {
+            "use": "official",
+            "family": "Adams",
+            "given": ["Brian"]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1982-09-30"
+      },
+      "search": { "mode": "match" }
+    }
+  ]
+}
