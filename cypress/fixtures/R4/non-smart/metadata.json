@@ -1,0 +1,33 @@
+{
+  "resourceType": "CapabilityStatement",
+  "id": "stub-capabilitystatement",
+  "status": "active",
+  "date": "2024-01-01T00:00:00Z",
+  "kind": "instance",
+  "software": {
+    "name": "Stub FHIR Server for tests"
+  },
+  "implementation": {
+    "description": "Stubbed off-list FHIR server used by Cypress tests",
+    "url": "https://fhir-stub.example.org/baseR4"
+  },
+  "fhirVersion": "4.0.1",
+  "format": [
+    "application/fhir+json",
+    "json"
+  ],
+  "rest": [
+    {
+      "mode": "server",
+      "resource": [
+        {
+          "type": "Patient",
+          "interaction": [
+            { "code": "search-type" },
+            { "code": "read" }
+          ]
+        }
+      ]
+    }
+  ]
+}

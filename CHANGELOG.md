@@ -3,6 +3,14 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [3.6.4] 2026-07-13
+### Fixed
+- Restored some base styles (font family, size and text color) that were
+  previously provided by LForms but are no longer included.
+### Changed
+- Made the off-list FHIR server test independent of external public FHIR
+  servers by stubbing the server's metadata and patient search responses.
+
 ## [3.6.3] 2026-05-27
 ### Fixed
 - "Show Questionnaire from FHIR Server" option did not show the

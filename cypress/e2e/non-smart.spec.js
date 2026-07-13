@@ -57,10 +57,14 @@ describe('Non-SMART connection to FHIR server', () => {
 
   it('should be able to select an off-list FHIR server', () => {
     cy.visit(mainPageURL);
-    // Note:  If this test fails, it might be because this particular server is
-    // down.  In that case, feel free to replace it with another off-list
-    // server.
-    util.selectServerUsingDialog('http://hapi.fhir.org/baseR4');
+    // Use a stubbed off-list server so this test does not depend on the
+    // availability (or speed) of an external public FHIR server.  The app only
+    // needs the server's metadata (to detect the FHIR version) and a patient
+    // search response to open and use the patient picker.
+    const offListServer = 'https://fhir-stub.example.org/baseR4';
+    cy.intercept('GET', '**/metadata*', { fixture: 'R4/non-smart/metadata.json' });
+    cy.intercept('GET', '**/Patient?**', { fixture: 'R4/non-smart/patients.json' });
+    util.selectServerUsingDialog(offListServer);
     pickPatient('a', 1);
   });
 
