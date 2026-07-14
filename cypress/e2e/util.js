@@ -51,6 +51,11 @@ export const util = {
         .invoke('attr', 'style', 'display: none;');
     cy.get('.error', { timeout: 15000 })
         .should('exist');
+    this.waitForSpinnerStopped();
+    cy.get('#formDataControls', { timeout: 15000 })
+        .should('be.visible');
+    cy.get('#formContainer wc-lhc-form', { timeout: 15000 })
+        .should('exist');
   },
 
   /**
@@ -438,7 +443,12 @@ export const util = {
    */
   clickShowMenuItem: function (showItemCSS) {
     cy.get('#btn-show-as')
-        .click()
+        .should('be.visible')
+        .click();
+    cy.get('#btn-show-as', { timeout: 15000 })
+        .parent()
+        .find('.dropdown-menu')
+        .should('be.visible');
     cy.get(showItemCSS)
         .should('be.visible')
         .click();
