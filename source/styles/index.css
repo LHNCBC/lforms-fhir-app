@@ -8,6 +8,7 @@
 @import './form-pane.css';
 @import './left-sidebar.css';
 @import './lforms-overrides.css';
+@import '../../node_modules/autocomplete-lhc/source/auto_completion.css';
 
 /**
  * Bootstrap Fonts
@@ -56,13 +57,6 @@ body {
   /* jQuery's offset() is confused when the position is set to relative (by
    * angular-material) */
   position: static;
-  /* add the styles that was from lforms */
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-  font-size: 14px;
-  line-height: 1.5715;
-  color: rgba(0, 0, 0, 0.85);
-}
 
 .lf-form-table .lf-form-table-row.section-header.level1 {
   background-color: rgb(67, 115, 156);
@@ -75,6 +69,11 @@ body {
 
 md-dialog-content {
   padding: 1em;
+}
+
+#serverSelectDialog.modal .modal-dialog,
+#resSelectDialog.modal .modal-dialog {
+  --bs-modal-width: 500px;
 }
 
 /* CSS adjustments for PHR */
@@ -140,17 +139,6 @@ body {
 
 .lf-icon-doctor {
   filter: brightness(0) invert(1);
-}
-
-/* autocomplete-lhc is included in lforms package. Its styles are under the .lhc-forms class.
-  Reset the progress bar from autocomplete-lhc */
-.loading-indicator-container progress {
-  display: none;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 5px;
 }
 
 /* End of styles for the header */

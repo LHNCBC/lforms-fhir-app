@@ -3,6 +3,11 @@
 This log documents the significant changes for each release.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [3.6.5] 2026-07-14
+### Fixed
+- Removed the previously added additional styles. Used the style file
+  from the autocomplete-lhc package instead.
+  
 ## [3.6.4] 2026-07-13
 ### Fixed
 - Restored some base styles (font family, size and text color) that were

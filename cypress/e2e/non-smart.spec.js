@@ -101,6 +101,7 @@ describe('Non-SMART connection to FHIR server', () => {
             // fails silently.
             .focus()
             .clear()
+            .type(`{selectall}{backspace}`)
             .type('50');
         util.saveAsQRAndObs();
         util.waitForSpinnerStopped();
@@ -135,9 +136,11 @@ describe('Non-SMART connection to FHIR server', () => {
       it('should have working expressions', () => {
         // Continue with form loaded in previous tests
         cy.byId('/8302-2/1')
+            .focus()
             .clear()
             .type('30');
         cy.byId('/29463-7/1')
+            .focus()
             .clear()
             .type('20');
         cy.byId('/39156-5/1')
